@@ -18,8 +18,8 @@ jobs:
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.SSH_HOST }}
-          key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
             echo "login to server success"
             docker rm (docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
