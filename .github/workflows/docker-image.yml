@@ -22,7 +22,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             echo "login to server success"
-            docker rm (docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
-            docker rmi joacoferroni/appointment-api:latest
             docker pull joacoferroni/appointment-api:latest
             docker run -d --network="host" --restart=unless-stopped --name="psicofer_api_c" joacoferroni/appointment-api:latest 
