@@ -32,16 +32,21 @@ jobs:
           push: true
           tags: joacoferroni/appointment-api:latest
       -
-        name: Deploy to DO
+        name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          host: ${{ secrets.SSH_HOST }}
-          key: ${{ secrets.SSH_KEY }}
-          username: ${{ secrets.USERNAME }}
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           script: |
             echo "login to server success"
-            docker rm (docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
-            docker rmi joacoferroni/appointment-api:latest
-            docker pull joacoferroni/appointment-api:latest
-            docker run -d --network="host" --restart=unless-stopped --name="psicofer_api_c" joacoferroni/appointment-api:latest 
+      -
+        name: Remove current container
+        run: docker rm (docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
+      -
+        name: Remove current image
+        run: docker rmi joacoferroni/appointment-api:latest
+      -
+        name: Pull latest image
+        run: docker pull joacoferroni/appointment-api:latest
+      -
+        name: Run latest image
+        run: docker run -d --network="host" --restart=unless-stopped --name="psicofer_api_c" joacoferroni/appointment-api:latest 
