@@ -36,11 +36,9 @@ jobs:
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          script: |
-            echo "login to server success"
       -
         name: Remove current container
-        run: docker rm (docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
+        run: docker rm $(docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
       -
         name: Remove current image
         run: docker rmi joacoferroni/appointment-api:latest
