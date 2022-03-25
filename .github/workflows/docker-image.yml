@@ -38,9 +38,11 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       -
         name: Remove current container
+        continue-on-error: true
         run: docker rm $(docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
       -
         name: Remove current image
+        continue-on-error: true
         run: docker rmi joacoferroni/appointment-api:latest
       -
         name: Pull latest image
