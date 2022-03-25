@@ -33,11 +33,12 @@ jobs:
           tags: joacoferroni/appointment-api:latest
       -
         name: Deploy to DO
-        uses: appleboy/ssh-action@v0.1.2
+        uses: digitalocean/action-doctl@v2
         with:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.USERNAME }}
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           script: |
             echo "login to server success"
             docker rm (docker stop $(docker ps -a -q --filter="name=psicofer_api_c"))
