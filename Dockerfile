@@ -1,7 +1,11 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+
+ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_HTTPS_PORT=http://+:5001
+
+EXPOSE 5000
+EXPOSE 5001
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 WORKDIR /src
