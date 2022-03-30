@@ -19,7 +19,6 @@ namespace Appointment.Host.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             var connectionString = configuration.GetConnectionString("AppointmentConnection");
             services.AddDbContext<AppDbContext>(
@@ -67,7 +66,7 @@ namespace Appointment.Host.Extensions
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app,
             IWebHostEnvironment env,AppDbContext context)
         {
-            app //.UseHttpsRedirection()
+            app .UseHttpsRedirection()
                 .UseRouting()
                 .UseCors()
                 .UseAuthentication()
