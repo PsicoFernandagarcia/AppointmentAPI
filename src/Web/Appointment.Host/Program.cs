@@ -31,16 +31,6 @@ namespace Appointment.Host
                                 reloadOnChange: true)
                             .AddEnvironmentVariables();
                     }).UseStartup<Startup>();
-
-                    //webBuilder.ConfigureKestrel((context, serverOptions) =>
-                    //{
-                    //    var kestrelSection = context.Configuration.GetSection("Kestrel");
-
-                    //    serverOptions.Configure(kestrelSection)
-                    //    .Endpoint("HTTPS", listenOptions =>
-                    //    {
-                    //    });
-                    //});
                 });
     }
 }
