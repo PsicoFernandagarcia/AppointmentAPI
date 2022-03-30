@@ -32,15 +32,15 @@ namespace Appointment.Host
                             .AddEnvironmentVariables();
                     }).UseStartup<Startup>();
 
-                    webBuilder.ConfigureKestrel((context, serverOptions) =>
-                    {
-                        var kestrelSection = context.Configuration.GetSection("Kestrel");
+                    //webBuilder.ConfigureKestrel((context, serverOptions) =>
+                    //{
+                    //    var kestrelSection = context.Configuration.GetSection("Kestrel");
 
-                        serverOptions.Configure(kestrelSection)
-                        .Endpoint("HTTPS", listenOptions =>
-                        {
-                        });
-                    });
+                    //    serverOptions.Configure(kestrelSection)
+                    //    .Endpoint("HTTPS", listenOptions =>
+                    //    {
+                    //    });
+                    //});
                 });
     }
 }
