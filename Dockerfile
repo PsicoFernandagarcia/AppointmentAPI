@@ -2,8 +2,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine AS base
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path="./certs/psicofernandagarcia.com.crt"
+ENV ASPNETCORE_Kestrel__Certificates__Default__KeyPath="./certs/psicofernandagarcia.com.key"
 
 EXPOSE 5000
+EXPOSE 8443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 WORKDIR /src
