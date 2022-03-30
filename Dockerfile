@@ -4,7 +4,6 @@ WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:5000
 
 EXPOSE 5000
-EXPOSE 8443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
 WORKDIR /src
