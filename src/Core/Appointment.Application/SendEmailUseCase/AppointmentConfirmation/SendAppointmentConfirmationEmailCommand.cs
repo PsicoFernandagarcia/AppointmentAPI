@@ -29,10 +29,10 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
             var userDate = request.DateTimeInUTC.AddMinutes(user.TimezoneOffset);
             var hostDate = request.DateTimeInUTC.AddMinutes(host.TimezoneOffset);
 
-            var ci = new CultureInfo("es-ES");
+            //var ci = new CultureInfo("es-ES");
             var body = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "Content/appointment_confirmation.html"),cancellationToken);
             body = body.Replace("#_name_#", user.Name)
-                        .Replace("#_visibleDate_#", userDate.ToString("dddd, dd MMMM yyyy HH:mm", ci))
+                        .Replace("#_visibleDate_#", userDate.ToString("dddd, dd MMMM yyyy HH:mm"))
                         .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("MMddyyyyTHHmm00Z")}")
                         .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("MMddyyyyTHHmm00Z")}");
             return this._emailSender.Send(user.Email, "Confirmación cita", body, true);
