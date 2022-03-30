@@ -29,7 +29,7 @@ namespace Appointment.Application.AuthUseCases.Authenticate
 
         public async Task<Result<LoginResult,UnauthorizedError>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserByName(request.UserName);
+            var user = await _userRepository.GetUserByName(request.UserName.Trim());
             if (user is null || !VerifyPasswordHash(request.Password,user.PasswordHash,user.PasswordSalt)) 
                 return Result.Failure<LoginResult, UnauthorizedError>(new UnauthorizedError("Usuario o contraseña no válido"));
             return Result.Success<LoginResult, UnauthorizedError>(new LoginResult
