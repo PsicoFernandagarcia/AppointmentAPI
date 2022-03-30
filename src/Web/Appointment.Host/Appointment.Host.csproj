@@ -36,6 +36,9 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Content Include=" Content\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
