@@ -14,7 +14,6 @@
 **/azds.yaml
 **/bin
 **/charts
-**/certs
 **/docker-compose*
 **/Dockerfile*
 **/node_modules
