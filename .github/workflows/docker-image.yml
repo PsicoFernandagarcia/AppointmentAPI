@@ -56,5 +56,5 @@ jobs:
             docker rm psicofer_api
             echo "Run Docker psicofer_api"
             docker run -d --network="host" --restart=unless-stopped \
-            --mount type=bind,source=/opt/certs,target=/certs \
+            --mount type=bind,source=/opt/certs,target=/app/certs \
             --name psicofer_api joacoferroni/${{ secrets.DOCKER_IMAGE }}:latest
