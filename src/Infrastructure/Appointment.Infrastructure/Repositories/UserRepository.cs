@@ -41,6 +41,13 @@ namespace Appointment.Infrastructure.Repositories
             await _context.Users.AddAsync(u);
             await _context.SaveChangesAsync();
             return u;
-        } 
+        }
+
+        public async Task<User> UpdateUser(User u)
+        {
+            _context.Users.Update(u);
+            await _context.SaveChangesAsync();
+            return u;
+        }
     }
 }

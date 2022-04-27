@@ -11,5 +11,7 @@ namespace Appointment.Application.AuthUseCases.Authenticate
         public string UserName { get; set; }
         [Required]
         public string  Password { get; set; }
+
+        public int TimezoneOffset { get; set; }
     }
 }

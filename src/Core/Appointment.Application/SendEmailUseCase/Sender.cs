@@ -9,6 +9,7 @@ using Appointment.Domain.Infrastructure;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace Appointment.Application.SendEmailUseCase
 {
@@ -29,10 +30,9 @@ namespace Appointment.Application.SendEmailUseCase
         {
             try
             {
-                if ( _emailOptions.SendEmail)
+                if (_emailOptions.SendEmail)
                 {
-
-                    SmtpClient smtp = new SmtpClient();
+                    var smtp = new SmtpClient();
                     smtp.Host = _emailOptions.GmailHost;
                     smtp.Port = _emailOptions.GmailPort;
                     smtp.EnableSsl = _emailOptions.GmailSSL;

@@ -55,6 +55,11 @@ namespace Appointment.Application.AuthUseCases.AuthenticateExternal
                 if(resultCreateUser.IsFailure) return Result.Failure<LoginExternalResult, UnauthorizedError>(new UnauthorizedError("cannot authenticate user"));
                 user = resultCreateUser.Value;
             }
+            else
+            {
+                user.TimezoneOffset = request.TimezoneOffset;
+                await _userRepository.UpdateUser(user);
+            }
            
             return Result.Success<LoginExternalResult, UnauthorizedError>(new LoginExternalResult
             {

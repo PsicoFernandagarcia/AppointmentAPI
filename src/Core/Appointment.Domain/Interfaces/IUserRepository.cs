@@ -13,6 +13,7 @@ namespace Appointment.Domain.Interfaces
         Task<User> GetUserByEmail(string email);
         Task<User> GetUserById(int id);
         Task<User> CreateUser(User u);
+        Task<User> UpdateUser(User u);
         Task<IList<User>> GetUserByRole(RolesEnum role);
     }
 }

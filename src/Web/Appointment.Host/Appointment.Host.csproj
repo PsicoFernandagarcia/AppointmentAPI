@@ -41,4 +41,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Content\appointment_confirmation_user.html" />
+  </ItemGroup>
+
 </Project>

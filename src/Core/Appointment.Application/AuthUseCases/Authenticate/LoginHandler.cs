@@ -32,6 +32,8 @@ namespace Appointment.Application.AuthUseCases.Authenticate
             var user = await _userRepository.GetUserByName(request.UserName.Trim());
             if (user is null || !VerifyPasswordHash(request.Password,user.PasswordHash,user.PasswordSalt)) 
                 return Result.Failure<LoginResult, UnauthorizedError>(new UnauthorizedError("Usuario o contraseña no válido"));
+            user.TimezoneOffset = request.TimezoneOffset;
+            await _userRepository.UpdateUser(user);
             return Result.Success<LoginResult, UnauthorizedError>(new LoginResult
             {
                 Token = GenerateJwtToken(user),

@@ -29,6 +29,8 @@ namespace Appointment.Host
                         config.AddJsonFile("./appsettings.json", optional: true, reloadOnChange: true)
                             .AddJsonFile($"./appsettings.{env.EnvironmentName}.json", optional: true,
                                 reloadOnChange: true)
+                            .AddJsonFile($"./configs/appsettings-prod.json", optional: true,
+                                reloadOnChange: true)
                             .AddEnvironmentVariables();
                     }).UseStartup<Startup>();
                 });

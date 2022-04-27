@@ -9,5 +9,6 @@
         public int    GmailPort { get; set; }
         public bool   GmailSSL { get; set; }
         public bool SendEmail { get; set; }
+        public bool SendEmailToUsers { get; set; }
     }
 }
