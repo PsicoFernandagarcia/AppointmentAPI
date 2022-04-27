@@ -51,7 +51,7 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
                         .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("MMddyyyyTHHmm00Z")}");
 
 
-            return this._emailSender.Send(user.Email, "Confirmación cita", hostBody, true);
+            return this._emailSender.Send(host.Email, "Confirmación cita", hostBody, true);
         }
     }
     public class SendAppointmentConfirmationEmailCommand: IRequest<Result<bool, ResultError>>

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-using Appointment.Domain.Infrastructure;
+﻿using Appointment.Domain.Infrastructure;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Options;
-using MimeKit;
+using System;
+using System.Net;
+using System.Net.Mail;
 
 namespace Appointment.Application.SendEmailUseCase
 {
