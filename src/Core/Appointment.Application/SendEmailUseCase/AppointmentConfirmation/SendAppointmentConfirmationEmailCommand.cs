@@ -46,6 +46,7 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
             hostBody = hostBody.Replace("#_name_#", host.Name)
                         .Replace("#_visibleDate_#", hostDate.ToString("dddd, dd MMMM yyyy HH:mm"))
                         .Replace("#_userName_#", user.Name)
+                        .Replace("#_calendarHostTitle_#", $"Cita%20programada%20con%20{user.Name.Replace(" ", "%20")}")
                         .Replace("#_userEmail_#", user.Email)
                         .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("MMddyyyyTHHmm00Z")}")
                         .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("MMddyyyyTHHmm00Z")}");
