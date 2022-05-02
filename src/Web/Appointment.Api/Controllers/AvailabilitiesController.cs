@@ -5,12 +5,14 @@ using Appointment.Application.AvailabilityUseCases.CreateAvailability;
 using Appointment.Application.AvailabilityUseCases.GetAvailability;
 using Appointment.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Appointment.Api.Controllers
 {
     [Route("Api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AvailabilitiesController : ControllerBase
     {
         private readonly IMediator _mediator;

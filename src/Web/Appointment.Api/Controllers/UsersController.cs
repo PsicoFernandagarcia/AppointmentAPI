@@ -9,12 +9,14 @@ using Appointment.Application.UsersUseCase.GetUserByRole;
 using Appointment.Domain;
 using Appointment.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Appointment.Api.Controllers
 {
     [Route("Api/Users")]
     [ApiController]
+    [Authorize]
     public class UsersController: ControllerBase
     {
         private readonly IMediator _mediator;

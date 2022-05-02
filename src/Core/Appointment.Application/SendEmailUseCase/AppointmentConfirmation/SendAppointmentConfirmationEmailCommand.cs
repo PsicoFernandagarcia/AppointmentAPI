@@ -37,8 +37,8 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
             var userBody = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "Content/appointment_confirmation_user.html"),cancellationToken);
             userBody = userBody.Replace("#_name_#", user.Name)
                         .Replace("#_visibleDate_#", userDate.ToString("dddd, dd MMMM yyyy HH:mm"))
-                        .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("MMddyyyyTHHmm00Z")}")
-                        .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("MMddyyyyTHHmm00Z")}");
+                        .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("yyyyMMddTHHmm00Z")}")
+                        .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("yyyyMMddTHHmm00Z")}");
             if(this._emailOptions.SendEmailToUsers)
                 this._emailSender.Send(user.Email, "Confirmación cita", userBody, true);
 
@@ -48,8 +48,8 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
                         .Replace("#_userName_#", user.Name)
                         .Replace("#_calendarHostTitle_#", $"Cita%20programada%20con%20{user.Name.Replace(" ", "%20")}")
                         .Replace("#_userEmail_#", user.Email)
-                        .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("MMddyyyyTHHmm00Z")}")
-                        .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("MMddyyyyTHHmm00Z")}");
+                        .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("yyyyMMddTHHmm00Z")}")
+                        .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("yyyyMMddTHHmm00Z")}");
 
 
             return this._emailSender.Send(host.Email, "Confirmación cita", hostBody, true);
