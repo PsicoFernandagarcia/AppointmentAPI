@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Appointment.Host.Extensions;
 using Appointment.Infrastructure.Configuration;
+using Appointment.Host.Schedule;
 
 namespace Appointment.Host
 {
@@ -36,7 +37,8 @@ namespace Appointment.Host
                 .AddHttpClientRegistration()
                 .AddHealthChecksConfigurations(Configuration)
                 .AddSwaggerConfigurations()
-                .AddMediatRConfigurations();
+                .AddMediatRConfigurations()
+            ;
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext context) =>
             app.UseMiddleware(env)

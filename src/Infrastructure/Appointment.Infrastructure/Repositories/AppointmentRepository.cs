@@ -56,5 +56,46 @@ namespace Appointment.Infrastructure.Repositories
                     UpdatedAt = a.UpdatedAt
                 })
                 .ToListAsync();
+
+
+        public async Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId)
+            => await _context.Appointments
+                .Where(a => (
+                                a.HostId == userId
+                                || a.PatientId == userId
+                            )
+                            && a.DateTo.Year == year
+                )
+                .OrderBy(a => a.Patient.LastName)
+                .ThenByDescending(a => a.DateFrom)
+                .Select(a => new AppointmentDto()
+                {
+                    Id = a.Id,
+                    DateFrom = a.DateFrom.ToUniversalTime(),
+                    DateTo = a.DateTo.ToUniversalTime(),
+                    With = a.With,
+                    HostId = a.HostId,
+                    HostName = $"{a.Host.LastName} {a.Host.Name}",
+                    Color = a.Color,
+                    CreatedById = a.CreatedById,
+                    CreatedBy = a.CreatedBy.UserName,
+                    PatientId = a.PatientId,
+                    PatientName = $"{a.Patient.LastName} {a.Patient.Name} ",
+                    IsDeleted = a.IsDeleted,
+                    Status = a.Status.ToString(),
+                    Title = a.Title,
+                    UpdatedAt = a.UpdatedAt
+                })
+                .ToListAsync();
+
+        public async  Task FinalizeAppointments()
+        {
+            var sqlCommand = @" UPDATE AppointmentDb.Appointments 
+                                SET Status = 3 
+                                WHERE   DateTo < CURDATE() 
+                                        AND Status = 0
+                            ";
+            await this._context.Database.ExecuteSqlRawAsync(sqlCommand);
+        }
     }
 }
