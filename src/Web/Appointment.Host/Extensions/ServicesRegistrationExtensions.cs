@@ -1,6 +1,7 @@
 using Appointment.Api.Infrastructure;
 using Appointment.Application.SendEmailUseCase;
 using Appointment.Domain.Interfaces;
+using Appointment.Host.Schedule;
 using Appointment.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

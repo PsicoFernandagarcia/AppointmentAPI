@@ -1,6 +1,8 @@
+using Appointment.Host.Schedule;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +24,7 @@ namespace Appointment.Host
             Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    
+
                     webBuilder.ConfigureAppConfiguration((builderContext, config) =>
                     {
                         var env = builderContext.HostingEnvironment;
@@ -33,6 +35,8 @@ namespace Appointment.Host
                                 reloadOnChange: true)
                             .AddEnvironmentVariables();
                     }).UseStartup<Startup>();
-                });
+                })
+                //.ConfigureServices(services => { services.AddHostedService<BackgroundWorker>(); })
+            ;
     }
 }

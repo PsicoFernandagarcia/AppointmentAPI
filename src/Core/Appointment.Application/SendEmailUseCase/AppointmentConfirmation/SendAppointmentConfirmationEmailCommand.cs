@@ -45,7 +45,7 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
             var hostBody = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "Content/appointment_confirmation.html"), cancellationToken);
             hostBody = hostBody.Replace("#_name_#", host.Name)
                         .Replace("#_visibleDate_#", hostDate.ToString("dddd, dd MMMM yyyy HH:mm"))
-                        .Replace("#_userName_#", user.Name)
+                        .Replace("#_userName_#", $"{user.Name} {user.LastName}")
                         .Replace("#_calendarHostTitle_#", $"Cita%20programada%20con%20{user.Name.Replace(" ", "%20")}")
                         .Replace("#_userEmail_#", user.Email)
                         .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("yyyyMMddTHHmm00Z")}")

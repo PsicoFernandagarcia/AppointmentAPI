@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Appointment.Api.Infrastructure.HttpResponses;
+﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AppointmentUseCases.AddAppointment;
 using Appointment.Application.AppointmentUseCases.AddAppointmentByHost;
 using Appointment.Application.AppointmentUseCases.CancelAppointment;
+using Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter;
 using Appointment.Application.AppointmentUseCases.GetMyAppointment;
 using Appointment.Application.SendEmailUseCase.AppointmentConfirmation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Appointment.Api.Controllers
 {
@@ -71,6 +72,16 @@ namespace Appointment.Api.Controllers
             var result = await _mediator.Send(command);
             if (result.IsFailure) return BadRequest(result.Error);
             return Ok();
+        }
+
+        [HttpGet()]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
+        public async Task<IActionResult> Get([FromQuery] GetAppointmentsByFilterQuery query)
+        {
+            query.UserId = int.Parse(User.Identity.Name);
+            return (await _mediator.Send(query)).ToHttpResponse();
         }
     }
 }

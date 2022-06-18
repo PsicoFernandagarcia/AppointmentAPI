@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Application.AvailabilityUseCases.AppointmentConfigured;
+﻿using Appointment.Application.AvailabilityUseCases.AppointmentConfigured;
 using Appointment.Application.SendEmailUseCase.AppointmentConfirmation;
 using Appointment.Domain;
-using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AppointmentUseCases.AddAppointment
 {
