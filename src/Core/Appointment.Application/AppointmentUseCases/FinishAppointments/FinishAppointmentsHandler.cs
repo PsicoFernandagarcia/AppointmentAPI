@@ -22,6 +22,6 @@ namespace Appointment.Application.AppointmentUseCases.FinishAppointments
             return true;
         }
 
-       
+
     }
 }

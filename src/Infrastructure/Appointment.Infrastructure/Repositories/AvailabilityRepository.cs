@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Appointment.Infrastructure.Repositories
 {
@@ -44,7 +44,7 @@ namespace Appointment.Infrastructure.Repositories
                 )
                 .FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<AvailabilityDto>> GetByFilter(int hostId, DateTime from, DateTime to,bool showOnlyAvailable)
+        public async Task<IEnumerable<AvailabilityDto>> GetByFilter(int hostId, DateTime from, DateTime to, bool showOnlyAvailable)
         => await _context.Availabilities.Where(
                     a => a.HostId == hostId
                                  && a.DateOfAvailability >= from
@@ -69,13 +69,13 @@ namespace Appointment.Infrastructure.Repositories
             => await _context.Availabilities.Where(
                 a => a.HostId == hostId
                      && (a.DateOfAvailability >= from
-                         || a.DateOfAvailability.AddMinutes(a.AmountOfTime-1) >=from)
+                         || a.DateOfAvailability.AddMinutes(a.AmountOfTime - 1) >= from)
                      && (a.DateOfAvailability <= to
-                        || a.DateOfAvailability.AddMinutes(a.AmountOfTime-1) <= to)
+                        || a.DateOfAvailability.AddMinutes(a.AmountOfTime - 1) <= to)
             ).ToListAsync();
 
         public async Task Delete(IEnumerable<int> ids)
-        { 
+        {
             _context.Availabilities.RemoveRange(
                 await _context.Availabilities.Where(
                         x => ids.Contains(x.Id)

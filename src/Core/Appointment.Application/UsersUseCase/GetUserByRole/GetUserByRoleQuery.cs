@@ -3,9 +3,7 @@ using Appointment.Domain.Entities;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Appointment.Application.UsersUseCase.GetUserByRole
 {
@@ -17,7 +15,7 @@ namespace Appointment.Application.UsersUseCase.GetUserByRole
         {
 
         }
-        
+
         public GetUserByRoleQuery(RolesEnum role)
         {
             Role = role;

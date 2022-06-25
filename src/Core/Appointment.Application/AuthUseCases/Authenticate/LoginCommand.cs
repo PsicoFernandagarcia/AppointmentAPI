@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Appointment.Domain.ResultMessages;
+﻿using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Appointment.Application.AuthUseCases.Authenticate
 {
@@ -10,7 +10,7 @@ namespace Appointment.Application.AuthUseCases.Authenticate
         [Required]
         public string UserName { get; set; }
         [Required]
-        public string  Password { get; set; }
+        public string Password { get; set; }
 
         public int TimezoneOffset { get; set; }
     }

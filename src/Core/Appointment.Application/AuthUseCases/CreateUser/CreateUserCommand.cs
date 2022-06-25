@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Appointment.Application.AuthUseCases.CreateUser
 {
-    public class CreateUserCommand: IRequest<Result<User,ResultError>>
+    public class CreateUserCommand : IRequest<Result<User, ResultError>>
     {
         public string UserName { get; set; }
         public string Name { get; set; }

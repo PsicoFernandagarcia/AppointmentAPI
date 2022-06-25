@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Application.AppointmentUseCases.AddAppointment;
+﻿using Appointment.Application.AppointmentUseCases.AddAppointment;
 using Appointment.Application.AuthUseCases.CreateUser;
-using Appointment.Application.AvailabilityUseCases.AppointmentConfigured;
-using Appointment.Application.SendEmailUseCase.AppointmentConfirmation;
-using Appointment.Domain;
-using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
 {
@@ -31,11 +23,11 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
 
         public async Task<Result<Domain.Entities.Appointment, ResultError>> Handle(CreateAppointmentByHostCommand request, CancellationToken cancellationToken)
         {
-            if(request.PatientId == 0)
+            if (request.PatientId == 0)
             {
                 var defaultEmail = $"{request.PatientEmail}_";
-                var patient =await  _userRepository.GetUserByEmail(request.PatientEmail);
-                if(patient == null)
+                var patient = await _userRepository.GetUserByEmail(request.PatientEmail);
+                if (patient == null)
                 {
 
                     var patientResult = await _mediator.Send(new CreateUserCommand
@@ -64,7 +56,7 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
                 PatientId = request.PatientId,
                 Title = request.Title,
                 With = request.PatientEmail
-            },cancellationToken);
-        }       
+            }, cancellationToken);
+        }
     }
 }

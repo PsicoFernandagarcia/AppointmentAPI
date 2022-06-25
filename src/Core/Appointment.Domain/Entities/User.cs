@@ -1,9 +1,7 @@
-﻿using System.Collections;
+﻿using CSharpFunctionalExtensions;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-using CSharpFunctionalExtensions;
 
 namespace Appointment.Domain.Entities
 {
@@ -29,8 +27,8 @@ namespace Appointment.Domain.Entities
         {
             LastName = lastName;
         }
-        
-        private User(int id, string userName, string email, byte[] passwordHash, byte[] passwordSalt, bool isExternal, ICollection<Role> roles, string lastName,string name, int timezoneOffset)
+
+        private User(int id, string userName, string email, byte[] passwordHash, byte[] passwordSalt, bool isExternal, ICollection<Role> roles, string lastName, string name, int timezoneOffset)
         {
             Id = id;
             UserName = userName;
@@ -46,14 +44,14 @@ namespace Appointment.Domain.Entities
 
 
         public static Result<User> Create(int id, string userName, string email, byte[] passwordHash, byte[] passwordSalt,
-            ICollection<Role> roles,bool isExternal, string name, string lastName, int timezoneOffset)
+            ICollection<Role> roles, bool isExternal, string name, string lastName, int timezoneOffset)
         {
             var validation = Validate(id, userName, email, name, lastName);
             if (validation.IsFailure) return Result.Failure<User>(validation.Error);
-            return new User(id, userName, email, passwordHash, passwordSalt,isExternal, roles,lastName,name, timezoneOffset);
+            return new User(id, userName, email, passwordHash, passwordSalt, isExternal, roles, lastName, name, timezoneOffset);
         }
 
-        private static Result<string> Validate(int id, string userName, string email,string name, string lastName)
+        private static Result<string> Validate(int id, string userName, string email, string name, string lastName)
         {
             string errors = string.Empty;
             if (id < 0) errors += " id not valid ";

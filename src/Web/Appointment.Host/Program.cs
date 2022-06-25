@@ -1,15 +1,8 @@
 using Appointment.Host.Schedule;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Appointment.Host
 {
@@ -36,7 +29,7 @@ namespace Appointment.Host
                             .AddEnvironmentVariables();
                     }).UseStartup<Startup>();
                 })
-                //.ConfigureServices(services => { services.AddHostedService<BackgroundWorker>(); })
+            .ConfigureServices(services => { services.AddHostedService<BackgroundWorker>(); })
             ;
     }
 }

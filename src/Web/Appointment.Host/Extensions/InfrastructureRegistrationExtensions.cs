@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Text.Json.Serialization;
 using Appointment.Api.Controllers;
 using Appointment.Infrastructure.Configuration;
 using FluentValidation.AspNetCore;
@@ -12,6 +9,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace Appointment.Host.Extensions
 {
@@ -64,9 +62,9 @@ namespace Appointment.Host.Extensions
             return services;
         }
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app,
-            IWebHostEnvironment env,AppDbContext context)
+            IWebHostEnvironment env, AppDbContext context)
         {
-            app .UseHttpsRedirection()
+            app.UseHttpsRedirection()
                 .UseRouting()
                 .UseCors()
                 .UseAuthentication()
@@ -76,7 +74,7 @@ namespace Appointment.Host.Extensions
                     endpoints.MapControllers();
                 });
             context.Database.Migrate();
-            
+
             return app;
         }
     }

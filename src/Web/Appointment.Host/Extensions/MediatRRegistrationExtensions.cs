@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Appointment.Host.Extensions
 {
-   public static class MediatRRegistrationExtzensions
+    public static class MediatRRegistrationExtzensions
     {
         public static IServiceCollection AddMediatRConfigurations(this IServiceCollection services)
         {

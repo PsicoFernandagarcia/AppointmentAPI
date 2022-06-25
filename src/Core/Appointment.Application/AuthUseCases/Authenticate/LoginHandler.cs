@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Schema;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Infrastructure;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
@@ -15,22 +6,29 @@ using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AuthUseCases.Authenticate
 {
-    public class LoginHandler:IRequestHandler<LoginCommand, Result<LoginResult,UnauthorizedError>>
+    public class LoginHandler : IRequestHandler<LoginCommand, Result<LoginResult, UnauthorizedError>>
     {
         private readonly AuthOptions _authConfig;
         private readonly IUserRepository _userRepository;
 
         public LoginHandler(IOptions<AuthOptions> authOptions, IUserRepository userRepository)
-            => (_authConfig,_userRepository )
-                = (authOptions.Value,userRepository);
+            => (_authConfig, _userRepository)
+                = (authOptions.Value, userRepository);
 
-        public async Task<Result<LoginResult,UnauthorizedError>> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<Result<LoginResult, UnauthorizedError>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByName(request.UserName.Trim());
-            if (user is null || !VerifyPasswordHash(request.Password,user.PasswordHash,user.PasswordSalt)) 
+            if (user is null || !VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 return Result.Failure<LoginResult, UnauthorizedError>(new UnauthorizedError("Usuario o contraseña no válido"));
             user.TimezoneOffset = request.TimezoneOffset;
             await _userRepository.UpdateUser(user);
@@ -39,9 +37,9 @@ namespace Appointment.Application.AuthUseCases.Authenticate
                 Token = GenerateJwtToken(user),
                 UserName = user.UserName,
                 Email = user.Email,
-                Name  =user.Name,
-                LastName =  user.LastName,
-                Id = user.Id 
+                Name = user.Name,
+                LastName = user.LastName,
+                Id = user.Id
             });
         }
 
@@ -54,7 +52,7 @@ namespace Appointment.Application.AuthUseCases.Authenticate
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role,string.Join(',',user.Roles.Select(x=>x.Name))), 
+                    new Claim(ClaimTypes.Role,string.Join(',',user.Roles.Select(x=>x.Name))),
                 }),
                 Expires = DateTime.UtcNow.AddHours(5),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

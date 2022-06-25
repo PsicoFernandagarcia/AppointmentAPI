@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Collections.Generic;
 
 namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
 {

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Domain;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AppointmentUseCases.GetMyAppointment
 {
@@ -27,9 +23,9 @@ namespace Appointment.Application.AppointmentUseCases.GetMyAppointment
         public async Task<Result<IEnumerable<AppointmentDto>, ResultError>> Handle(GetMyAppointmentsQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserById(request.UserId);
-            if (user is null )
+            if (user is null)
                 return Result.Failure<IEnumerable<AppointmentDto>, ResultError>("User not found or you don't have permissions to do this");
-            return  Result.Success<IEnumerable<AppointmentDto>, ResultError>(await _appointmentRepository.GetByUserId(request.UserId, request.DateFrom));
+            return Result.Success<IEnumerable<AppointmentDto>, ResultError>(await _appointmentRepository.GetByUserId(request.UserId, request.DateFrom));
         }
     }
 }

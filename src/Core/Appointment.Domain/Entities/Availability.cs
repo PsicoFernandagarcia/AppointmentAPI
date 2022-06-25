@@ -1,8 +1,7 @@
-﻿using System;
+﻿using CSharpFunctionalExtensions;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-using CSharpFunctionalExtensions;
 
 namespace Appointment.Domain.Entities
 {
@@ -13,17 +12,17 @@ namespace Appointment.Domain.Entities
 
         public int HostId { get; set; }
         [IgnoreDataMember]
-        public virtual User Host{ get; set; }
+        public virtual User Host { get; set; }
         //in utc
         public DateTime DateOfAvailability { get; set; }
 
         //in minutes
-        public int AmountOfTime{ get; set; }
+        public int AmountOfTime { get; set; }
         public bool IsEmpty { get; set; }
 
-        protected  Availability()
+        protected Availability()
         {
-            
+
         }
 
         public Availability(int id, int hostId, DateTime dateOfAvailability, int amountOfTime, bool isEmpty)

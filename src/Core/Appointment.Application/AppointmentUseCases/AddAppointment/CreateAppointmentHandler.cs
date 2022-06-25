@@ -27,24 +27,24 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
             {
                 AvailabilityId = request.AvailabilityId,
                 IsEmpty = false
-            },cancellationToken);
+            }, cancellationToken);
             if (result.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(result.Error);
-            
+
             var appointmentResult = Domain.Entities.Appointment.Create(0, request.Title, request.DateFrom, request.DateTo,
-                request.With, request.CreatedById, request.Color, false,request.HostId
-                ,request.PatientId,AppointmentStatus.CREATED,DateTime.Now
+                request.With, request.CreatedById, request.Color, false, request.HostId
+                , request.PatientId, AppointmentStatus.CREATED, DateTime.Now
                 );
             if (appointmentResult.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(appointmentResult.Error);
-           
+
             await _mediator.Send(new SendAppointmentConfirmationEmailCommand
             {
                 UserId = request.PatientId,
                 HostId = request.HostId,
                 DateTimeInUTC = request.DateFrom.ToUniversalTime()
-            },cancellationToken);
+            }, cancellationToken);
             return await _appointmentRepository.Create(appointmentResult.Value);
         }
 
-       
+
     }
 }

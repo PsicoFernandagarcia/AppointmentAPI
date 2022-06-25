@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Appointment.Domain.Entities;
-using Appointment.Domain.ResultMessages;
+﻿using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System;
 
 namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
 {

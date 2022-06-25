@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
 {
-    public class CreateAvailabilityHandler: IRequestHandler<CreateAvailabilityCommand, Result<Availability, ResultError>>
+    public class CreateAvailabilityHandler : IRequestHandler<CreateAvailabilityCommand, Result<Availability, ResultError>>
                                             , IRequestHandler<CreateAvailabilitiesCommand, Result<IEnumerable<Availability>, ResultError>>
     {
         private readonly IUserRepository _userRepository;
@@ -30,9 +29,9 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
             if (u is null) return Result.Failure<Availability, ResultError>("host does not exists");
             var availabilities = await _availabilityRepository.GetOverlapped(request.HostId, request.DateOfAvailability,
                 request.DateOfAvailability.AddMinutes(request.AmountOfTime));
-            if(availabilities.Any()) return Result.Failure<Availability, ResultError>("there is already an appointment at this time");
+            if (availabilities.Any()) return Result.Failure<Availability, ResultError>("there is already an appointment at this time");
             return await _availabilityRepository.Insert(Availability.Create(0, request.HostId, request.DateOfAvailability,
-                request.AmountOfTime, true).Value); 
+                request.AmountOfTime, true).Value);
         }
 
         public async Task<Result<IEnumerable<Availability>, ResultError>> Handle(CreateAvailabilitiesCommand request,
@@ -51,7 +50,7 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
             foreach (var c in commands)
             {
                 var overlapped = await _availabilityRepository.GetOverlapped(c.HostId, c.DateOfAvailability.ToLocalTime(),
-                    c.DateOfAvailability.ToLocalTime().AddMinutes(c.AmountOfTime-5));
+                    c.DateOfAvailability.ToLocalTime().AddMinutes(c.AmountOfTime - 5));
                 if (overlapped.Any())
                     return true;
             }

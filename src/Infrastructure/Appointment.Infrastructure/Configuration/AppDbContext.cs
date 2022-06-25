@@ -11,7 +11,7 @@ namespace Appointment.Infrastructure.Configuration
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Domain.Entities.Appointment> Appointments { get; set; }
-        public DbSet<Availability> Availabilities{ get; set; }
+        public DbSet<Availability> Availabilities { get; set; }
 
         public AppDbContext(IConfiguration configuration)
         {
@@ -25,7 +25,7 @@ namespace Appointment.Infrastructure.Configuration
             options.UseLazyLoadingProxies();
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host"));
 
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Domain.Entities;
-using Appointment.Domain.Interfaces;
+﻿using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
 {
-    public class ChangeAvailabilityStatusHandler: IRequestHandler<ChangeAvailabilityStatusCommand, Result<bool, ResultError>>
+    public class ChangeAvailabilityStatusHandler : IRequestHandler<ChangeAvailabilityStatusCommand, Result<bool, ResultError>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IAvailabilityRepository _availabilityRepository;
@@ -37,6 +34,6 @@ namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
 
         }
 
-       
+
     }
 }

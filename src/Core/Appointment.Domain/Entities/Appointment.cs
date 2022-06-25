@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CSharpFunctionalExtensions;
+using System;
 using System.ComponentModel.DataAnnotations;
-using CSharpFunctionalExtensions;
 
 namespace Appointment.Domain.Entities
 {
@@ -12,7 +11,7 @@ namespace Appointment.Domain.Entities
         public string Title { get; private set; }
         public DateTime DateFrom { get; private set; }
         public DateTime DateTo { get; private set; }
-        public string  With { get; private set; }
+        public string With { get; private set; }
         public int CreatedById { get; private set; }
         public virtual User CreatedBy { get; private set; }
         public int HostId { get; private set; }
@@ -26,7 +25,7 @@ namespace Appointment.Domain.Entities
 
         protected Appointment()
         {
-            
+
         }
         private Appointment(int id, string title, DateTime dateFrom, DateTime dateTo, string with, int createdById, string color
             , bool isDeleted, int hostId, int patientId, AppointmentStatus status, DateTime updatedAt)
@@ -47,11 +46,11 @@ namespace Appointment.Domain.Entities
 
 
         public static Result<Appointment> Create(int id, string title, DateTime dateFrom, DateTime dateTo, string with, int createdBy
-            , string color,bool isDeleted, int hostId, int patientId, AppointmentStatus status, DateTime updatedAt)
+            , string color, bool isDeleted, int hostId, int patientId, AppointmentStatus status, DateTime updatedAt)
         {
-            var validation = Validate(id, title,dateFrom,dateTo,with, createdBy,  hostId,  patientId,  updatedAt);
+            var validation = Validate(id, title, dateFrom, dateTo, with, createdBy, hostId, patientId, updatedAt);
             if (validation.IsFailure) return Result.Failure<Appointment>(validation.Error);
-            return new Appointment(id, title, dateFrom, dateTo, with, createdBy, color, isDeleted,  hostId,  patientId, status, updatedAt);
+            return new Appointment(id, title, dateFrom, dateTo, with, createdBy, color, isDeleted, hostId, patientId, status, updatedAt);
         }
 
         private static Result<string> Validate(int id, string title, DateTime dateFrom, DateTime dateTo, string with, int createdBy
@@ -65,13 +64,13 @@ namespace Appointment.Domain.Entities
             if (string.IsNullOrWhiteSpace(title)) errors += " title not valid ";
             if (string.IsNullOrWhiteSpace(with)) errors += " with not valid ";
             if (dateFrom >= dateTo) errors += " date from must be lower than date to ";
-            if (createdBy <= 0) errors += " user id not valid "; 
+            if (createdBy <= 0) errors += " user id not valid ";
             if (!string.IsNullOrWhiteSpace(errors)) return Result.Failure<string>(errors);
             return Result.Success(string.Empty);
         }
 
         public void ChangeStatus(AppointmentStatus newStatus)
-         =>   this.Status = newStatus;
-        
+         => this.Status = newStatus;
+
     }
 }

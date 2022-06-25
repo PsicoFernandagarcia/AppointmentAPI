@@ -1,13 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Threading.Tasks;
-using Appointment.Api.Infrastructure.HttpResponses;
+﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AuthUseCases.Authenticate;
 using Appointment.Application.AuthUseCases.AuthenticateExternal;
-using Appointment.Application.AuthUseCases.CreateUser;
-using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Appointment.Api.Controllers
 {
@@ -45,14 +43,14 @@ namespace Appointment.Api.Controllers
             CultureInfo culture = new CultureInfo("ES-es");
 
             return Ok(new
-                {
-                    utc = myTz.myTz.ToUniversalTime(),
-                    received = myTz.myTz,
-                    shortLd = myTz.myTz.ToShortTimeString(),
-                    local = myTz.myTz.ToLocalTime(),
-                    diff = myTz.myTz.ToUniversalTime() - myTz.myTz.ToLocalTime(),
-                    a= myTz.myTz.ToString("dddd, dd MMMM yyyy HH:mm", culture),
-                }
+            {
+                utc = myTz.myTz.ToUniversalTime(),
+                received = myTz.myTz,
+                shortLd = myTz.myTz.ToShortTimeString(),
+                local = myTz.myTz.ToLocalTime(),
+                diff = myTz.myTz.ToUniversalTime() - myTz.myTz.ToLocalTime(),
+                a = myTz.myTz.ToString("dddd, dd MMMM yyyy HH:mm", culture),
+            }
             );
         }
 

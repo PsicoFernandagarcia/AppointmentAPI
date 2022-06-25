@@ -1,12 +1,11 @@
-﻿using System;
-using Appointment.Domain.Entities;
-using Appointment.Domain.ResultMessages;
+﻿using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System;
 
 namespace Appointment.Application.AppointmentUseCases.AddAppointment
 {
-    public class CreateAppointmentCommand: IRequest<Result<Domain.Entities.Appointment,ResultError>>
+    public class CreateAppointmentCommand : IRequest<Result<Domain.Entities.Appointment, ResultError>>
     {
         public string Title { get; set; }
         public DateTime DateFrom { get; set; }

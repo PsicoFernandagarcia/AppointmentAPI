@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Appointment.Host.Extensions
 {
@@ -32,12 +32,11 @@ namespace Appointment.Host.Extensions
         public static IServiceCollection AddHealthChecksConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHealthChecks()
-                .AddSqlServer(
-                    connectionString: configuration.GetConnectionString("Limit"),
-                    healthQuery: "SELECT 1;",
-                    name: "limit db sql",
+                .AddMySql(
+                    connectionString: configuration.GetConnectionString("AppointmentConnection"),
+                    name: "appointmentDb db sql",
                     failureStatus: HealthStatus.Degraded,
-                    tags: new string[] {"db", "sql", "sqlserver", "limit"});
+                    tags: new string[] { "db", "sql", "mysql", "appointmentdb" });
             return services;
         }
         public static IApplicationBuilder UseHealthCheckConfigurations(this IApplicationBuilder app)

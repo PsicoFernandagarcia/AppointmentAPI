@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Appointment.Domain;
+﻿using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Appointment.Infrastructure.Repositories
 {
-    public class UserRepository:IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 
@@ -21,7 +21,7 @@ namespace Appointment.Infrastructure.Repositories
         public async Task<User> GetUserByName(string userName)
             => _context.Users
                 .Include(r => r.Roles)
-                .FirstOrDefault(x => x.UserName == userName );
+                .FirstOrDefault(x => x.UserName == userName);
         public async Task<User> GetUserByEmail(string email)
            => _context.Users
                .FirstOrDefault(x => x.Email == email);
@@ -33,7 +33,7 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<IList<User>> GetUserByRole(RolesEnum role)
             => await _context.Users
-                .Where(u=> u.Roles.Any(r => r.Id == ((int)role)))
+                .Where(u => u.Roles.Any(r => r.Id == ((int)role)))
                 .ToListAsync();
 
         public async Task<User> CreateUser(User u)

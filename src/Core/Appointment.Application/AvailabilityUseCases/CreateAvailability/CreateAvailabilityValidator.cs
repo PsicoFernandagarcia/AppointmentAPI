@@ -1,9 +1,5 @@
-﻿using System;
-using Appointment.Domain.Entities;
-using Appointment.Domain.ResultMessages;
-using CSharpFunctionalExtensions;
-using FluentValidation;
-using MediatR;
+﻿using FluentValidation;
+using System;
 
 namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
 {

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Appointment.Domain.ResultMessages;
+﻿using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Appointment.Application.AuthUseCases.AuthenticateExternal
 {
@@ -9,7 +9,7 @@ namespace Appointment.Application.AuthUseCases.AuthenticateExternal
     {
         [Required]
         public string Email { get; set; }
-        public string  FirstName { get; set; }
+        public string FirstName { get; set; }
         public string LastName { get; set; }
         public string IdToken { get; set; }
         public string Provider { get; set; }
