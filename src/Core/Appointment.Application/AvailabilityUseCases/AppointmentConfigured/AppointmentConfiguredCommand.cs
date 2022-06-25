@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Appointment.Domain.Entities;
-using Appointment.Domain.ResultMessages;
+﻿using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
 

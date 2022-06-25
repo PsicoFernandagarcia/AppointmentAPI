@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AvailabilityUseCases.GetAvailability
 {
-    public class GetAvailabilityHandler: IRequestHandler<GetAvailabilityQuery, Result<IEnumerable<AvailabilityDto>, ResultError>>
+    public class GetAvailabilityHandler : IRequestHandler<GetAvailabilityQuery, Result<IEnumerable<AvailabilityDto>, ResultError>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IAvailabilityRepository _availabilityRepository;
@@ -28,8 +26,8 @@ namespace Appointment.Application.AvailabilityUseCases.GetAvailability
             var u = await _userRepository.GetUserById(request.HostId);
             if (u is null) return Result.Failure<IEnumerable<AvailabilityDto>, ResultError>("host does not exists");
             return Result.Success<IEnumerable<AvailabilityDto>, ResultError>(
-                await _availabilityRepository.GetByFilter(request.HostId,request.DateFrom,request.DateTo, request.ShowOnlyAvailable)
-                ); 
+                await _availabilityRepository.GetByFilter(request.HostId, request.DateFrom, request.DateTo, request.ShowOnlyAvailable)
+                );
         }
 
     }

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Domain;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter
 {
@@ -25,9 +21,9 @@ namespace Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter
         }
 
         public async Task<Result<IEnumerable<AppointmentDto>, ResultError>> Handle(GetAppointmentsByFilterQuery request, CancellationToken cancellationToken)
-            =>Result.Success<IEnumerable<AppointmentDto>, ResultError>(
-                await _appointmentRepository.GetByFilter(request.Year,request.UserId)
+            => Result.Success<IEnumerable<AppointmentDto>, ResultError>(
+                await _appointmentRepository.GetByFilter(request.Year, request.UserId)
                 );
-        
+
     }
 }

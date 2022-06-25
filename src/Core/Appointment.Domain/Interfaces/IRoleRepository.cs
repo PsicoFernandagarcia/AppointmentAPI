@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Appointment.Domain.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Appointment.Domain.Entities;
 
 namespace Appointment.Domain.Interfaces
 {

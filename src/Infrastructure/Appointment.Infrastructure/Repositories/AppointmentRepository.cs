@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Appointment.Infrastructure.Repositories
 {
@@ -34,10 +34,10 @@ namespace Appointment.Infrastructure.Repositories
         => await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<IEnumerable<AppointmentDto>> GetByUserId(int id, DateTime dateFrom)
-        =>await _context.Appointments
+        => await _context.Appointments
                 .Where(a => a.DateFrom >= dateFrom && (a.HostId == id || a.PatientId == id))
                 .OrderBy(a => a.DateFrom)
-                .Select(a =>  new AppointmentDto()
+                .Select(a => new AppointmentDto()
                 {
                     Id = a.Id,
                     DateFrom = a.DateFrom.ToUniversalTime(),
@@ -88,7 +88,7 @@ namespace Appointment.Infrastructure.Repositories
                 })
                 .ToListAsync();
 
-        public async  Task FinalizeAppointments()
+        public async Task FinalizeAppointments()
         {
             var sqlCommand = @" UPDATE AppointmentDb.Appointments 
                                 SET Status = 3 

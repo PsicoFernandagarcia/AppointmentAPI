@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Appointment.Api.Infrastructure.HttpResponses;
-using Appointment.Application.AuthUseCases.Authenticate;
-using Appointment.Application.AuthUseCases.AuthenticateExternal;
+﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AuthUseCases.CreateUser;
 using Appointment.Application.UsersUseCase.GetUserByRole;
 using Appointment.Domain;
@@ -11,13 +6,15 @@ using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Appointment.Api.Controllers
 {
     [Route("Api/Users")]
     [ApiController]
     [Authorize]
-    public class UsersController: ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
 

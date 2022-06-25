@@ -18,7 +18,7 @@ namespace Appointment.Domain.Results
         {
             return result.Map(selector);
         }
-        
+
         public static Result<T> Where<T>(this Result<T> result, Func<T, bool> predicate)
         {
             if (result.IsFailure)
@@ -76,12 +76,12 @@ namespace Appointment.Domain.Results
         //    return result;
         //}
 
-       // public static Result<IEnumerable<R>> Traverse<T, R>(this IEnumerable<Result<T>> ts,Func<Result<T>, Result<R>> func)
-       //=> ts.Aggregate(Result.Success(Enumerable.Empty<R>()),
-       //                (optRs,
-       //                 t) => from rs in optRs
-       //                       from r in func(t)
-       //                       select rs.Append(r));
+        // public static Result<IEnumerable<R>> Traverse<T, R>(this IEnumerable<Result<T>> ts,Func<Result<T>, Result<R>> func)
+        //=> ts.Aggregate(Result.Success(Enumerable.Empty<R>()),
+        //                (optRs,
+        //                 t) => from rs in optRs
+        //                       from r in func(t)
+        //                       select rs.Append(r));
 
         public static Result<IEnumerable<R>> Traverse<T, R>(this IEnumerable<T> ts, Func<T, Result<R>> func)
           => ts.Aggregate(Result.Success(Enumerable.Empty<R>()),

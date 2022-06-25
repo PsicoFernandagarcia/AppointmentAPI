@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Appointment.Domain.Infrastructure
+﻿namespace Appointment.Domain.Infrastructure
 {
     public class ConnectionOptions
     {

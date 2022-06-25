@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus;
+﻿using Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus;
 using Appointment.Domain;
-using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AppointmentUseCases.CancelAppointment
 {
@@ -39,7 +35,7 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
             await _appointmentRepository.Update(appointment);
             await _mediator.Send(new ChangeAvailabilityStatusCommand
             {
-                HostId= appointment.HostId,
+                HostId = appointment.HostId,
                 IsEmpty = true,
                 DateFromUtc = appointment.DateFrom.AddMinutes(-5),
                 DateToUtc = appointment.DateFrom.AddMinutes(5),

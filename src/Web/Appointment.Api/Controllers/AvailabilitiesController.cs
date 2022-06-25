@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using Appointment.Api.Infrastructure.HttpResponses;
-using Appointment.Application.AuthUseCases.CreateUser;
+﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AvailabilityUseCases.CreateAvailability;
 using Appointment.Application.AvailabilityUseCases.GetAvailability;
 using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Appointment.Api.Controllers
 {
@@ -31,7 +30,7 @@ namespace Appointment.Api.Controllers
             command.HostId = int.Parse(User.Identity.Name);
             return (await _mediator.Send(command)).ToHttpResponse();
         }
-        
+
 
         [HttpPost("bulk")]
         [ProducesResponseType(typeof(string), 401)]
@@ -51,7 +50,7 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
-        public async Task<IActionResult> Get( [FromQuery]GetAvailabilityQuery query)
+        public async Task<IActionResult> Get([FromQuery] GetAvailabilityQuery query)
             => (await _mediator.Send(query)).ToHttpResponse();
 
         [HttpGet("mine")]
@@ -61,7 +60,7 @@ namespace Appointment.Api.Controllers
         public async Task<IActionResult> GetMine([FromQuery] GetMyAvailabilityQuery query)
         {
             var queryToSend = new GetAvailabilityQuery();
-            queryToSend.HostId= int.Parse(User.Identity.Name);
+            queryToSend.HostId = int.Parse(User.Identity.Name);
             queryToSend.DateTo = query.DateTo;
             queryToSend.DateFrom = query.DateFrom;
             return (await _mediator.Send(queryToSend)).ToHttpResponse();

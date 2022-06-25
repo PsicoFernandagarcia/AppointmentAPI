@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using Appointment.Api.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,7 +16,7 @@ namespace Appointment.Host.Extensions
             _healthCheckCircuitBreakerService = services.BuildServiceProvider().GetRequiredService<HealthCheckCircuitBreakerService>();
 
             return services;
-           
+
         }
 
         private static void OnHalfOpen()

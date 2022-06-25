@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Appointment.Domain.Entities;
+﻿using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Application.AuthUseCases.CreateUser
 {
@@ -26,11 +25,11 @@ namespace Appointment.Application.AuthUseCases.CreateUser
         {
             var existingUser = await _userRepository.GetUserByName(request.UserName);
             if (existingUser != null) return Result.Failure<User, ResultError>(new CreationError("User already exists"));
-            if(string.IsNullOrWhiteSpace(request.Password)) return Result.Failure<User, ResultError>(new CreationError("Password empty"));
+            if (string.IsNullOrWhiteSpace(request.Password)) return Result.Failure<User, ResultError>(new CreationError("Password empty"));
             var hashes = CreatePasswordHash(request.Password);
             var role = (await _roleRepository.GetRoles()).Where(x => x.Name == "COMMON");
             var userEntityResult = User.Create(0, request.UserName, request.Email, hashes.passwordHash, hashes.passwordSalt,
-                role.ToList(),request.IsExternal,request.Name, request.LastName,request.TimezoneOffset
+                role.ToList(), request.IsExternal, request.Name, request.LastName, request.TimezoneOffset
                 );
             if (userEntityResult.IsFailure) return Result.Failure<User, ResultError>(userEntityResult.Error);
             var userEntity = userEntityResult.Value;

@@ -31,8 +31,8 @@ namespace Appointment.Api.Controllers
         {
             await _mediator.Send(new SendAppointmentConfirmationEmailCommand
             {
-               UserId=1,
-                HostId=1,
+                UserId = 1,
+                HostId = 1,
                 DateTimeInUTC = DateTime.Now.AddDays(1).ToUniversalTime()
             });
             return Ok();
@@ -66,7 +66,7 @@ namespace Appointment.Api.Controllers
         }
 
         [HttpPost("{id}/Cancel")]
-        public async Task<IActionResult> CancelAppointment(int id,[FromBody] CancelAppointmentsCommand command)
+        public async Task<IActionResult> CancelAppointment(int id, [FromBody] CancelAppointmentsCommand command)
         {
             command.AppointmentId = id;
             var result = await _mediator.Send(command);

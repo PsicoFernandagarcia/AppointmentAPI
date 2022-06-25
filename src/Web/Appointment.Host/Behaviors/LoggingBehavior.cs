@@ -1,8 +1,8 @@
-using System.Threading;
-using System.Threading.Tasks;
 using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Appointment.Host.Behaviors
 {

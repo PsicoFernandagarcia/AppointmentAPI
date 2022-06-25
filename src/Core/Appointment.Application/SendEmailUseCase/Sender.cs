@@ -12,7 +12,7 @@ namespace Appointment.Application.SendEmailUseCase
     {
         Result<bool, ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml);
     }
-    public class Sender:IEmailSender
+    public class Sender : IEmailSender
     {
         public EmailOptions _emailOptions;
 
@@ -21,7 +21,7 @@ namespace Appointment.Application.SendEmailUseCase
             _emailOptions = emailOptions.Value;
         }
 
-        public Result<bool,ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml)
+        public Result<bool, ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml)
         {
             try
             {
@@ -45,9 +45,9 @@ namespace Appointment.Application.SendEmailUseCase
 
                 return Result.Success<bool, ResultError>(true);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Result.Failure<bool,ResultError>(ex.Message);
+                return Result.Failure<bool, ResultError>(ex.Message);
             }
         }
     }

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Appointment.Application.AppointmentUseCases.FinishAppointments
 {
-    public class FinishAppointmentsCommand : IRequest<Result<bool,ResultError>>
+    public class FinishAppointmentsCommand : IRequest<Result<bool, ResultError>>
     {
     }
 }

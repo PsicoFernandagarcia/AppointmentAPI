@@ -1,9 +1,9 @@
-using System.Text;
 using Appointment.Domain.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Appointment.Host.Extensions
 {
