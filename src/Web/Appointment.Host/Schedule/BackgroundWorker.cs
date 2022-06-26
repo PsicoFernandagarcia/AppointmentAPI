@@ -19,6 +19,14 @@ namespace Appointment.Host.Schedule
         private PeriodicTimer _periodic = new PeriodicTimer(TimeSpan.FromHours(24));
         private Timer? _timer = null;
         private const int HOUR_TO_SEND_REMINDER_UTC = 6;
+        private static DateTime DATETIME_TO_SEND_REMINDER = (new DateTime(DateTime.UtcNow.Year,
+                                                                          DateTime.UtcNow.Month,
+                                                                          DateTime.UtcNow.Day,
+                                                                          HOUR_TO_SEND_REMINDER_UTC,
+                                                                          0,
+                                                                          0,
+                                                                          0,
+                                                                          DateTimeKind.Utc)).AddDays(1);
         public BackgroundWorker(IMediator mediator, IHostApplicationLifetime lifetime, IServiceScopeFactory scopeFactory)
         {
             _mediator = mediator;
@@ -30,9 +38,8 @@ namespace Appointment.Host.Schedule
             if (!await WaitForAppStartup(_lifetime, stoppingToken))
                 return;
 
-            var hourDiff = HOUR_TO_SEND_REMINDER_UTC - DateTime.UtcNow.Hour ;
-            var hoursToWait = hourDiff > 0 ? hourDiff : 24 +hourDiff ;
-            await Task.Delay(hoursToWait * 60 * 60000, stoppingToken);
+            var timeToWait = DATETIME_TO_SEND_REMINDER - DateTime.UtcNow ;
+            await Task.Delay(timeToWait, stoppingToken);
             await DoWork();
 
             while (
@@ -83,7 +90,7 @@ namespace Appointment.Host.Schedule
             if (app is null || !app.Any()) return;
             await _mediator.Send(new SendReminderEmailCommand
             {
-                HostEmail = "joaco.790@gmail.com",
+                HostEmail = app[0].Host.Email,
                 HostName = app[0].Host.Name,
                 Appointments = app
             });
