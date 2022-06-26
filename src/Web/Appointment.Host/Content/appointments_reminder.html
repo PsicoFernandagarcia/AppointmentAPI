@@ -48,6 +48,7 @@
         .psicofer-table th,
         .psicofer-table td {
             padding: 12px 15px;
+            min-width:45px;
         }
 
         .psicofer-table tbody tr {
@@ -258,16 +259,23 @@
                                                                     padding:10px;
                                                                     font-family:arial,helvetica,sans-serif;
                                                                     display: flex;
+                                                                    width:100%;
                                                                     justify-content: center;">
 
                                                             <div
-                                                                style="color: #293c4b; line-height: 140%; text-align: center; word-wrap: break-word;">
+                                                                style="color: #293c4b; 
+                                                                        line-height: 140%; 
+                                                                        text-align: center; 
+                                                                        word-wrap: break-word;
+                                                                        display:flex;
+                                                                        justify-content:center; 
+                                                                        ">
                                                                 <table class="psicofer-table">
                                                                     <thead>
                                                                         <tr>
                                                                             <th>Paciente</th>
                                                                             <th>Hora</th>
-                                                                            <th>Agregar al calendario</th>
+                                                                            <th>Acción</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
