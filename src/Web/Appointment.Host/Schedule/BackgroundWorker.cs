@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -16,7 +17,8 @@ namespace Appointment.Host.Schedule
         private readonly IMediator _mediator;
         private readonly IHostApplicationLifetime _lifetime;
         private readonly IServiceScopeFactory _scopeFactory;
-        private PeriodicTimer _periodic = new PeriodicTimer(TimeSpan.FromHours(24));
+        private readonly ILogger<BackgroundWorker> _logger;
+        private PeriodicTimer _periodic;
         private Timer? _timer = null;
         private const int HOUR_TO_SEND_REMINDER_UTC = 6;
         private static DateTime DATETIME_TO_SEND_REMINDER = (new DateTime(DateTime.UtcNow.Year,
@@ -27,11 +29,15 @@ namespace Appointment.Host.Schedule
                                                                           0,
                                                                           0,
                                                                           DateTimeKind.Utc)).AddDays(1);
-        public BackgroundWorker(IMediator mediator, IHostApplicationLifetime lifetime, IServiceScopeFactory scopeFactory)
+        public BackgroundWorker(IMediator mediator,
+                                IHostApplicationLifetime lifetime,
+                                IServiceScopeFactory scopeFactory,
+                                ILogger<BackgroundWorker> logger)
         {
             _mediator = mediator;
             _lifetime = lifetime;
             _scopeFactory = scopeFactory;
+            _logger = logger;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -42,6 +48,7 @@ namespace Appointment.Host.Schedule
             await Task.Delay(timeToWait, stoppingToken);
             await DoWork();
 
+            _periodic = new PeriodicTimer(TimeSpan.FromHours(24));
             while (
                 await _periodic.WaitForNextTickAsync(stoppingToken)
                 && !stoppingToken.IsCancellationRequested
@@ -87,6 +94,7 @@ namespace Appointment.Host.Schedule
                 .OrderBy(ap => ap.DateFrom)
                 .Include(ap => ap.Patient)
                 .ToList();
+            _logger.LogInformation($"EMAIL: Hour - {DateTime.UtcNow.ToLongDateString()} - Sending email to {app.Count} users");
             if (app is null || !app.Any()) return;
             await _mediator.Send(new SendReminderEmailCommand
             {
