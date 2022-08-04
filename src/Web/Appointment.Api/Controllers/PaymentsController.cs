@@ -11,7 +11,7 @@ namespace Appointment.Api.Controllers
 {
     [Route("Api/Payments")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly IMediator _mediator;
