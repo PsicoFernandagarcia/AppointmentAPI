@@ -17,6 +17,7 @@ namespace Appointment.Host.Extensions
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<IAvailabilityRepository, AvailabilityRepository>();
+            services.AddTransient<IPaymentRepository, PaymentRepository>();
             services.AddTransient<IEmailSender, Sender>();
             return services;
         }

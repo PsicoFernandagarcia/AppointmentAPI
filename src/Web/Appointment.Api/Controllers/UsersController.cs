@@ -13,7 +13,7 @@ namespace Appointment.Api.Controllers
 {
     [Route("Api/Users")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;

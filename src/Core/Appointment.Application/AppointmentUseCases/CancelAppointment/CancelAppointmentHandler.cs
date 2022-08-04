@@ -1,4 +1,6 @@
 ﻿using Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus;
+using Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions;
+using Appointment.Application.SendEmailUseCase.AppointmentCancelation;
 using Appointment.Domain;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
@@ -40,6 +42,18 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                 DateFromUtc = appointment.DateFrom.AddMinutes(-5),
                 DateToUtc = appointment.DateFrom.AddMinutes(5),
             });
+            await _mediator.Send(new UpdateLatestPaymentSessionsCommand
+            {
+                HostId = appointment.HostId,
+                PatientId = appointment.PatientId,
+                NewAppointmentAdded = false
+            });
+            await _mediator.Send(new SendAppointmentCancelationEmailCommand
+            {
+                UserId = appointment.PatientId,
+                HostId = appointment.HostId,
+                DateTimeInUTC = appointment.DateFrom.ToUniversalTime()
+            }, cancellationToken);
             return Result.Success<bool, ResultError>(true);
         }
 

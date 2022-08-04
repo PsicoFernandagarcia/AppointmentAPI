@@ -1,4 +1,5 @@
 ﻿using Appointment.Application.AvailabilityUseCases.AppointmentConfigured;
+using Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions;
 using Appointment.Application.SendEmailUseCase.AppointmentConfirmation;
 using Appointment.Domain;
 using Appointment.Domain.Interfaces;
@@ -36,6 +37,12 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
                 );
             if (appointmentResult.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(appointmentResult.Error);
 
+            await _mediator.Send(new UpdateLatestPaymentSessionsCommand
+            {
+                HostId = request.HostId,
+                PatientId = request.PatientId,
+                NewAppointmentAdded = true
+            });
             await _mediator.Send(new SendAppointmentConfirmationEmailCommand
             {
                 UserId = request.PatientId,
