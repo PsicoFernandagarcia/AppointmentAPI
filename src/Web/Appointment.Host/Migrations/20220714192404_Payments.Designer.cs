@@ -3,6 +3,7 @@ using System;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Appointment.Host.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220714192404_Payments")]
+    partial class Payments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +105,6 @@ namespace Appointment.Host.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<string>("Currency")
-                        .HasColumnType("longtext");
-
                     b.Property<int>("HostId")
                         .HasColumnType("int");
 
@@ -122,6 +121,8 @@ namespace Appointment.Host.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HostId");
 
                     b.HasIndex("PatientId");
 
@@ -232,11 +233,19 @@ namespace Appointment.Host.Migrations
 
             modelBuilder.Entity("Appointment.Domain.Entities.Payment", b =>
                 {
+                    b.HasOne("Appointment.Domain.Entities.User", "Host")
+                        .WithMany()
+                        .HasForeignKey("HostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Appointment.Domain.Entities.User", "Patient")
-                        .WithMany("Payments")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Host");
 
                     b.Navigation("Patient");
                 });
@@ -254,11 +263,6 @@ namespace Appointment.Host.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Appointment.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

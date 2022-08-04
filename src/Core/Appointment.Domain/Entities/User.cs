@@ -21,7 +21,7 @@ namespace Appointment.Domain.Entities
         public byte[] PasswordHash { get; private set; }
         [IgnoreDataMember]
         public byte[] PasswordSalt { get; private set; }
-
+        public virtual IEnumerable<Payment> Payments { get; set; }
 
         protected User(string lastName)
         {

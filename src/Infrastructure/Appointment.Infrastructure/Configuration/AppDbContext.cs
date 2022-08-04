@@ -12,6 +12,7 @@ namespace Appointment.Infrastructure.Configuration
         public DbSet<Role> Roles { get; set; }
         public DbSet<Domain.Entities.Appointment> Appointments { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         public AppDbContext(IConfiguration configuration)
         {
