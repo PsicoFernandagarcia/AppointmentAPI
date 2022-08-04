@@ -4,6 +4,7 @@ using Appointment.Application.PaymentUseCases.GetLatestsPaymentsByHost;
 using Appointment.Application.PaymentUseCases.GetPaymentsFromPatientByHost;
 using Appointment.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
