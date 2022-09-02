@@ -13,5 +13,6 @@ namespace Appointment.Domain.Interfaces
         Task<Entities.Appointment> GetById(int id);
         Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId);
         Task FinalizeAppointments();
+        Task<bool> HasAnyAppointment(int patientId, int hostId);
     }
 }

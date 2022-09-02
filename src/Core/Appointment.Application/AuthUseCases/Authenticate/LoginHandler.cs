@@ -2,6 +2,7 @@
 using Appointment.Domain.Infrastructure;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
+using Appointment.Infrastructure.Security;
 using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -20,16 +21,20 @@ namespace Appointment.Application.AuthUseCases.Authenticate
     {
         private readonly AuthOptions _authConfig;
         private readonly IUserRepository _userRepository;
+        private readonly ICrypt _crypt;
 
-        public LoginHandler(IOptions<AuthOptions> authOptions, IUserRepository userRepository)
-            => (_authConfig, _userRepository)
-                = (authOptions.Value, userRepository);
+        public LoginHandler(IOptions<AuthOptions> authOptions,
+                            IUserRepository userRepository, ICrypt crypt)
+            => (_authConfig, _userRepository, _crypt)
+                = (authOptions.Value, userRepository, crypt);
 
         public async Task<Result<LoginResult, UnauthorizedError>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByName(request.UserName.Trim());
-            if (user is null || !VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            var password = _crypt.DecryptStringFromBytes_Aes(request.Password);
+            if (user is null || !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return Result.Failure<LoginResult, UnauthorizedError>(new UnauthorizedError("Usuario o contraseña no válido"));
+
             user.TimezoneOffset = request.TimezoneOffset;
             await _userRepository.UpdateUser(user);
             return Result.Success<LoginResult, UnauthorizedError>(new LoginResult
@@ -79,6 +84,6 @@ namespace Appointment.Application.AuthUseCases.Authenticate
 
             return true;
         }
-
+        
     }
 }

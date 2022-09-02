@@ -45,7 +45,7 @@ namespace Appointment.Application.AuthUseCases.AuthenticateExternal
                     Name = request.FirstName,
                     IsExternal = true,
                     LastName = request.LastName,
-                    Password = "_",
+                    Password = "05u8uBfxgqAwGftSnVUdzC3b3CuA0m8+tfoH9eEzAQoVjOH7ZHUopTwfm+D1jyy6",
                     UserName = request.Email,
                     TimezoneOffset = request.TimezoneOffset
                 };

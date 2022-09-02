@@ -19,21 +19,22 @@ namespace Appointment.Infrastructure.Repositories
         }
 
         public async Task<User> GetUserByName(string userName)
-            => _context.Users
+            => await _context.Users
                 .Include(r => r.Roles)
-                .FirstOrDefault(x => x.UserName == userName);
+                .FirstOrDefaultAsync(x => x.UserName == userName);
         public async Task<User> GetUserByEmail(string email)
-           => _context.Users
-               .FirstOrDefault(x => x.Email == email);
+           => await _context.Users
+               .FirstOrDefaultAsync(x => x.Email == email);
 
         public async Task<User> GetUserById(int id)
-            => _context.Users
+            => await _context.Users
                 .Include(r => r.Roles)
-                .FirstOrDefault(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<IList<User>> GetUserByRole(RolesEnum role)
             => await _context.Users
                 .Where(u => u.Roles.Any(r => r.Id == ((int)role)))
+                .Select(x => User.Create(x.Id,x.UserName,x.Email,null,null,null,x.IsExternal,x.Name,x.LastName,x.TimezoneOffset).Value)
                 .ToListAsync();
 
         public async Task<User> CreateUser(User u)

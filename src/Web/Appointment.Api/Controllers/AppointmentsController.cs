@@ -4,11 +4,10 @@ using Appointment.Application.AppointmentUseCases.AddAppointmentByHost;
 using Appointment.Application.AppointmentUseCases.CancelAppointment;
 using Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter;
 using Appointment.Application.AppointmentUseCases.GetMyAppointment;
-using Appointment.Application.SendEmailUseCase.AppointmentConfirmation;
+using Appointment.Application.AppointmentUseCases.HasAnyAppointment;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,18 +23,6 @@ namespace Appointment.Api.Controllers
         public AppointmentsController(IMediator mediator)
         {
             _mediator = mediator;
-        }
-
-        [HttpGet("emailSend")]
-        public async Task<ActionResult> Trysend()
-        {
-            await _mediator.Send(new SendAppointmentConfirmationEmailCommand
-            {
-                UserId = 1,
-                HostId = 1,
-                DateTimeInUTC = DateTime.Now.AddDays(1).ToUniversalTime()
-            });
-            return Ok();
         }
 
         [HttpPost]
@@ -81,6 +68,17 @@ namespace Appointment.Api.Controllers
         public async Task<IActionResult> Get([FromQuery] GetAppointmentsByFilterQuery query)
         {
             query.UserId = int.Parse(User.Identity.Name);
+            return (await _mediator.Send(query)).ToHttpResponse();
+        }
+
+        [HttpGet("Any")]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
+        public async Task<IActionResult> Get([FromQuery] HasAnyAppointmentQuery query)
+        {
+            if(query.PatientId <= 0)
+                query.PatientId = int.Parse(User.Identity.Name);
             return (await _mediator.Send(query)).ToHttpResponse();
         }
     }
