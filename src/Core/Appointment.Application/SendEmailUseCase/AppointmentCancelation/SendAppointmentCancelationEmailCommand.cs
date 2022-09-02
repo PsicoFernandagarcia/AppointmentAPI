@@ -5,6 +5,7 @@ using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Options;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,9 +29,10 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentCancelation
             var host = await _userRepository.GetUserById(request.HostId);
             var hostDate = request.DateTimeInUTC.AddMinutes(host.TimezoneOffset);
 
+            var ci = CultureInfo.GetCultureInfo("es-ES");
             var hostBody = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "Content/appointment_cancelation.html"), cancellationToken);
             hostBody = hostBody.Replace("#_name_#", host.Name)
-                        .Replace("#_visibleDate_#", hostDate.ToString("dddd, dd MMMM yyyy HH:mm"))
+                        .Replace("#_visibleDate_#", hostDate.ToString("dddd, dd MMMM yyyy HH:mm",ci))
                         .Replace("#_patient_#", $"{user.Name} {user.LastName}")
                         .Replace("#_userEmail_#", user.Email);
 

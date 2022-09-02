@@ -27,6 +27,7 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
+        [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
             => (await _mediator.Send(command)).ToHttpResponse();
 

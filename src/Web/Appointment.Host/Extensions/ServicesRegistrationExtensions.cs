@@ -2,6 +2,7 @@ using Appointment.Api.Infrastructure;
 using Appointment.Application.SendEmailUseCase;
 using Appointment.Domain.Interfaces;
 using Appointment.Infrastructure.Repositories;
+using Appointment.Infrastructure.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ namespace Appointment.Host.Extensions
             services.AddTransient<IAvailabilityRepository, AvailabilityRepository>();
             services.AddTransient<IPaymentRepository, PaymentRepository>();
             services.AddTransient<IEmailSender, Sender>();
+            services.AddTransient<ICrypt, Crypt>();
             return services;
         }
     }

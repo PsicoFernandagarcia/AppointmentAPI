@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 
 namespace Appointment.Host.Extensions
@@ -20,7 +21,11 @@ namespace Appointment.Host.Extensions
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             var connectionString = configuration.GetConnectionString("AppointmentConnection");
             services.AddDbContext<AppDbContext>(
-                options => options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host")));
+                options => {
+                    options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host"))
+                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Debug); 
+                    
+                    });
             services.AddMvc()
                 .AddNewtonsoftJson()
                 .ConfigureApiBehaviorOptions(options =>

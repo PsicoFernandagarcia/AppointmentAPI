@@ -31,10 +31,10 @@ namespace Appointment.Infrastructure.Repositories
         }
 
         public async Task<Domain.Entities.Appointment> GetById(int id)
-        => await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
+            => await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<IEnumerable<AppointmentDto>> GetByUserId(int id, DateTime dateFrom)
-        => await _context.Appointments
+            => await _context.Appointments
                 .Where(a => a.DateFrom >= dateFrom && (a.HostId == id || a.PatientId == id))
                 .OrderBy(a => a.DateFrom)
                 .Select(a => new AppointmentDto()
@@ -97,5 +97,8 @@ namespace Appointment.Infrastructure.Repositories
                             ";
             await this._context.Database.ExecuteSqlRawAsync(sqlCommand);
         }
+
+        public async Task<bool> HasAnyAppointment(int patientId, int hostId)
+            => await _context.Appointments.AnyAsync(a => a.PatientId == patientId && a.HostId == hostId);
     }
 }
