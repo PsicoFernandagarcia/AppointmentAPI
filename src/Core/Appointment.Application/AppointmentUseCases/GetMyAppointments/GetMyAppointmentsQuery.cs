@@ -11,5 +11,15 @@ namespace Appointment.Application.AppointmentUseCases.GetMyAppointment
     {
         public int UserId { get; set; }
         public DateTime DateFrom { get; set; }
+        public GetMyAppointmentsQuery()
+        {
+
+        }
+
+        public GetMyAppointmentsQuery(int userId, DateTime dateFrom)
+        {
+            UserId = userId;
+            DateFrom = dateFrom;
+        }
     }
 }

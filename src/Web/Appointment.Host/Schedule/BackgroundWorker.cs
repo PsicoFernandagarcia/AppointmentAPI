@@ -44,7 +44,7 @@ namespace Appointment.Host.Schedule
             if (!await WaitForAppStartup(_lifetime, stoppingToken))
                 return;
 
-            var timeToWait = DATETIME_TO_SEND_REMINDER - DateTime.UtcNow ;
+            var timeToWait = DATETIME_TO_SEND_REMINDER - DateTime.UtcNow;
             await Task.Delay(timeToWait, stoppingToken);
             await DoWork();
 

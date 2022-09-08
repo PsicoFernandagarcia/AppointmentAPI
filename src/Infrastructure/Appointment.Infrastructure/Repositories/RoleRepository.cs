@@ -3,7 +3,6 @@ using Appointment.Domain.Interfaces;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Appointment.Infrastructure.Repositories

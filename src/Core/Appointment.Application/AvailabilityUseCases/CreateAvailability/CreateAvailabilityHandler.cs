@@ -27,9 +27,11 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
         {
             var u = await _userRepository.GetUserById(request.HostId);
             if (u is null) return Result.Failure<Availability, ResultError>("host does not exists");
+
             var availabilities = await _availabilityRepository.GetOverlapped(request.HostId, request.DateOfAvailability,
-                request.DateOfAvailability.AddMinutes(request.AmountOfTime));
-            if (availabilities.Any()) return Result.Failure<Availability, ResultError>("there is already an appointment at this time");
+                                                                request.DateOfAvailability.AddMinutes(request.AmountOfTime));
+
+            if (availabilities.Any()) return Result.Failure<Availability, ResultError>(new CreationError("there is already an appointment at this time"));
             return await _availabilityRepository.Insert(Availability.Create(0, request.HostId, request.DateOfAvailability,
                 request.AmountOfTime, true).Value);
         }
@@ -39,9 +41,13 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
         {
             var u = await _userRepository.GetUserById(request.HostId);
             if (u is null) return Result.Failure<IEnumerable<Availability>, ResultError>("host does not exists");
+
+            if (await HasOverlap(request.Availabilities))
+                return Result.Failure<IEnumerable<Availability>, ResultError>(new CreationError("there is already an appointment at this time"));
+
             if (request.AvailabilitiesToRemove.Any())
                 await _availabilityRepository.Delete(request.AvailabilitiesToRemove);
-            if (await HasOverlap(request.Availabilities)) return Result.Failure<IEnumerable<Availability>, ResultError>("there is already an appointment at this time");
+
             return Result.Success<IEnumerable<Availability>, ResultError>(await _availabilityRepository.Insert(MapAvailabilitiesDto(request.Availabilities)));
         }
 

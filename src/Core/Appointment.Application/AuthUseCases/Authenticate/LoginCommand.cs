@@ -13,5 +13,17 @@ namespace Appointment.Application.AuthUseCases.Authenticate
         public string Password { get; set; }
 
         public int TimezoneOffset { get; set; }
+
+        public LoginCommand()
+        {
+
+        }
+
+        public LoginCommand(string userName, string password, int timezoneOffset)
+        {
+            UserName = userName;
+            Password = password;
+            TimezoneOffset = timezoneOffset;
+        }
     }
 }

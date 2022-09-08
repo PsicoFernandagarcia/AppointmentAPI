@@ -18,8 +18,8 @@ namespace Appointment.Application.PaymentUseCases.GetPaymentsFromPatientByHost
         }
         public async Task<Result<IEnumerable<Payment>, ResultError>> Handle(GetPaymentsFromPatientByHostQuery request, CancellationToken cancellationToken)
         {
-           var paymentsResult = await _paymentRepository.GetPayments(request.PatientId,request.HostId,request.Count );
-           return Result.Success<IEnumerable<Payment>,ResultError>(paymentsResult);
+            var paymentsResult = await _paymentRepository.GetPayments(request.PatientId, request.HostId, request.Count);
+            return Result.Success<IEnumerable<Payment>, ResultError>(paymentsResult);
         }
     }
 }

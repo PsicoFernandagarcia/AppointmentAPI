@@ -30,9 +30,11 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
             var user = await _userRepository.GetUserById(request.UserId);
             if (user is null)
                 return Result.Failure<bool, ResultError>("User not found or you don't have permissions to do this");
+
             var appointment = await _appointmentRepository.GetById(request.AppointmentId);
             if (!isValidAppointmentToDelete(request.UserId, appointment))
                 return Result.Failure<bool, ResultError>("Appointment not valid or you don't have permissions to do this");
+
             appointment.ChangeStatus(AppointmentStatus.CANCELED);
             await _appointmentRepository.Update(appointment);
             await _mediator.Send(new ChangeAvailabilityStatusCommand
@@ -42,7 +44,7 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                 DateFromUtc = appointment.DateFrom.AddMinutes(-5),
                 DateToUtc = appointment.DateFrom.AddMinutes(5),
             });
-            await _mediator.Send(new UpdateLatestPaymentSessionsCommand
+            await _mediator.Send(new UpdateLastPaymentSessionsCommand
             {
                 HostId = appointment.HostId,
                 PatientId = appointment.PatientId,

@@ -70,8 +70,8 @@ namespace Appointment.Infrastructure.Repositories
                 a => a.HostId == hostId
                      && (a.DateOfAvailability >= from
                          || a.DateOfAvailability.AddMinutes(a.AmountOfTime - 1) >= from)
-                     && (a.DateOfAvailability <= to
-                        || a.DateOfAvailability.AddMinutes(a.AmountOfTime - 1) <= to)
+                     && (a.DateOfAvailability < to
+                        || a.DateOfAvailability.AddMinutes(a.AmountOfTime - 1) < to)
             ).ToListAsync();
 
         public async Task Delete(IEnumerable<int> ids)

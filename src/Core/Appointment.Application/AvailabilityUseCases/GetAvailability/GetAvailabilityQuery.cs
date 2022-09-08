@@ -13,5 +13,17 @@ namespace Appointment.Application.AvailabilityUseCases.GetAvailability
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public bool ShowOnlyAvailable { get; set; }
+        public GetAvailabilityQuery()
+        {
+
+        }
+
+        public GetAvailabilityQuery(int hostId, DateTime dateFrom, DateTime dateTo, bool showOnlyAvailable)
+        {
+            HostId = hostId;
+            DateFrom = dateFrom;
+            DateTo = dateTo;
+            ShowOnlyAvailable = showOnlyAvailable;
+        }
     }
 }

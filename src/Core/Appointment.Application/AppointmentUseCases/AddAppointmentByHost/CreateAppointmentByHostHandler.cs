@@ -11,12 +11,10 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
 {
     public class CreateAppointmentByHostHandler : IRequestHandler<CreateAppointmentByHostCommand, Result<Domain.Entities.Appointment, ResultError>>
     {
-        private readonly IAppointmentRepository _appointmentRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
-        public CreateAppointmentByHostHandler(IAppointmentRepository appointmentRepository, IMediator mediator, IUserRepository userRepository)
+        public CreateAppointmentByHostHandler(IMediator mediator, IUserRepository userRepository)
         {
-            _appointmentRepository = appointmentRepository;
             _mediator = mediator;
             _userRepository = userRepository;
         }
@@ -25,24 +23,9 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
         {
             if (request.PatientId == 0)
             {
-                var defaultEmail = $"{request.PatientEmail}_";
-                var patient = await _userRepository.GetUserByEmail(request.PatientEmail);
-                if (patient == null)
-                {
-
-                    var patientResult = await _mediator.Send(new CreateUserCommand
-                    {
-                        Email = request.PatientEmail,
-                        Name = request.PatientName,
-                        LastName = ".",
-                        Password = "_",
-                        TimezoneOffset = request.TimezoneOffset,
-                        UserName = defaultEmail
-                    }, cancellationToken);
-                    if (!patientResult.IsSuccess) return Result.Failure<Domain.Entities.Appointment, ResultError>(patientResult.Error);
-                    patient = patientResult.Value;
-                }
-                request.PatientId = patient.Id;
+                var patientIdResult = await CreatePatientIfNoExistsAndGetId(request, cancellationToken);
+                if (!patientIdResult.IsSuccess) return Result.Failure<Domain.Entities.Appointment, ResultError>(patientIdResult.Error);
+                request.PatientId = patientIdResult.Value;
             }
             return await _mediator.Send(new CreateAppointmentCommand
             {
@@ -57,6 +40,27 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
                 Title = request.Title,
                 With = request.PatientEmail
             }, cancellationToken);
+        }
+
+        private async Task<Result<int>> CreatePatientIfNoExistsAndGetId(CreateAppointmentByHostCommand request, CancellationToken cancellationToken)
+        {
+            var defaultEmail = $"{request.PatientEmail}_";
+            var patient = await _userRepository.GetUserByEmail(request.PatientEmail);
+            if (patient is null)
+            {
+                var patientResult = await _mediator.Send(new CreateUserCommand
+                {
+                    Email = request.PatientEmail,
+                    Name = request.PatientName,
+                    LastName = ".",
+                    Password = "_",
+                    TimezoneOffset = request.TimezoneOffset,
+                    UserName = defaultEmail
+                }, cancellationToken);
+                if (!patientResult.IsSuccess) return Result.Failure<int>(patientResult.Error.Message);
+                patient = patientResult.Value;
+            }
+            return patient.Id;
         }
     }
 }

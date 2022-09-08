@@ -9,14 +9,14 @@ namespace Appointment.Domain.Entities
     {
         [Key]
         public int Id { get; private set; }
-        public DateTime PaidAt { get; set; }
-        public int PatientId { get; set; }
+        public DateTime PaidAt { get; private set; }
+        public int PatientId { get; private set; }
         [ForeignKey("PatientId")]
-        public virtual User Patient { get; set; }
-        public int HostId { get; set; }
-        public decimal Amount { get; set; }
-        public string Currency { get; set; }
-        public int SessionsPaid { get; set; }
+        public virtual User Patient { get; private set; }
+        public int HostId { get; private set; }
+        public decimal Amount { get; private set; }
+        public string Currency { get; private set; }
+        public int SessionsPaid { get; private set; }
         //If negative, the user needs to pay
         public int SessionsLeft { get; set; }
 
@@ -25,7 +25,7 @@ namespace Appointment.Domain.Entities
 
         }
 
-        public Payment(int id, DateTime paidAt, int patientId, int hostId, decimal amount,string currency, int sessionsPaid, int sessionsLeft)
+        private Payment(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
         {
             Id = id;
             PaidAt = paidAt.ToUniversalTime();
@@ -37,14 +37,14 @@ namespace Appointment.Domain.Entities
             Currency = currency;
         }
 
-        public static Result<Payment> Create(int id, DateTime paidAt, int patientId, int hostId, decimal amount,string currency, int sessionsPaid, int sessionsLeft)
+        public static Result<Payment> Create(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
         {
-            var validation = Validate(id, paidAt, patientId,hostId, amount, sessionsPaid);
+            var validation = Validate(id, paidAt, patientId, hostId, amount, sessionsPaid);
             if (validation.IsFailure) return Result.Failure<Payment>(validation.Error);
-            return new Payment(id, paidAt, patientId,hostId, amount, currency, sessionsPaid,sessionsLeft);
+            return new Payment(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft);
         }
 
-        private static Result<string> Validate(int id,DateTime paidAt, int patientId, int hostId, decimal amount, int sessionsPaid)
+        private static Result<string> Validate(int id, DateTime paidAt, int patientId, int hostId, decimal amount, int sessionsPaid)
         {
             string errors = string.Empty;
             if (id < 0) errors += " id not valid ";

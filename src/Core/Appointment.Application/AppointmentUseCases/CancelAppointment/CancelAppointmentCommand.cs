@@ -10,5 +10,16 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
         [Required]
         public int UserId { get; set; }
         public int AppointmentId { get; set; }
+
+        public CancelAppointmentsCommand()
+        {
+
+        }
+
+        public CancelAppointmentsCommand(int userId, int appointmentId)
+        {
+            UserId = userId;
+            AppointmentId = appointmentId;
+        }
     }
 }

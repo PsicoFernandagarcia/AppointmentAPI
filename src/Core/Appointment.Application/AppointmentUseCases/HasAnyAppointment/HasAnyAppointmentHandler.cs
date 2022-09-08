@@ -17,6 +17,6 @@ namespace Appointment.Application.AppointmentUseCases.HasAnyAppointment
         }
 
         public async Task<Result<bool, ResultError>> Handle(HasAnyAppointmentQuery request, CancellationToken cancellationToken)
-            => await _appointmentRepository.HasAnyAppointment(request.PatientId,request.HostId);
+            => await _appointmentRepository.HasAnyAppointment(request.PatientId, request.HostId);
     }
 }

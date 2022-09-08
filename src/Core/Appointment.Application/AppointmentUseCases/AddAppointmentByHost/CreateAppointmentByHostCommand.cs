@@ -18,7 +18,34 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointmentByHost
         public string Color { get; set; }
         public int AvailabilityId { get; set; }
         public string LocalDateTime { get; set; }
+        public CreateAppointmentByHostCommand()
+        {
 
+        }
 
+        public CreateAppointmentByHostCommand(string title,
+                                              DateTime dateFrom,
+                                              DateTime dateTo,
+                                              string patientEmail,
+                                              string patientName,
+                                              int timezoneOffset,
+                                              int hostId,
+                                              int patientId,
+                                              string color,
+                                              int availabilityId,
+                                              string localDateTime)
+        {
+            Title = title;
+            DateFrom = dateFrom;
+            DateTo = dateTo;
+            PatientEmail = patientEmail;
+            PatientName = patientName;
+            TimezoneOffset = timezoneOffset;
+            HostId = hostId;
+            PatientId = patientId;
+            Color = color;
+            AvailabilityId = availabilityId;
+            LocalDateTime = localDateTime;
+        }
     }
 }

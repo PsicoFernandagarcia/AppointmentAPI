@@ -11,5 +11,16 @@ namespace Appointment.Application.PaymentUseCases.GetPaymentsFromPatientByHost
         public int HostId { get; set; }
         public int Count { get; set; }
         public int PatientId { get; set; }
+        public GetPaymentsFromPatientByHostQuery()
+        {
+
+        }
+
+        public GetPaymentsFromPatientByHostQuery(int hostId, int count, int patientId)
+        {
+            HostId = hostId;
+            Count = count;
+            PatientId = patientId;
+        }
     }
 }

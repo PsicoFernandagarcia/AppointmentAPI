@@ -2,6 +2,7 @@
 using Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions;
 using Appointment.Application.SendEmailUseCase.AppointmentConfirmation;
 using Appointment.Domain;
+using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
@@ -9,6 +10,7 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Entities = Appointment.Domain.Entities;
 
 namespace Appointment.Application.AppointmentUseCases.AddAppointment
 {
@@ -22,35 +24,47 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
             _mediator = mediator;
         }
 
-        public async Task<Result<Domain.Entities.Appointment, ResultError>> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Entities.Appointment, ResultError>> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new AppointmentConfiguredCommand()
-            {
-                AvailabilityId = request.AvailabilityId,
-                IsEmpty = false
-            }, cancellationToken);
-            if (result.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(result.Error);
+            var appointmentResult = MapToEntity(request);
+            if (appointmentResult.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(new CreationError(appointmentResult.Error));
 
-            var appointmentResult = Domain.Entities.Appointment.Create(0, request.Title, request.DateFrom, request.DateTo,
+            var result = await DisableAvailability(request.AvailabilityId, cancellationToken);
+            if (result.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(new CreationError(result.Error.Message));
+
+            await UpdateLastPayment(request, cancellationToken);
+            await SendConfirmationEmail(request, cancellationToken);
+
+            return await _appointmentRepository.Create(appointmentResult.Value);
+        }
+
+        private Result<Entities.Appointment> MapToEntity(CreateAppointmentCommand request)
+            => Entities.Appointment.Create(0, request.Title, request.DateFrom, request.DateTo,
                 request.With, request.CreatedById, request.Color, false, request.HostId
                 , request.PatientId, AppointmentStatus.CREATED, DateTime.Now
                 );
-            if (appointmentResult.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(appointmentResult.Error);
 
-            await _mediator.Send(new UpdateLatestPaymentSessionsCommand
+        private async Task<Result<Availability, ResultError>> DisableAvailability(int availabilityId, CancellationToken cancellationToken)
+            => await _mediator.Send(new AppointmentConfiguredCommand()
+            {
+                AvailabilityId = availabilityId,
+                IsEmpty = false
+            }, cancellationToken);
+
+        private async Task UpdateLastPayment(CreateAppointmentCommand request, CancellationToken cancellationToken)
+            => await _mediator.Send(new UpdateLastPaymentSessionsCommand
             {
                 HostId = request.HostId,
                 PatientId = request.PatientId,
                 NewAppointmentAdded = true
-            });
-            await _mediator.Send(new SendAppointmentConfirmationEmailCommand
+            }, cancellationToken);
+        private async Task SendConfirmationEmail(CreateAppointmentCommand request, CancellationToken cancellationToken)
+            => await _mediator.Send(new SendAppointmentConfirmationEmailCommand
             {
                 UserId = request.PatientId,
                 HostId = request.HostId,
                 DateTimeInUTC = request.DateFrom.ToUniversalTime()
             }, cancellationToken);
-            return await _appointmentRepository.Create(appointmentResult.Value);
-        }
 
 
     }
