@@ -7,7 +7,7 @@ env:
   DOTNET_VERSION: '6.0'
 
 jobs:
-   build-and-test:
+  build-and-test:
     name: build-and-test-${{matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
