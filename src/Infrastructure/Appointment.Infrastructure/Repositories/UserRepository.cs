@@ -34,7 +34,7 @@ namespace Appointment.Infrastructure.Repositories
         public async Task<IList<User>> GetUserByRole(RolesEnum role)
             => await _context.Users
                 .Where(u => u.Roles.Any(r => r.Id == ((int)role)))
-                .Select(x => User.Create(x.Id,x.UserName,x.Email,null,null,null,x.IsExternal,x.Name,x.LastName,x.TimezoneOffset).Value)
+                .Select(x => User.Create(x.Id, x.UserName, x.Email, null, null, null, x.IsExternal, x.Name, x.LastName, x.TimezoneOffset).Value)
                 .ToListAsync();
 
         public async Task<User> CreateUser(User u)

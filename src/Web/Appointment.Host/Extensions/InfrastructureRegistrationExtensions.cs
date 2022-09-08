@@ -21,11 +21,12 @@ namespace Appointment.Host.Extensions
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             var connectionString = configuration.GetConnectionString("AppointmentConnection");
             services.AddDbContext<AppDbContext>(
-                options => {
+                options =>
+                {
                     options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host"))
-                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Debug); 
-                    
-                    });
+                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Debug);
+
+                });
             services.AddMvc()
                 .AddNewtonsoftJson()
                 .ConfigureApiBehaviorOptions(options =>

@@ -84,6 +84,6 @@ namespace Appointment.Application.AuthUseCases.Authenticate
 
             return true;
         }
-        
+
     }
 }

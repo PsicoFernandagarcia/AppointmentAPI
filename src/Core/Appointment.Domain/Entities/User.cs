@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Appointment.Domain.Extensions;
+using CSharpFunctionalExtensions;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -36,9 +37,9 @@ namespace Appointment.Domain.Entities
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
             Roles = roles;
-            LastName = lastName;
+            LastName = lastName.ToTitleCase();
             IsExternal = isExternal;
-            Name = name;
+            Name = name.ToTitleCase();
             TimezoneOffset = timezoneOffset;
         }
 

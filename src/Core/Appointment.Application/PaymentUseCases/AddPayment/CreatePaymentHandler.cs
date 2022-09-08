@@ -12,11 +12,9 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
     public class CreatePaymentHandler : IRequestHandler<CreatePaymentCommand, Result<Payment, ResultError>>
     {
         private readonly IPaymentRepository _paymentRepository;
-        private readonly IMediator _mediator;
-        public CreatePaymentHandler(IPaymentRepository paymentRepository, IMediator mediator)
+        public CreatePaymentHandler(IPaymentRepository paymentRepository)
         {
             _paymentRepository = paymentRepository;
-            _mediator = mediator;
         }
 
         public async Task<Result<Payment, ResultError>> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
@@ -25,10 +23,10 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
             var sessionsLeft = request.SessionsPaid;
             if (lastPaymentResult != null)
                 sessionsLeft += lastPaymentResult.SessionsLeft;
-            var paymentResult = Payment.Create(0, DateTime.Now, request.PatientId, request.HostId, request.Amount,request.Currency, request.SessionsPaid, sessionsLeft);
-            
-            if (!paymentResult.IsSuccess) 
-                    return Result.Failure<Payment, ResultError>(paymentResult.Error);
+            var paymentResult = Payment.Create(0, DateTime.Now, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionsLeft);
+
+            if (!paymentResult.IsSuccess)
+                return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));
 
             return await _paymentRepository.Insert(paymentResult.Value);
         }

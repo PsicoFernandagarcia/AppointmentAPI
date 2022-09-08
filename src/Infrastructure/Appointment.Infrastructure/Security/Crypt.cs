@@ -12,7 +12,7 @@ namespace Appointment.Infrastructure.Security
     {
         string DecryptStringFromBytes_Aes(string password);
     }
-    public  class Crypt:ICrypt
+    public class Crypt : ICrypt
     {
         private readonly AuthOptions _authConfig;
         public Crypt(IOptions<AuthOptions> authOptions)

@@ -2,7 +2,7 @@
 
 namespace Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions
 {
-    public class UpdateLatestPaymentSessionsValidator : AbstractValidator<UpdateLatestPaymentSessionsCommand>
+    public class UpdateLatestPaymentSessionsValidator : AbstractValidator<UpdateLastPaymentSessionsCommand>
     {
         public UpdateLatestPaymentSessionsValidator()
         {

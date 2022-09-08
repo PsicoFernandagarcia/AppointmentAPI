@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointment.Host", "src\Web\Appointment.Host\Appointment.Host.csproj", "{F6567D93-1B9F-4A54-9A57-3AA59BDF6A2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Appointment.Host", "src\Web\Appointment.Host\Appointment.Host.csproj", "{F6567D93-1B9F-4A54-9A57-3AA59BDF6A2C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1-Core", "1-Core", "{97C9E484-025E-4D0F-BD5B-5672F46E7014}"
 EndProject
@@ -13,13 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3-Web", "3-Web", "{6B306C89
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4-Test", "4-Test", "{0F09D71F-E5A7-4B23-8607-9F752399143D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointment.Api", "src\Web\Appointment.Api\Appointment.Api.csproj", "{CAFDB790-7451-4615-A4C0-B890D5231DC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Appointment.Api", "src\Web\Appointment.Api\Appointment.Api.csproj", "{CAFDB790-7451-4615-A4C0-B890D5231DC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointment.Infrastructure", "src\Infrastructure\Appointment.Infrastructure\Appointment.Infrastructure.csproj", "{723501B2-AE8D-4156-92E3-683861263160}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Appointment.Infrastructure", "src\Infrastructure\Appointment.Infrastructure\Appointment.Infrastructure.csproj", "{723501B2-AE8D-4156-92E3-683861263160}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointment.Application", "src\Core\Appointment.Application\Appointment.Application.csproj", "{E0400DA4-5C41-4F3B-AE5A-1E13509064B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Appointment.Application", "src\Core\Appointment.Application\Appointment.Application.csproj", "{E0400DA4-5C41-4F3B-AE5A-1E13509064B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointment.Domain", "src\Core\Appointment.Domain\Appointment.Domain.csproj", "{082B71C7-3B79-4E71-AD4D-4D7AD7AAECEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Appointment.Domain", "src\Core\Appointment.Domain\Appointment.Domain.csproj", "{082B71C7-3B79-4E71-AD4D-4D7AD7AAECEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appointment.Test", "tests\Appointment.Test\Appointment.Test.csproj", "{A44E104B-CF93-487A-BE21-E511F0930E7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{082B71C7-3B79-4E71-AD4D-4D7AD7AAECEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{082B71C7-3B79-4E71-AD4D-4D7AD7AAECEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{082B71C7-3B79-4E71-AD4D-4D7AD7AAECEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A44E104B-CF93-487A-BE21-E511F0930E7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A44E104B-CF93-487A-BE21-E511F0930E7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A44E104B-CF93-487A-BE21-E511F0930E7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A44E104B-CF93-487A-BE21-E511F0930E7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{723501B2-AE8D-4156-92E3-683861263160} = {F86E5E9B-0AD8-495A-A46B-3CCC756E72B0}
 		{E0400DA4-5C41-4F3B-AE5A-1E13509064B4} = {97C9E484-025E-4D0F-BD5B-5672F46E7014}
 		{082B71C7-3B79-4E71-AD4D-4D7AD7AAECEE} = {97C9E484-025E-4D0F-BD5B-5672F46E7014}
+		{A44E104B-CF93-487A-BE21-E511F0930E7B} = {0F09D71F-E5A7-4B23-8607-9F752399143D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3614BFEE-8C86-47E7-8D47-44F0ADBA4008}

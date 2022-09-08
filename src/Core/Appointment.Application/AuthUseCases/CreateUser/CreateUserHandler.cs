@@ -29,14 +29,14 @@ namespace Appointment.Application.AuthUseCases.CreateUser
             var existingUser = await _userRepository.GetUserByName(request.UserName);
             if (existingUser != null) return Result.Failure<User, ResultError>(new CreationError("User already exists"));
             if (string.IsNullOrWhiteSpace(request.Password)) return Result.Failure<User, ResultError>(new CreationError("Password empty"));
-            
+
             var password = _crypt.DecryptStringFromBytes_Aes(request.Password);
             var (passwordHash, passwordSalt) = CreatePasswordHash(password);
             var role = (await _roleRepository.GetRoles()).Where(x => x.Name == "COMMON");
             var userEntityResult = User.Create(0, request.UserName, request.Email, passwordHash, passwordSalt,
                 role.ToList(), request.IsExternal, request.Name, request.LastName, request.TimezoneOffset
                 );
-            
+
             if (userEntityResult.IsFailure) return Result.Failure<User, ResultError>(userEntityResult.Error);
             var userEntity = userEntityResult.Value;
             await _userRepository.CreateUser(userEntity);

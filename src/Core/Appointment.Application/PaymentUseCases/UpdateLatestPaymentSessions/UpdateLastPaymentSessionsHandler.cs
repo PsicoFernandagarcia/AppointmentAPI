@@ -9,26 +9,24 @@ using System.Threading.Tasks;
 
 namespace Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions
 {
-    public class UpdateLatestPaymentSessionsHandler : IRequestHandler<UpdateLatestPaymentSessionsCommand, Result<Payment, ResultError>>
+    public class UpdateLastPaymentSessionsHandler : IRequestHandler<UpdateLastPaymentSessionsCommand, Result<Payment, ResultError>>
     {
         private readonly IPaymentRepository _paymentRepository;
-        private readonly IMediator _mediator;
-        public UpdateLatestPaymentSessionsHandler(IPaymentRepository paymentRepository, IMediator mediator)
+        public UpdateLastPaymentSessionsHandler(IPaymentRepository paymentRepository)
         {
             _paymentRepository = paymentRepository;
-            _mediator = mediator;
         }
 
-        public async Task<Result<Payment, ResultError>> Handle(UpdateLatestPaymentSessionsCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Payment, ResultError>> Handle(UpdateLastPaymentSessionsCommand request, CancellationToken cancellationToken)
         {
-            var sessionsToAdd = request.NewAppointmentAdded ? -1 : 1; 
+            var sessionsToAdd = request.NewAppointmentAdded ? -1 : 1;
             var lastPayment = await _paymentRepository.GetLastPayment(request.PatientId, request.HostId);
             if (lastPayment != null)
             {
                 lastPayment.SessionsLeft += sessionsToAdd;
                 return await _paymentRepository.Update(lastPayment);
             }
-            return await _paymentRepository.Insert(Payment.Create(0,DateTime.Now,request.PatientId,request.HostId,0,request.Currency,0, sessionsToAdd).Value);
+            return await _paymentRepository.Insert(Payment.Create(0, DateTime.Now, request.PatientId, request.HostId, 0, request.Currency, 0, sessionsToAdd).Value);
         }
 
 

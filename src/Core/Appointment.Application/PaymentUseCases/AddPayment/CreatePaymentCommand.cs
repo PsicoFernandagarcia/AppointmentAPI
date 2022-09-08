@@ -1,7 +1,6 @@
 ﻿using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
-using System;
 
 namespace Appointment.Application.PaymentUseCases.AddPayment
 {
@@ -12,6 +11,18 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
         public decimal Amount { get; set; }
         public int SessionsPaid { get; set; }
         public string Currency { get; set; }
+        public CreatePaymentCommand()
+        {
 
+        }
+
+        public CreatePaymentCommand(int patientId, int hostId, decimal amount, int sessionsPaid, string currency)
+        {
+            PatientId = patientId;
+            HostId = hostId;
+            Amount = amount;
+            SessionsPaid = sessionsPaid;
+            Currency = currency;
+        }
     }
 }

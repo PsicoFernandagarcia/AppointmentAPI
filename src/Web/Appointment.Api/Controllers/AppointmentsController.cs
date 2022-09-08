@@ -77,7 +77,7 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
         public async Task<IActionResult> Get([FromQuery] HasAnyAppointmentQuery query)
         {
-            if(query.PatientId <= 0)
+            if (query.PatientId <= 0)
                 query.PatientId = int.Parse(User.Identity.Name);
             return (await _mediator.Send(query)).ToHttpResponse();
         }

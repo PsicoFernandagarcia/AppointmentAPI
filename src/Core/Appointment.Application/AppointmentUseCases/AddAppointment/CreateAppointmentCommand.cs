@@ -18,6 +18,32 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
         public int AvailabilityId { get; set; }
         public string LocalDateTime { get; set; }
 
+        public CreateAppointmentCommand()
+        {
 
+        }
+
+        public CreateAppointmentCommand(string title,
+                                        DateTime dateFrom,
+                                        DateTime dateTo,
+                                        string with,
+                                        int createdById,
+                                        int hostId,
+                                        int patientId,
+                                        string color,
+                                        int availabilityId,
+                                        string localDateTime)
+        {
+            Title = title;
+            DateFrom = dateFrom;
+            DateTo = dateTo;
+            With = with;
+            CreatedById = createdById;
+            HostId = hostId;
+            PatientId = patientId;
+            Color = color;
+            AvailabilityId = availabilityId;
+            LocalDateTime = localDateTime;
+        }
     }
 }

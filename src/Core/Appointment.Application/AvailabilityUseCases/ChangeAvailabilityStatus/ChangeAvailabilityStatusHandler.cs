@@ -24,6 +24,7 @@ namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
         {
             var u = await _userRepository.GetUserById(request.HostId);
             if (u is null) return Result.Failure<bool, ResultError>("host does not exists");
+
             var availability = (await _availabilityRepository.GetByFilter(request.HostId, request.DateFromUtc, request.DateToUtc, false)).FirstOrDefault();
             if (availability is null) return true;
 

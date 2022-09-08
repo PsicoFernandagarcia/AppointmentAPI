@@ -11,12 +11,10 @@ namespace Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter
 {
     public class GetAppointmentsByFilterHandler : IRequestHandler<GetAppointmentsByFilterQuery, Result<IEnumerable<AppointmentDto>, ResultError>>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IAppointmentRepository _appointmentRepository;
 
-        public GetAppointmentsByFilterHandler(IUserRepository userRepository, IAppointmentRepository appointmentRepository)
+        public GetAppointmentsByFilterHandler(IAppointmentRepository appointmentRepository)
         {
-            _userRepository = userRepository;
             _appointmentRepository = appointmentRepository;
         }
 
