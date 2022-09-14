@@ -20,7 +20,7 @@ namespace Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions
         public async Task<Result<Payment, ResultError>> Handle(UpdateLastPaymentSessionsCommand request, CancellationToken cancellationToken)
         {
             var sessionsToAdd = request.NewAppointmentAdded ? -1 : 1;
-            var lastPayment = await _paymentRepository.GetLastPayment(request.PatientId, request.HostId);
+            var lastPayment = await _paymentRepository.GetLast(request.PatientId, request.HostId);
             if (lastPayment != null)
             {
                 lastPayment.SessionsLeft += sessionsToAdd;

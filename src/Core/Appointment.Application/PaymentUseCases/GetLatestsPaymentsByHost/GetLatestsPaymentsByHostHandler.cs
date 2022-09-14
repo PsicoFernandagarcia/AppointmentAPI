@@ -18,7 +18,7 @@ namespace Appointment.Application.PaymentUseCases.GetLatestsPaymentsByHost
         }
         public async Task<Result<IEnumerable<Payment>, ResultError>> Handle(GetLatestsPaymentsByHostQuery request, CancellationToken cancellationToken)
         {
-            var paymentsResult = await _paymentRepository.GetLatestPayments(request.HostId);
+            var paymentsResult = await _paymentRepository.GetLatest(request.HostId);
             return Result.Success<IEnumerable<Payment>, ResultError>(paymentsResult);
         }
     }

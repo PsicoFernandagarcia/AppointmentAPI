@@ -82,7 +82,7 @@ namespace Appointment.Test.Application.Appointments
         }
 
         [Fact]
-        public async Task Cancel_Appointment_By_Host_Because_Is_Valid_To_Be_Cancelled()
+        public async Task Cancel_Appointment_By_Host_Because_Is_Valid_To_Be_Canceled()
         {
             var request = new CancelAppointmentsCommand(1, 2);
             _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))
@@ -100,7 +100,7 @@ namespace Appointment.Test.Application.Appointments
         }
 
         [Fact]
-        public async Task Cancel_Appointment_By_Patient_Because_Is_Valid_To_Be_Cancelled()
+        public async Task Cancel_Appointment_By_Patient_Because_Is_Valid_To_Be_Canceled()
         {
             var request = new CancelAppointmentsCommand(1, 2);
             _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))

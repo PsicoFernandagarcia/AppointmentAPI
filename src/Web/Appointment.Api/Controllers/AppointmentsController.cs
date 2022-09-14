@@ -4,7 +4,9 @@ using Appointment.Application.AppointmentUseCases.AddAppointmentByHost;
 using Appointment.Application.AppointmentUseCases.CancelAppointment;
 using Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter;
 using Appointment.Application.AppointmentUseCases.GetMyAppointment;
+using Appointment.Application.AppointmentUseCases.GetYearInformation;
 using Appointment.Application.AppointmentUseCases.HasAnyAppointment;
+using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +81,15 @@ namespace Appointment.Api.Controllers
         {
             if (query.PatientId <= 0)
                 query.PatientId = int.Parse(User.Identity.Name);
+            return (await _mediator.Send(query)).ToHttpResponse();
+        }
+
+        [HttpGet("Information")]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(IEnumerable<AppointmentYearInformationDto>), 200)]
+        public async Task<IActionResult> GetYearInformation([FromQuery] GetYearInformationQuery query)
+        {
             return (await _mediator.Send(query)).ToHttpResponse();
         }
     }

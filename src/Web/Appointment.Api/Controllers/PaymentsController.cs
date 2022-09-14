@@ -32,6 +32,16 @@ namespace Appointment.Api.Controllers
                 command.HostId = int.Parse(User.Identity.Name);
             return (await _mediator.Send(command)).ToHttpResponse();
         }
+        [HttpPut]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(User), 200)]
+        public async Task<IActionResult> Put(UpdatePaymentCommand command)
+        {
+            if (command.HostId == 0)
+                command.HostId = int.Parse(User.Identity.Name);
+            return (await _mediator.Send(command)).ToHttpResponse();
+        }
 
         [HttpGet("Latest")]
         [ProducesResponseType(typeof(string), 401)]

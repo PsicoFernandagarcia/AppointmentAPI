@@ -20,7 +20,7 @@ namespace Appointment.Test.Application.Payments
         public async Task Update_Payment_Because_There_Is_One_In_Database()
         {
             var request = new UpdateLastPaymentSessionsCommand(1, 12, true, "USD");
-            _paymentRepository.Setup(p => p.GetLastPayment(It.IsAny<int>(), It.IsAny<int>()))
+            _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -33,7 +33,7 @@ namespace Appointment.Test.Application.Payments
         public async Task Create_Payment_Because_There_Is_No_Payment_In_Database()
         {
             var request = new UpdateLastPaymentSessionsCommand(1, 12, true, "USD");
-            _paymentRepository.Setup(p => p.GetLastPayment(It.IsAny<int>(), It.IsAny<int>()))
+            _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(null as Payment);
 
             var result = await _handler.Handle(request, CancellationToken.None);

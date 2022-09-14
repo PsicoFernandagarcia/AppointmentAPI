@@ -21,7 +21,7 @@ namespace Appointment.Test.Application.Payments
         public async Task Get_Payments_From_Specific_Patient()
         {
             var request = new GetPaymentsFromPatientByHostQuery(1, 5, 2);
-            _paymentRepository.Setup(p => p.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _paymentRepository.Setup(p => p.Get(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(() => new List<Payment>
                 {
                     Payment.Create(1,DateTime.Now,1,1,1,"test",1,1).Value,
@@ -37,7 +37,7 @@ namespace Appointment.Test.Application.Payments
         public async Task Return_Empty_List_If_No_Payments()
         {
             var request = new GetPaymentsFromPatientByHostQuery(1, 5, 2);
-            _paymentRepository.Setup(p => p.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _paymentRepository.Setup(p => p.Get(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(() => new List<Payment>
                 {
                 });
