@@ -57,6 +57,23 @@ namespace Appointment.Infrastructure.Repositories
                 })
                 .ToListAsync();
 
+        public async Task<IEnumerable<AppointmentYearInformationDto>> GetYearInformation(int year,int hostId, int? patientId)
+        {
+            var info = await _context.Appointments
+                .Where(a => 
+                            a.HostId == hostId
+                            && (patientId == null || a.PatientId == patientId)
+                            && a.DateTo.Year == year
+                )
+                .GroupBy(a => new { a.DateFrom.Month})
+                .Select(a => new AppointmentYearInformationDto
+                {
+                    Month = a.Key.Month,
+                    TotalAppointments = a.Count(),
+                    TotalCanceled = a.Where(ap => ap.Status == Domain.AppointmentStatus.CANCELED).Count()
+                }).ToListAsync();
+            return info;
+        } 
 
         public async Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId)
             => await _context.Appointments

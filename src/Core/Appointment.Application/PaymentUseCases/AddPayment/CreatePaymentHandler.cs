@@ -19,11 +19,11 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
 
         public async Task<Result<Payment, ResultError>> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
         {
-            var lastPaymentResult = await _paymentRepository.GetLastPayment(request.PatientId, request.HostId);
+            var lastPaymentResult = await _paymentRepository.GetLast(request.PatientId, request.HostId);
             var sessionsLeft = request.SessionsPaid;
             if (lastPaymentResult != null)
                 sessionsLeft += lastPaymentResult.SessionsLeft;
-            var paymentResult = Payment.Create(0, DateTime.Now, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionsLeft);
+            var paymentResult = Payment.Create(0, request.PaidAt, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionsLeft);
 
             if (!paymentResult.IsSuccess)
                 return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));

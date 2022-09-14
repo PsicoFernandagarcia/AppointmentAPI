@@ -17,14 +17,14 @@ namespace Appointment.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Payment> GetLastPayment(int patientId, int hostId)
+        public async Task<Payment> GetLast(int patientId, int hostId)
         => await _context.Payments.Where(p => p.HostId == hostId
                                                 && p.PatientId == patientId)
                                   .GroupBy(p => new { p.HostId, p.PatientId })
                                   .Select(p => p.OrderByDescending(x => x.PaidAt).FirstOrDefault())
                                   .FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<Payment>> GetPayments(int patientId, int hostId, int count)
+        public async Task<IEnumerable<Payment>> Get(int patientId, int hostId, int count)
         => await _context.Payments.Where(p => p.HostId == hostId
                                                 && p.PatientId == patientId
                                             )
@@ -32,7 +32,13 @@ namespace Appointment.Infrastructure.Repositories
                                   .Take(count)
                                   .ToListAsync();
 
-        public async Task<IEnumerable<Payment>> GetLatestPayments(int hostId)
+        public async Task<Payment> Get(int paymentId)
+        => await _context.Payments.Where(p => p.Id == paymentId
+                                            )
+                                  .OrderByDescending(x => x.PaidAt)
+                                  .FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<Payment>> GetLatest(int hostId)
             => await _context.Payments.Where(p => p.HostId == hostId)
                                       .GroupBy(p => new { p.HostId, p.PatientId })
                                       .Select(p => p.OrderByDescending(x => x.PaidAt).FirstOrDefault())

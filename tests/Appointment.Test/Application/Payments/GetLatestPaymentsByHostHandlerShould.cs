@@ -21,7 +21,7 @@ namespace Appointment.Test.Application.Payments
         public async Task Get_Latest_Payments_From_Specific_Host()
         {
             var request = new GetLatestsPaymentsByHostQuery(1);
-            _paymentRepository.Setup(p => p.GetLatestPayments(It.IsAny<int>()))
+            _paymentRepository.Setup(p => p.GetLatest(It.IsAny<int>()))
                 .ReturnsAsync(() => new List<Payment>
                 {
                     Payment.Create(1,DateTime.Now,1,1,1,"test",1,1).Value
@@ -35,7 +35,7 @@ namespace Appointment.Test.Application.Payments
         public async Task Return_Empty_List_If_No_Payments()
         {
             var request = new GetLatestsPaymentsByHostQuery(1);
-            _paymentRepository.Setup(p => p.GetLatestPayments(It.IsAny<int>()))
+            _paymentRepository.Setup(p => p.GetLatest(It.IsAny<int>()))
                 .ReturnsAsync(() => new List<Payment>
                 {
                 });

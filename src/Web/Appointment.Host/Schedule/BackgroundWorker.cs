@@ -62,14 +62,14 @@ namespace Appointment.Host.Schedule
         static async Task<bool> WaitForAppStartup(IHostApplicationLifetime lifetime, CancellationToken stoppingToken)
         {
             var startedSource = new TaskCompletionSource();
-            var cancelledSource = new TaskCompletionSource();
+            var canceledSource = new TaskCompletionSource();
 
             using var reg1 = lifetime.ApplicationStarted.Register(() => startedSource.SetResult());
-            using var reg2 = stoppingToken.Register(() => cancelledSource.SetResult());
+            using var reg2 = stoppingToken.Register(() => canceledSource.SetResult());
 
             Task completedTask = await Task.WhenAny(
                 startedSource.Task,
-                cancelledSource.Task).ConfigureAwait(false);
+                canceledSource.Task).ConfigureAwait(false);
 
             // If the completed tasks was the "app started" task, return true, otherwise false
             return completedTask == startedSource.Task;

@@ -44,6 +44,22 @@ namespace Appointment.Domain.Entities
             return new Payment(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft);
         }
 
+        public Result<Payment> Update(DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
+        {
+            var validation = Validate(this.Id, paidAt, patientId, hostId, amount, sessionsPaid);
+            if (validation.IsFailure) return Result.Failure<Payment>(validation.Error);
+            this.PaidAt = paidAt;
+            this.PatientId = patientId;
+            this.HostId = hostId;
+            this.Amount = amount;
+            this.Currency = currency;
+            this.SessionsPaid = sessionsPaid;
+            this.SessionsLeft = sessionsLeft;
+            return this;
+        }
+
+
+
         private static Result<string> Validate(int id, DateTime paidAt, int patientId, int hostId, decimal amount, int sessionsPaid)
         {
             string errors = string.Empty;

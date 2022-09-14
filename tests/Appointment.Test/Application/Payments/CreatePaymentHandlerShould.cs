@@ -20,8 +20,8 @@ namespace Appointment.Test.Application.Payments
         [Fact]
         public async Task Create_First_Payment_To_Patient()
         {
-            var request = new CreatePaymentCommand(1, 12, 200, 100, "USD");
-            _paymentRepository.Setup(p => p.GetLastPayment(It.IsAny<int>(), It.IsAny<int>()))
+            var request = new CreatePaymentCommand(1, 12, 200, 100, "USD",DateTime.Now);
+            _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(null as Payment);
 
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -32,8 +32,8 @@ namespace Appointment.Test.Application.Payments
         [Fact]
         public async Task Create_Payment_To_Patient()
         {
-            var request = new CreatePaymentCommand(1, 12, 200, 100, "USD");
-            _paymentRepository.Setup(p => p.GetLastPayment(It.IsAny<int>(), It.IsAny<int>()))
+            var request = new CreatePaymentCommand(1, 12, 200, 100, "USD", DateTime.Now);
+            _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -45,8 +45,8 @@ namespace Appointment.Test.Application.Payments
         [Fact]
         public async Task Not_Create_Payment_Due_To_Invalid_Command()
         {
-            var request = new CreatePaymentCommand(1, -12, 200, 100, "USD");
-            _paymentRepository.Setup(p => p.GetLastPayment(It.IsAny<int>(), It.IsAny<int>()))
+            var request = new CreatePaymentCommand(1, -12, 200, 100, "USD", DateTime.Now);
+            _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
