@@ -27,10 +27,11 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
                 return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));
 
             var lastPayment = await _paymentRepository.GetLast(request.PatientId, request.HostId);
-            if(lastPayment.Id != payment.Id)
+            if (lastPayment.Id != payment.Id)
+            {
                 lastPayment.SessionsLeft += sessionLeft;
-
-            await _paymentRepository.Update(lastPayment);
+                await _paymentRepository.Update(lastPayment);
+            }
             return await _paymentRepository.Update(paymentResult.Value);
         }
 
