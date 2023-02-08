@@ -45,7 +45,7 @@ namespace Appointment.Infrastructure.Repositories
                                       .ToListAsync();
 
         public async Task<IEnumerable<PaymentInformation>> GetYearInformation(int year, int hostId)
-        => (await _context.Payments.Where(p => p.PaidAt.Year == year && p.HostId == hostId)
+        => (await _context.Payments.Where(p => p.PaidAt.Year == year && p.HostId == hostId && p.Amount > 0)
                                                     .GroupBy(p => new { p.Currency, p.PaidAt.Month, p.PatientId, p.HostId, p.Patient.LastName,p.Patient.Name   })
                                                     .Select(g => new PaymentInformation(
                                                         g.Key.PatientId,
