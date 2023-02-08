@@ -44,6 +44,21 @@ namespace Appointment.Infrastructure.Repositories
                                       .Select(p => p.OrderByDescending(x => x.PaidAt).FirstOrDefault())
                                       .ToListAsync();
 
+        public async Task<IEnumerable<PaymentInformation>> GetYearInformation(int year, int hostId)
+        => (await _context.Payments.Where(p => p.PaidAt.Year == year && p.HostId == hostId)
+                                                    .GroupBy(p => new { p.Currency, p.PaidAt.Month, p.PatientId, p.HostId, p.Patient.LastName,p.Patient.Name   })
+                                                    .Select(g => new PaymentInformation(
+                                                        g.Key.PatientId,
+                                                        g.Key.HostId,
+                                                        g.Sum(p => p.Amount),
+                                                        g.Key.Currency,
+                                                        g.Key.Month,
+                                                        $"{g.Key.LastName} {g.Key.Name}"
+                                                        ))
+            .ToListAsync())
+            .OrderBy(g => g.Month)
+            .ThenBy(g => g.PatientFullName);
+
         public async Task<Payment> Update(Payment payment)
         {
             _context.Payments.Update(payment);
