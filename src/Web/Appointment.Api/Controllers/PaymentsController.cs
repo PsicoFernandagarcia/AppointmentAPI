@@ -65,5 +65,16 @@ namespace Appointment.Api.Controllers
             return (await _mediator.Send(query)).ToHttpResponse();
         }
 
+        [HttpGet("Report")]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(User), 200)]
+        public async Task<IActionResult> YearReport([FromQuery] GetPaymentsInformationQuery query)
+        {
+            if (query.HostId == 0)
+                query.HostId = int.Parse(User.Identity.Name);
+            return (await _mediator.Send(query)).ToHttpResponse();
+        }
+
     }
 }

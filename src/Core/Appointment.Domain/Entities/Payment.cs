@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Appointment.Domain.Entities
 {
+    public record PaymentInformation(int PatientId, int HostId, decimal Total, string Currency, int Month,string PatientFullName);
     public class Payment
     {
         [Key]

@@ -47,8 +47,8 @@ namespace Appointment.Infrastructure.Repositories
         public async Task<IEnumerable<AvailabilityDto>> GetByFilter(int hostId, DateTime from, DateTime to, bool showOnlyAvailable)
         => await _context.Availabilities.Where(
                     a => a.HostId == hostId
-                                 && a.DateOfAvailability >= from
-                                 && a.DateOfAvailability <= to
+                                 && a.DateOfAvailability >= from.ToLocalTime()
+                                 && a.DateOfAvailability <= to.ToLocalTime()
                                  && a.IsEmpty == (showOnlyAvailable ? showOnlyAvailable : a.IsEmpty)
                 )
                 .OrderBy(a => a.DateOfAvailability)
