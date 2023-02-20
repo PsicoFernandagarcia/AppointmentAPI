@@ -61,7 +61,7 @@ namespace Appointment.Test.Application.Appointments
         }
 
         [Fact]
-        public async Task Not_Cancel_Appointment_Because_Has_Lower_Date_Than_Today()
+        public async Task Not_Cancel_Appointment_Because_Has_Lower_Date_Than_Today_And_Is_Not_Host()
         {
             var request = new CancelAppointmentsCommand(1, 2);
             _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))
@@ -78,6 +78,26 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+
+        }
+
+        [Fact]
+        public async Task Cancel_Appointment_Because_Has_Lower_Date_Than_Today_And_Is_Host()
+        {
+            int hostId = 10;
+            var request = new CancelAppointmentsCommand(hostId, 2);
+            _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))
+                .ReturnsAsync(User.Create(2, "test", "email", null, null, null, true, "test", "test", 10).Value);
+
+            _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-1).AddHours(1), "Joaquin", 3, "", false, hostId, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+
+            var result = await _handler.Handle(request, CancellationToken.None);
+            result.IsSuccess.Should().BeTrue();
+            _appointmentRepository.Verify(ar => ar.Update(It.IsAny<Entities.Appointment>()), Times.Once);
+            _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
 
         }
 

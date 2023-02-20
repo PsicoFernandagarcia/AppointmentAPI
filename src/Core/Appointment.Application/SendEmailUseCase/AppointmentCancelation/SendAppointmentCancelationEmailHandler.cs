@@ -31,7 +31,7 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentCancelation
                         .Replace("#_patient_#", $"{user.Name} {user.LastName}")
                         .Replace("#_userEmail_#", user.Email);
 
-            return this._emailSender.Send(host.Email, $"Cancelación de cita {hostDate.ToShortDateString()}", hostBody, true);
+            return this._emailSender.Send(host.Email, $"Cancelación de cita del {hostDate.ToString("dddd, dd MMMM HH:mm", ci)}", hostBody, true);
         }
     }
 }

@@ -61,10 +61,10 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
 
         private bool isValidAppointmentToDelete(int userId, Domain.Entities.Appointment appointment)
             => !(appointment is null)
-                && (
-                    appointment.HostId == userId
-                || appointment.PatientId == userId
-            )
-            && appointment.DateFrom.ToUniversalTime() > DateTime.UtcNow;
+                && appointment.HostId == userId
+                || (
+                     appointment.PatientId == userId
+                    && appointment.DateFrom.ToUniversalTime() > DateTime.UtcNow
+                );
     }
 }
