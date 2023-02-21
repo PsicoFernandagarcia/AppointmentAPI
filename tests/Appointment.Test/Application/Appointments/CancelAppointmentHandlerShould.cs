@@ -143,7 +143,7 @@ namespace Appointment.Test.Application.Appointments
         [Fact]
         public async Task Cancel_Appointment_By_Patient_Because_Is_Valid_To_Be_Canceled()
         {
-            var request = new CancelAppointmentsCommand(1, 2);
+            var request = new CancelAppointmentsCommand(2, 2);
             _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
