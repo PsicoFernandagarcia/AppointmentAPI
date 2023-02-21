@@ -63,12 +63,33 @@ namespace Appointment.Test.Application.Appointments
         [Fact]
         public async Task Not_Cancel_Appointment_Because_Has_Lower_Date_Than_Today_And_Is_Not_Host()
         {
-            var request = new CancelAppointmentsCommand(1, 2);
+            var request = new CancelAppointmentsCommand(3, 2);
             _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
                 .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-1).AddHours(1), "Joaquin", 3, "", false, 2, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+
+            var result = await _handler.Handle(request, CancellationToken.None);
+            result.IsSuccess.Should().BeFalse();
+            result.Error.Should().BeOfType<ResultError>();
+            result.Error.Message.Should().Be("Appointment not valid or you don't have permissions to do this");
+            _appointmentRepository.Verify(ar => ar.Update(It.IsAny<Entities.Appointment>()), Times.Never);
+            _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+            _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+            _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+
+        }
+
+        [Fact]
+        public async Task Not_Cancel_Appointment_Because_Is_In_24_Hours_Or_Less_And_Is_Not_Host()
+        {
+            var request = new CancelAppointmentsCommand(1, 2);
+            _userRepository.Setup(ur => ur.GetUserById(It.IsAny<int>()))
+                .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
+
+            _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddHours(24), DateTime.Now.AddHours(26), "Joaquin", 3, "", false, 2, 1, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeFalse();
