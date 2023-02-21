@@ -64,7 +64,7 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                 && appointment.HostId == userId
                 || (
                      appointment.PatientId == userId
-                    && appointment.DateFrom.ToUniversalTime() > DateTime.UtcNow
+                    && appointment.DateFrom.ToUniversalTime() > DateTime.UtcNow.AddDays(1)
                 );
     }
 }
