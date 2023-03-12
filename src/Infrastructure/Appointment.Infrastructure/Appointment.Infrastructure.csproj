@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\Core\Appointment.Domain\Appointment.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.60.0.2978" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
