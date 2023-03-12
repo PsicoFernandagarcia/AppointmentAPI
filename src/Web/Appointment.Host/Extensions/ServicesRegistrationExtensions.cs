@@ -1,6 +1,7 @@
 using Appointment.Api.Infrastructure;
 using Appointment.Application.SendEmailUseCase;
 using Appointment.Domain.Interfaces;
+using Appointment.Infrastructure.Configuration;
 using Appointment.Infrastructure.Repositories;
 using Appointment.Infrastructure.Security;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,7 @@ namespace Appointment.Host.Extensions
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new HealthCheckCircuitBreakerService());
+            services.AddSingleton<IServiceAccountSingleton,ServiceAccountSingleton>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();

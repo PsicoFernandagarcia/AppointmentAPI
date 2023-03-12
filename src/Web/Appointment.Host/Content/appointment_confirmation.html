@@ -30,13 +30,16 @@
             color: #3598db;
             text-decoration: underline;
         }
-        .add-to-calendar {
+        
+        .add-calendar {
+            background-color: #db4a39;
             border: none;
-            background: none;
-            font-size: initial;
-            text-decoration-line: underline;
+            color: white;
+            padding: 7px 16px;
+            text-align: center;
+            font-size: 14px;
             cursor: pointer;
-            color: blue;
+            border-radius: 4px;
         }
 
         @media only screen and (min-width: 570px) {
@@ -227,8 +230,7 @@
                                                    cellspacing="0" width="100%" border="0">
                                                 <tbody>
                                                     <tr>
-                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;"
-                                                            align="left">
+                                                        <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;">
 
                                                             <div style="color: #293c4b; line-height: 140%; text-align: center; word-wrap: break-word;">
                                                                 <p style="font-size: 14px; line-height: 140%;">
@@ -240,10 +242,9 @@
                                                                 <p style="font-size: 14px; line-height: 140%;">
                                                                     <span style="font-family: Montserrat, sans-serif; font-size: 14px; line-height: 19.6px;"><strong>Lugar: Online</strong></span>
                                                                 </p>
-                                                                <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&dates=#_dateFrom_#%2F#_dateTo_#&text=#_calendarHostTitle_#"
-                                                                   target="_blank" style="color: #122a4b; text-decoration: underline;">
-                                                                    <button class="add-to-calendar" >Agregar a Google Calendar </button>
-                                                                </a>
+                                                                <input class="add-calendar" type="button" value="Agregar a Google Calendar" 
+                                                                    onclick="window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&dates=#_dateFrom_#%2F#_dateTo_#&text=#_calendarHostTitle_#')"
+                                                                    >
                                                             </div>
 
                                                         </td>
