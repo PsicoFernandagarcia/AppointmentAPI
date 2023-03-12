@@ -65,6 +65,7 @@ namespace Appointment.Infrastructure.Configuration
 
             return events.Items.Where(i => i.Start.DateTime.HasValue)
                                .Select(i => new CalendarEvent(i.Summary, i.Start.DateTime.Value.ToUniversalTime(), i.ColorId))
+                               .OrderBy(i => i.date)
                                .AsEnumerable();
         }
 
@@ -94,5 +95,5 @@ namespace Appointment.Infrastructure.Configuration
 
 
 
-    public record CalendarEvent(string Description, DateTime? date, string Color);
+    public record CalendarEvent(string Description, DateTime date, string Color);
 }
