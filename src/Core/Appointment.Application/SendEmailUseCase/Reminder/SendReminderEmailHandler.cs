@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Appointment.Application.SendEmailUseCase.Reminder
 {
@@ -26,7 +27,8 @@ namespace Appointment.Application.SendEmailUseCase.Reminder
             {
                 var dateFromUtcCalendar = appointment.DateFrom.ToUniversalTime().ToString("yyyyMMddTHHmm00Z");
                 var dateToUtcCalendar = appointment.DateFrom.AddHours(1).ToUniversalTime().ToString("yyyyMMddTHHmm00Z");
-                var calendarHostDescription = $"{appointment.Patient.Name.Replace(" ", "%20")}%20{appointment.Patient.LastName.Replace(" ", "%20")}%20{appointment.Patient.Email.Replace(" ", "%20")}";
+                var calendarHostDescription = HttpUtility.UrlEncode($"{appointment.Patient.Name} {appointment.Patient.LastName} {appointment.Patient.Email}");
+
                 sb.AppendLine($@"
                     <tr>
                         <td>{appointment.Patient.LastName} {appointment.Patient.Name}</td>
