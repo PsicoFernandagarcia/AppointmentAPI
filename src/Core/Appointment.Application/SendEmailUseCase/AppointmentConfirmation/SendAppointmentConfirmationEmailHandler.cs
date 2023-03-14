@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
 {
@@ -38,11 +39,12 @@ namespace Appointment.Application.SendEmailUseCase.AppointmentConfirmation
             if (this._emailOptions.SendEmailToUsers)
                 this._emailSender.Send(user.Email, "Confirmación cita", userBody, true);
 
+            var hostTitle = HttpUtility.UrlEncode($"{user.Name} { user.LastName} { user.Email}");
             var hostBody = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "Content/appointment_confirmation.html"), cancellationToken);
             hostBody = hostBody.Replace("#_name_#", host.Name)
                         .Replace("#_visibleDate_#", hostDate.ToString("dddd, dd MMMM yyyy HH:mm", ci))
                         .Replace("#_userName_#", $"{user.Name} {user.LastName}")
-                        .Replace("#_calendarHostTitle_#", $"{user.Name.Replace(" ", "%20")}%20{user.LastName.Replace(" ", "%20")}%20{user.Email.Replace(" ", "%20")}")
+                        .Replace("#_calendarHostTitle_#", $"{hostTitle}")
                         .Replace("#_userEmail_#", user.Email)
                         .Replace("#_dateFrom_#", $"{request.DateTimeInUTC.ToString("yyyyMMddTHHmm00Z")}")
                         .Replace("#_dateTo_#", $"{request.DateTimeInUTC.AddHours(1).ToString("yyyyMMddTHHmm00Z")}");
