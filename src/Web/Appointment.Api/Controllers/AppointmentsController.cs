@@ -3,6 +3,7 @@ using Appointment.Application.AppointmentUseCases.AddAppointment;
 using Appointment.Application.AppointmentUseCases.AddAppointmentByHost;
 using Appointment.Application.AppointmentUseCases.CancelAppointment;
 using Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter;
+using Appointment.Application.AppointmentUseCases.GetLastAppointment;
 using Appointment.Application.AppointmentUseCases.GetMyAppointment;
 using Appointment.Application.AppointmentUseCases.GetYearInformation;
 using Appointment.Application.AppointmentUseCases.HasAnyAppointment;
@@ -70,6 +71,15 @@ namespace Appointment.Api.Controllers
         public async Task<IActionResult> Get([FromQuery] GetAppointmentsByFilterQuery query)
         {
             query.UserId = int.Parse(User.Identity.Name);
+            return (await _mediator.Send(query)).ToHttpResponse();
+        }
+
+        [HttpGet("last")]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
+        public async Task<IActionResult> GetLastAppointments([FromQuery] GetLastAppointmentsQuery query)
+        {
             return (await _mediator.Send(query)).ToHttpResponse();
         }
 

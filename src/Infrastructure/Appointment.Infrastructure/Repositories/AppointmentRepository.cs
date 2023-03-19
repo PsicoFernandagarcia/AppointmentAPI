@@ -57,15 +57,15 @@ namespace Appointment.Infrastructure.Repositories
                 })
                 .ToListAsync();
 
-        public async Task<IEnumerable<AppointmentYearInformationDto>> GetYearInformation(int year,int hostId, int? patientId)
+        public async Task<IEnumerable<AppointmentYearInformationDto>> GetYearInformation(int year, int hostId, int? patientId)
         {
             var info = await _context.Appointments
-                .Where(a => 
+                .Where(a =>
                             a.HostId == hostId
                             && (patientId == null || a.PatientId == patientId)
                             && a.DateTo.Year == year
                 )
-                .GroupBy(a => new { a.DateFrom.Month})
+                .GroupBy(a => new { a.DateFrom.Month })
                 .Select(a => new AppointmentYearInformationDto
                 {
                     Month = a.Key.Month,
@@ -73,7 +73,7 @@ namespace Appointment.Infrastructure.Repositories
                     TotalCanceled = a.Where(ap => ap.Status == Domain.AppointmentStatus.CANCELED).Count()
                 }).ToListAsync();
             return info;
-        } 
+        }
 
         public async Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId)
             => await _context.Appointments
@@ -117,5 +117,34 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<bool> HasAnyAppointment(int patientId, int hostId)
             => await _context.Appointments.AnyAsync(a => a.PatientId == patientId && a.HostId == hostId);
+
+        public async Task<IEnumerable<AppointmentDto>> GetLastAppointments(int hostId, int patientId, int totalCount)
+            => await _context.Appointments
+                .Where(a => a.HostId >= hostId &&
+                            a.PatientId == patientId
+                            && a.Status != Domain.AppointmentStatus.CANCELED
+                )
+                .OrderByDescending(a => a.DateFrom)
+                .Take(Math.Abs(totalCount))
+                .Select(a => new AppointmentDto()
+                {
+                    Id = a.Id,
+                    DateFrom = a.DateFrom.ToUniversalTime(),
+                    DateTo = a.DateTo.ToUniversalTime(),
+                    With = a.With,
+                    HostId = a.HostId,
+                    HostName = $"{a.Host.LastName} {a.Host.Name}",
+                    Color = a.Color,
+                    CreatedById = a.CreatedById,
+                    CreatedBy = a.CreatedBy.UserName,
+                    PatientId = a.PatientId,
+                    PatientName = $"{a.Patient.LastName} {a.Patient.Name} ",
+                    IsDeleted = a.IsDeleted,
+                    Status = a.Status.ToString(),
+                    Title = a.Title,
+                    UpdatedAt = a.UpdatedAt
+                })
+                .ToListAsync();
+
     }
 }
