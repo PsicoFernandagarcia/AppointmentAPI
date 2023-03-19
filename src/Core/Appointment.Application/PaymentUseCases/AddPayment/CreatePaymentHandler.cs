@@ -21,8 +21,15 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
         {
             var lastPaymentResult = await _paymentRepository.GetLast(request.PatientId, request.HostId);
             var sessionsLeft = request.SessionsPaid;
-            if (lastPaymentResult != null)
+            if (lastPaymentResult != null && lastPaymentResult.PaidAt <= request.PaidAt)
                 sessionsLeft += lastPaymentResult.SessionsLeft;
+            
+            if (lastPaymentResult != null && lastPaymentResult.PaidAt >= request.PaidAt)
+            {
+                lastPaymentResult.SessionsLeft += request.SessionsPaid;
+                await _paymentRepository.Update(lastPaymentResult);
+            }
+
             var paymentResult = Payment.Create(0, request.PaidAt, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionsLeft);
 
             if (!paymentResult.IsSuccess)
