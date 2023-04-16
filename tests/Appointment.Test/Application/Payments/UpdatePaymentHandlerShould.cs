@@ -22,11 +22,11 @@ namespace Appointment.Test.Application.Payments
         {
 
             _paymentRepository.Setup(p => p.Get(It.IsAny<int>()))
-                .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1).Value);
+                .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1, string.Empty).Value);
 
             _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
-               .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1).Value);
-            var request = new UpdatePaymentCommand(1, 12, 200, 100, "USD",1, DateTime.Now);
+               .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1, string.Empty).Value);
+            var request = new UpdatePaymentCommand(1, 12, 200, 100, "USD",1, DateTime.Now, string.Empty);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();
@@ -36,9 +36,9 @@ namespace Appointment.Test.Application.Payments
         [Fact]
         public async Task Not_Update_Payment_Due_To_Invalid_Command()
         {
-            var request = new UpdatePaymentCommand(-1, -12, 200, 100, "USD",1, DateTime.Now);
+            var request = new UpdatePaymentCommand(-1, -12, 200, 100, "USD",1, DateTime.Now, string.Empty);
             _paymentRepository.Setup(p => p.Get(It.IsAny<int>()))
-                .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1).Value);
+                .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1, string.Empty).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeFalse();

@@ -20,13 +20,14 @@ namespace Appointment.Domain.Entities
         public int SessionsPaid { get; private set; }
         //If negative, the user needs to pay
         public int SessionsLeft { get; set; }
+        public string? Observations { get; private set; }
 
         protected Payment()
         {
 
         }
 
-        private Payment(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
+        private Payment(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft, string? observations)
         {
             Id = id;
             PaidAt = paidAt.ToUniversalTime();
@@ -36,16 +37,17 @@ namespace Appointment.Domain.Entities
             SessionsPaid = sessionsPaid;
             SessionsLeft = sessionsLeft;
             Currency = currency;
+            Observations = observations;
         }
 
-        public static Result<Payment> Create(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
+        public static Result<Payment> Create(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft, string? observations)
         {
             var validation = Validate(id, paidAt, patientId, hostId, amount, sessionsPaid);
             if (validation.IsFailure) return Result.Failure<Payment>(validation.Error);
-            return new Payment(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft);
+            return new Payment(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, observations);
         }
 
-        public Result<Payment> Update(DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
+        public Result<Payment> Update(DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft,string observations)
         {
             var validation = Validate(this.Id, paidAt, patientId, hostId, amount, sessionsPaid);
             if (validation.IsFailure) return Result.Failure<Payment>(validation.Error);
@@ -56,6 +58,7 @@ namespace Appointment.Domain.Entities
             this.Currency = currency;
             this.SessionsPaid = sessionsPaid;
             this.SessionsLeft = sessionsLeft;
+            this.Observations = observations;
             return this;
         }
 

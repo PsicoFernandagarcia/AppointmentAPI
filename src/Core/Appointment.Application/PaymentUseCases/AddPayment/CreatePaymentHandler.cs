@@ -30,7 +30,7 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
                 await _paymentRepository.Update(lastPaymentResult);
             }
 
-            var paymentResult = Payment.Create(0, request.PaidAt, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionsLeft);
+            var paymentResult = Payment.Create(0, request.PaidAt, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionsLeft, request.Observations);
 
             if (!paymentResult.IsSuccess)
                 return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));

@@ -24,7 +24,7 @@ namespace Appointment.Test.Application.Payments
             _paymentRepository.Setup(p => p.GetLatest(It.IsAny<int>()))
                 .ReturnsAsync(() => new List<Payment>
                 {
-                    Payment.Create(1,DateTime.Now,1,1,1,"test",1,1).Value
+                    Payment.Create(1,DateTime.Now,1,1,1,"test",1,1, string.Empty).Value
                 });
 
             var result = await _handler.Handle(request, CancellationToken.None);
