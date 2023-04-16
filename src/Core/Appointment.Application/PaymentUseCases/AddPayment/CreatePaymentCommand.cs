@@ -13,12 +13,13 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
         public int SessionsPaid { get; set; }
         public string Currency { get; set; }
         public DateTime PaidAt { get; set; }
+        public string? Observations { get; set; }
         public CreatePaymentCommand()
         {
 
         }
 
-        public CreatePaymentCommand(int patientId, int hostId, decimal amount, int sessionsPaid, string currency, DateTime paidAt)
+        public CreatePaymentCommand(int patientId, int hostId, decimal amount, int sessionsPaid, string currency, DateTime paidAt, string observations)
         {
             PatientId = patientId;
             HostId = hostId;
@@ -26,6 +27,7 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
             SessionsPaid = sessionsPaid;
             Currency = currency;
             PaidAt = paidAt;
+            Observations = observations;
         }
     }
 }

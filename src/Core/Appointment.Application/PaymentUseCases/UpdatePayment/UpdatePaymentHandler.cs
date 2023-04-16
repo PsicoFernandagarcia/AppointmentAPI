@@ -21,7 +21,7 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
         {
             var payment = await _paymentRepository.Get(request.Id);
             var sessionLeft = request.SessionsPaid - payment.SessionsPaid ;
-            var paymentResult = payment.Update(request.PaidAt, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionLeft + payment.SessionsLeft);
+            var paymentResult = payment.Update(request.PaidAt, request.PatientId, request.HostId, request.Amount, request.Currency, request.SessionsPaid, sessionLeft + payment.SessionsLeft, request.Observations);
 
             if (!paymentResult.IsSuccess)
                 return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));

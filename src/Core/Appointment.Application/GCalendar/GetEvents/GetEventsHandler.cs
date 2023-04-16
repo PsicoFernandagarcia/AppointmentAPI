@@ -1,12 +1,8 @@
-﻿using Appointment.Domain.Entities;
-using Appointment.Domain.Interfaces;
-using Appointment.Domain.ResultMessages;
+﻿using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

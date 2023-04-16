@@ -26,7 +26,7 @@ namespace Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions
                 lastPayment.SessionsLeft += sessionsToAdd;
                 return await _paymentRepository.Update(lastPayment);
             }
-            return await _paymentRepository.Insert(Payment.Create(0, DateTime.Now, request.PatientId, request.HostId, 0, request.Currency, 0, sessionsToAdd).Value);
+            return await _paymentRepository.Insert(Payment.Create(0, DateTime.Now, request.PatientId, request.HostId, 0, request.Currency, 0, sessionsToAdd,null).Value);
         }
 
 
