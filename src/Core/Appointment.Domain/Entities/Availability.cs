@@ -9,35 +9,44 @@ namespace Appointment.Domain.Entities
     {
         [Key]
         public int Id { get; private set; }
-
         public int HostId { get; private set; }
         [IgnoreDataMember]
         public virtual User Host { get; private set; }
         //in utc
         public DateTime DateOfAvailability { get; private set; }
-
         //in minutes
         public int AmountOfTime { get; private set; }
         public bool IsEmpty { get; set; }
+        public int AppointmentId { get; set; }
+        public string AppointmentWith { get; set; }
 
         protected Availability()
         {
 
         }
 
-        private Availability(int id, int hostId, DateTime dateOfAvailability, int amountOfTime, bool isEmpty)
+        private Availability(int id,
+                             int hostId,
+                             DateTime dateOfAvailability,
+                             int amountOfTime,
+                             bool isEmpty,
+                             int appointmentId,
+                             string appointmentWith)
         {
             Id = id;
             HostId = hostId;
             DateOfAvailability = dateOfAvailability.ToLocalTime();
             AmountOfTime = amountOfTime;
             IsEmpty = isEmpty;
+            AppointmentId = appointmentId;
+            AppointmentWith = appointmentWith;
         }
-        public static Result<Availability> Create(int id, int hostId, DateTime dateOfAvailability, int amountOfTime, bool isEmpty)
+        public static Result<Availability> Create(int id, int hostId, DateTime dateOfAvailability, int amountOfTime,
+                                                  bool isEmpty, int appointmentId = 0, string appointmentWith = "")
         {
             var validation = Validate(id, hostId, amountOfTime);
             if (validation.IsFailure) return Result.Failure<Availability>(validation.Error);
-            return new Availability(id, hostId, dateOfAvailability, amountOfTime, isEmpty);
+            return new Availability(id, hostId, dateOfAvailability, amountOfTime, isEmpty, appointmentId, appointmentWith);
         }
 
         private static Result<string> Validate(int id, int hostId, int amountOfTime)

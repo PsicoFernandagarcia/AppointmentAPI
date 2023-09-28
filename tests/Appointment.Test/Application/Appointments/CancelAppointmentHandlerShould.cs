@@ -5,9 +5,14 @@ using Appointment.Application.SendEmailUseCase.AppointmentCancelation;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
+using Appointment.Infrastructure.Configuration;
 using FluentAssertions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
+using System.Data.Common;
 using Xunit;
 using Entities = Appointment.Domain.Entities;
 
@@ -21,7 +26,8 @@ namespace Appointment.Test.Application.Appointments
         private readonly CancelAppointmentHandler _handler;
         public CancelAppointmentHandlerShould()
         {
-            _handler = new(_userRepository.Object, _appointmentRepository.Object, _mediator.Object);
+            var app = MockAppDbContext.GetMock();
+            _handler = new(_userRepository.Object, _appointmentRepository.Object, _mediator.Object, app.Object);
         }
 
         [Fact]

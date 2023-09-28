@@ -23,6 +23,7 @@ namespace Appointment.Domain.Entities
         [IgnoreDataMember]
         public byte[] PasswordSalt { get; private set; }
         public virtual IEnumerable<Payment> Payments { get; set; }
+        public string FullName => $"{Name} {LastName}";
 
         protected User(string lastName)
         {

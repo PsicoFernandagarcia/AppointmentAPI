@@ -10,7 +10,7 @@ namespace Appointment.Application.SendEmailUseCase
 {
     public interface IEmailSender
     {
-        Result<bool, ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml);
+        Result<bool, ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml, bool SendToAdmin = false);
     }
     public class Sender : IEmailSender
     {
@@ -21,7 +21,7 @@ namespace Appointment.Application.SendEmailUseCase
             _emailOptions = emailOptions.Value;
         }
 
-        public Result<bool, ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml)
+        public Result<bool, ResultError> Send(string ToEmail, string Subject, string Body, bool IsHtml, bool SendToAdmin=false)
         {
             try
             {
@@ -35,6 +35,11 @@ namespace Appointment.Application.SendEmailUseCase
 
                     using (var message = new MailMessage(_emailOptions.GmailUsername, ToEmail))
                     {
+                        if (SendToAdmin)
+                        {
+                            message.Bcc.Add("joaco.790@gmail.com");
+                            
+                        }
                         message.Subject = Subject;
                         message.Body = Body;
                         message.IsBodyHtml = IsHtml;

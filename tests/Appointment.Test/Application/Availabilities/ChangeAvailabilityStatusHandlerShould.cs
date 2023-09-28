@@ -21,18 +21,12 @@ namespace Appointment.Test.Application.Availabilities
         [Fact]
         public async Task Update_Status_To_Existing_Availability()
         {
-            var request = new ChangeAvailabilityStatusCommand(1, DateTime.Now, DateTime.Now.AddHours(1), true);
+            var request = new ChangeAvailabilityStatusCommand(1, true, 20);
             _userRepository.Setup(x => x.GetUserById(It.IsAny<int>()))
                  .ReturnsAsync(User.Create(1, "UserName", "email", null, null, null, true, "name", "lastName", 0).Value);
 
-            _availabilityRepository.Setup(x => x.GetByFilter(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<bool>()))
-                    .ReturnsAsync(() => new List<AvailabilityDto>()
-                    {
-                        new AvailabilityDto(1,1, DateTime.Now, 60, false)
-                    });
-
-            _availabilityRepository.Setup(x => x.GetById(It.IsAny<int>()))
-                    .ReturnsAsync(() => Availability.Create(1, 1, DateTime.Now, 60, false).Value);
+            _availabilityRepository.Setup(x => x.GetByAppointmentId(It.IsAny<int>()))
+                    .ReturnsAsync(() => Availability.Create(30, 1, DateTime.Now, 60, false).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();
@@ -40,9 +34,27 @@ namespace Appointment.Test.Application.Availabilities
         }
 
         [Fact]
+        public async Task Remove_Appointment_Information_On_Update_Status()
+        {
+            var request = new ChangeAvailabilityStatusCommand(1, true, 30);
+            _userRepository.Setup(x => x.GetUserById(It.IsAny<int>()))
+                 .ReturnsAsync(User.Create(1, "UserName", "email", null, null, null, true, "name", "lastName", 0).Value);
+
+            _availabilityRepository.Setup(x => x.GetByAppointmentId(It.IsAny<int>()))
+             .ReturnsAsync(() => Availability.Create(30, 1, DateTime.Now, 60, false).Value);
+
+            var result = await _handler.Handle(request, CancellationToken.None);
+
+            result.IsSuccess.Should().BeTrue();
+            _availabilityRepository.Verify(x => x.Update(It.Is<Availability>(
+                av => av.AppointmentId == 0 && av.AppointmentWith == string.Empty
+                )), Times.Once);
+        }
+
+        [Fact]
         public async Task Not_Update_Status_Due_To_Invalid_Host()
         {
-            var request = new ChangeAvailabilityStatusCommand(1, DateTime.Now, DateTime.Now.AddHours(1), true);
+            var request = new ChangeAvailabilityStatusCommand(1, true, 20);
             _userRepository.Setup(x => x.GetUserById(It.IsAny<int>()))
                  .ReturnsAsync(null as User);
 

@@ -23,7 +23,11 @@ namespace Appointment.Application.AvailabilityUseCases.AppointmentConfigured
             var availability = await _availabilityRepository.GetById(request.AvailabilityId);
             if (availability is null || !availability.IsEmpty)
                 return Result.Failure<Availability, ResultError>("there is no availability at this time");
+            
             availability.IsEmpty = request.IsEmpty;
+            availability.AppointmentId = request.AppointmentId;
+            availability.AppointmentWith = request.AppointmentWith;
+
             await _availabilityRepository.Update(availability);
             return Result.Success<Availability, ResultError>(availability);
 

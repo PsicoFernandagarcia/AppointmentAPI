@@ -50,7 +50,7 @@ namespace Appointment.Application.SendEmailUseCase.Reminder
                         .Replace("#_appointments_#", sb.ToString());
 
 
-            return this._emailSender.Send(request.HostEmail, $"Mis citas de hoy {DateTime.Now.ToString("dd-MM-yyyy")}", reminderBody, true);
+            return this._emailSender.Send(request.HostEmail, $"Mis citas de hoy {DateTime.Now.ToString("dd-MM-yyyy")}", reminderBody, true, true);
         }
     }
 }
