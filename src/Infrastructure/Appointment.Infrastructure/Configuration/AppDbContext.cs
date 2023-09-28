@@ -14,6 +14,10 @@ namespace Appointment.Infrastructure.Configuration
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
+        public AppDbContext()
+        {
+
+        }
         public AppDbContext(IConfiguration configuration)
         {
             Configuration = configuration;

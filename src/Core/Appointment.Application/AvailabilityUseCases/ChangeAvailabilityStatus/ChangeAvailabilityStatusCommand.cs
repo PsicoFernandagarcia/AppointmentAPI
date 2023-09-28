@@ -9,20 +9,19 @@ namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
     {
 
         public int HostId { get; set; }
-        public DateTime DateFromUtc { get; set; }
-        public DateTime DateToUtc { get; set; }
         public bool IsEmpty { get; set; }
+        public int AppointmentId { get; set; }
 
         public ChangeAvailabilityStatusCommand()
         {
 
         }
-        public ChangeAvailabilityStatusCommand(int hostId, DateTime dateFromUtc, DateTime dateToUtc, bool isEmpty)
+
+        public ChangeAvailabilityStatusCommand(int hostId, bool isEmpty, int appointmentId)
         {
             HostId = hostId;
-            DateFromUtc = dateFromUtc;
-            DateToUtc = dateToUtc;
             IsEmpty = isEmpty;
+            AppointmentId = appointmentId;
         }
     }
 }

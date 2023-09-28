@@ -21,7 +21,7 @@ namespace Appointment.Test.Application.Availabilities
         [Fact]
         public async Task Set_Empty_Property_To_Availability()
         {
-            var request = new AppointmentConfiguredCommand(1, false);
+            var request = new AppointmentConfiguredCommand(1, false, 0, string.Empty);
             _availabilityRepository.Setup(x => x.GetById(It.IsAny<int>()))
                 .ReturnsAsync(() => Availability.Create(1, 1, DateTime.Now, 10, true).Value);
 
@@ -35,7 +35,7 @@ namespace Appointment.Test.Application.Availabilities
         [Fact]
         public async Task Return_Error_Due_To_Invalid_Availability()
         {
-            var request = new AppointmentConfiguredCommand(1, false);
+            var request = new AppointmentConfiguredCommand(1, false, 0, string.Empty);
             _availabilityRepository.Setup(x => x.GetById(It.IsAny<int>()))
                 .ReturnsAsync(null as Availability);
 

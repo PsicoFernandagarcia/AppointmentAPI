@@ -4,11 +4,13 @@ using Appointment.Application.SendEmailUseCase.AppointmentCancelation;
 using Appointment.Domain;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
+using Appointment.Infrastructure.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Appointment.Application.AppointmentUseCases.CancelAppointment
 {
@@ -17,12 +19,14 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
         private readonly IUserRepository _userRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IMediator _mediator;
+        private readonly AppDbContext _context;
 
-        public CancelAppointmentHandler(IUserRepository userRepository, IAppointmentRepository appointmentRepository, IMediator mediator)
+        public CancelAppointmentHandler(IUserRepository userRepository, IAppointmentRepository appointmentRepository, IMediator mediator, AppDbContext context)
         {
             _userRepository = userRepository;
             _appointmentRepository = appointmentRepository;
             _mediator = mediator;
+            _context = context;
         }
 
         public async Task<Result<bool, ResultError>> Handle(CancelAppointmentsCommand request, CancellationToken cancellationToken)
@@ -36,26 +40,32 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                 return Result.Failure<bool, ResultError>("Appointment not valid or you don't have permissions to do this");
 
             appointment.ChangeStatus(AppointmentStatus.CANCELED);
-            await _appointmentRepository.Update(appointment);
-            await _mediator.Send(new ChangeAvailabilityStatusCommand
+            await using var scope = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                HostId = appointment.HostId,
-                IsEmpty = true,
-                DateFromUtc = appointment.DateFrom.AddMinutes(-5),
-                DateToUtc = appointment.DateFrom.AddMinutes(5),
-            });
-            await _mediator.Send(new UpdateLastPaymentSessionsCommand
+                await _appointmentRepository.Update(appointment);
+                await _mediator.Send(new ChangeAvailabilityStatusCommand(request.UserId, true, appointment.Id));
+                await _mediator.Send(new UpdateLastPaymentSessionsCommand
+                {
+                    HostId = appointment.HostId,
+                    PatientId = appointment.PatientId,
+                    NewAppointmentAdded = false
+                });
+
+                await scope.CommitAsync();
+                await _mediator.Send(new SendAppointmentCancelationEmailCommand
+                {
+                    UserId = appointment.PatientId,
+                    HostId = appointment.HostId,
+                    DateTimeInUTC = appointment.DateFrom.ToUniversalTime()
+                }, cancellationToken);
+            }
+            catch (Exception)
             {
-                HostId = appointment.HostId,
-                PatientId = appointment.PatientId,
-                NewAppointmentAdded = false
-            });
-            await _mediator.Send(new SendAppointmentCancelationEmailCommand
-            {
-                UserId = appointment.PatientId,
-                HostId = appointment.HostId,
-                DateTimeInUTC = appointment.DateFrom.ToUniversalTime()
-            }, cancellationToken);
+                await scope.RollbackAsync();
+                throw;
+            }
             return Result.Success<bool, ResultError>(true);
         }
 

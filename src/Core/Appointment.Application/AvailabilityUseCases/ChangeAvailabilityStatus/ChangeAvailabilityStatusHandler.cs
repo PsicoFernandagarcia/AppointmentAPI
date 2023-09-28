@@ -25,15 +25,22 @@ namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
             var u = await _userRepository.GetUserById(request.HostId);
             if (u is null) return Result.Failure<bool, ResultError>("host does not exists");
 
-            var availability = (await _availabilityRepository.GetByFilter(request.HostId, request.DateFromUtc, request.DateToUtc, false)).FirstOrDefault();
-            if (availability is null) return true;
+            var availabilityEntity = await _availabilityRepository.GetByAppointmentId(request.AppointmentId);
+            if (availabilityEntity is null)
+                return false;
 
-            var availabilityEntity = await _availabilityRepository.GetById(availability.Id);
             availabilityEntity.IsEmpty = request.IsEmpty;
+            if(request.IsEmpty)
+            {
+                availabilityEntity.AppointmentId = default;
+                availabilityEntity.AppointmentWith = string.Empty;
+            }
             await _availabilityRepository.Update(availabilityEntity);
             return true;
 
         }
+
+
 
 
     }

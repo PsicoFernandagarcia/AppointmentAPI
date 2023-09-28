@@ -44,6 +44,12 @@ namespace Appointment.Infrastructure.Repositories
                 )
                 .FirstOrDefaultAsync();
 
+        public async Task<Availability> GetByAppointmentId(int appointmentId)
+            => await _context.Availabilities.Where(
+                    a => a.AppointmentId == appointmentId
+                )
+                .FirstOrDefaultAsync();
+
         public async Task<IEnumerable<AvailabilityDto>> GetByFilter(int hostId, DateTime from, DateTime to, bool showOnlyAvailable)
         => await _context.Availabilities.Where(
                     a => a.HostId == hostId
@@ -60,7 +66,9 @@ namespace Appointment.Infrastructure.Repositories
                         Id = a.Id,
                         AmountOfTime = a.AmountOfTime,
                         DateOfAvailability = a.DateOfAvailability.ToUniversalTime(),
-                        IsEmpty = a.IsEmpty
+                        IsEmpty = a.IsEmpty,
+                        AppointmentId = a.AppointmentId,
+                        AppointmentWith = a.AppointmentWith,
                     }
                 )
                 .ToListAsync();

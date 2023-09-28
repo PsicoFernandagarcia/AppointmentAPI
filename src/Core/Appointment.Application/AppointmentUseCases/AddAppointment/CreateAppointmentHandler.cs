@@ -5,6 +5,7 @@ using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
+using Appointment.Infrastructure.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
 using System;
@@ -17,11 +18,13 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
     public class CreateAppointmentHandler : IRequestHandler<CreateAppointmentCommand, Result<Domain.Entities.Appointment, ResultError>>
     {
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly AppDbContext _context;
         private readonly IMediator _mediator;
-        public CreateAppointmentHandler(IAppointmentRepository appointmentRepository, IMediator mediator)
+        public CreateAppointmentHandler(IAppointmentRepository appointmentRepository, IMediator mediator, AppDbContext context)
         {
             _appointmentRepository = appointmentRepository;
             _mediator = mediator;
+            _context = context;
         }
 
         public async Task<Result<Entities.Appointment, ResultError>> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
@@ -29,13 +32,22 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
             var appointmentResult = MapToEntity(request);
             if (appointmentResult.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(new CreationError(appointmentResult.Error));
 
-            var result = await DisableAvailability(request.AvailabilityId, cancellationToken);
-            if (result.IsFailure) return Result.Failure<Domain.Entities.Appointment, ResultError>(new CreationError(result.Error.Message));
-
-            await UpdateLastPayment(request, cancellationToken);
-            await SendConfirmationEmail(request, cancellationToken);
-
-            return await _appointmentRepository.Create(appointmentResult.Value);
+            await using var scope = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await UpdateLastPayment(request, cancellationToken);
+                await _appointmentRepository.Create(appointmentResult.Value);
+                var result = await DisableAvailability(request.AvailabilityId, appointmentResult.Value.Id, appointmentResult.Value.Patient?.FullName ?? appointmentResult.Value.With, cancellationToken);
+                if (result.IsFailure) return Result.Failure<Entities.Appointment, ResultError>(new CreationError(result.Error.Message));
+                await scope.CommitAsync();
+                await SendConfirmationEmail(request, cancellationToken);
+            }
+            catch (Exception)
+            {
+                await scope.RollbackAsync();
+                throw;
+            }
+            return appointmentResult.Value;
         }
 
         private Result<Entities.Appointment> MapToEntity(CreateAppointmentCommand request)
@@ -44,11 +56,15 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
                 , request.PatientId, AppointmentStatus.CREATED, DateTime.Now
                 );
 
-        private async Task<Result<Availability, ResultError>> DisableAvailability(int availabilityId, CancellationToken cancellationToken)
+        private async Task<Result<Availability, ResultError>> DisableAvailability(int availabilityId, int appointmentId,
+                                                                                  string appointmentWith,
+                                                                                  CancellationToken cancellationToken)
             => await _mediator.Send(new AppointmentConfiguredCommand()
             {
                 AvailabilityId = availabilityId,
-                IsEmpty = false
+                IsEmpty = false,
+                AppointmentId = appointmentId,
+                AppointmentWith = appointmentWith,
             }, cancellationToken);
 
         private async Task UpdateLastPayment(CreateAppointmentCommand request, CancellationToken cancellationToken)

@@ -9,15 +9,19 @@ namespace Appointment.Application.AvailabilityUseCases.AppointmentConfigured
     {
         public int AvailabilityId { get; set; }
         public bool IsEmpty { get; set; }
+        public int AppointmentId { get; set; }
+        public string AppointmentWith { get; set; }
         public AppointmentConfiguredCommand()
         {
 
         }
 
-        public AppointmentConfiguredCommand(int availabilityId, bool isEmpty)
+        public AppointmentConfiguredCommand(int availabilityId, bool isEmpty, int appointmentId, string appointmentWith)
         {
             AvailabilityId = availabilityId;
             IsEmpty = isEmpty;
+            AppointmentId = appointmentId;
+            AppointmentWith = appointmentWith;
         }
     }
 }
