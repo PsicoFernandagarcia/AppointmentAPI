@@ -146,5 +146,10 @@ namespace Appointment.Infrastructure.Repositories
                 })
                 .ToListAsync();
 
+        public async Task<int> ReassignAppointments(int userFrom, int userTo)
+            => await _context.Appointments
+                                .Where(a => a.PatientId == userFrom)
+                                .ExecuteUpdateAsync(a => a.SetProperty(ap => ap.PatientId, userTo));
+
     }
 }

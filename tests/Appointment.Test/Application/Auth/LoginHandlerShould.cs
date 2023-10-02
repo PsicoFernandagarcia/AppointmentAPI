@@ -24,7 +24,7 @@ namespace Appointment.Test.Application.Auth
             var authOptions = Options.Create(new AuthOptions()
             {
                 HashValue = "psicoe84ad660c4721ae0e84ad660c4721ae0fer",
-                Secret = "AADDFIKCJMLDOCJK"
+                Secret = "AADDFIKCJMLDOCJKAADDFIKCJMLDOCJKAADDFIKCJMLDOCJKAADDFIKCJMLDOCJK"
             });
             Crypt _crypt = new(authOptions);
             _loginHandler = new(authOptions, _userRepository.Object, _crypt);

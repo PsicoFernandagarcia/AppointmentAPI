@@ -16,5 +16,6 @@ namespace Appointment.Domain.Interfaces
         Task<bool> HasAnyAppointment(int patientId, int hostId);
         Task<IEnumerable<AppointmentYearInformationDto>> GetYearInformation(int year, int hostId, int? patientId);
         Task<IEnumerable<AppointmentDto>> GetLastAppointments(int hostId, int patientId, int totalCount);
+        Task<int> ReassignAppointments(int userFrom, int userTo);
     }
 }

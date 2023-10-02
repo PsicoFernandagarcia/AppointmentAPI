@@ -42,7 +42,7 @@ namespace Appointment.Domain.Results
         }
         public static async Task<Result<T>> Where<T>(this Task<Result<T>> resultTask, Func<T, bool> predicate)
         {
-            Result<T> result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
+            Result<T> result = await resultTask.ConfigureAwait(Result.Configuration.DefaultConfigureAwait);
             return result.Where(predicate);
         }
 
@@ -51,7 +51,7 @@ namespace Appointment.Domain.Results
             if (result.IsFailure)
                 return result;
 
-            if (await predicate(result.Value).ConfigureAwait(Result.DefaultConfigureAwait))
+            if (await predicate(result.Value).ConfigureAwait(Result.Configuration.DefaultConfigureAwait))
                 return result;
 
             return Result.Failure<T>("Clausule where is wrong");
@@ -59,8 +59,8 @@ namespace Appointment.Domain.Results
 
         public static async Task<Result<T>> Where<T>(this Task<Result<T>> resultTask, Func<T, Task<bool>> predicate)
         {
-            Result<T> result = await resultTask.ConfigureAwait(Result.DefaultConfigureAwait);
-            return await result.Where(predicate).ConfigureAwait(Result.DefaultConfigureAwait);
+            Result<T> result = await resultTask.ConfigureAwait(Result.Configuration.DefaultConfigureAwait);
+            return await result.Where(predicate).ConfigureAwait(Result.Configuration.DefaultConfigureAwait);
 
         }
 

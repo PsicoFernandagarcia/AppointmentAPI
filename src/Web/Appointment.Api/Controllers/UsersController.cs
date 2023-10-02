@@ -1,6 +1,7 @@
 ﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AuthUseCases.CreateUser;
 using Appointment.Application.UsersUseCase.GetUserByRole;
+using Appointment.Application.UsersUseCase.Reassign;
 using Appointment.Domain;
 using Appointment.Domain.Entities;
 using MediatR;
@@ -40,6 +41,11 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<User>), 200)]
         public async Task<IActionResult> GetCommon()
             => (await _mediator.Send(new GetUserByRoleQuery(RolesEnum.COMMON))).ToHttpResponse();
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> Delete(int id, int userTo)
+            => (await _mediator.Send(new ReassignUserCommand { UserFrom = id, UserTo = userTo })).ToHttpResponse();
 
     }
 }

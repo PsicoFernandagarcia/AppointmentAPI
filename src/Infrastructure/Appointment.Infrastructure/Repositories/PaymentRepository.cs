@@ -46,7 +46,7 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<IEnumerable<PaymentInformation>> GetYearInformation(int year, int hostId)
         => (await _context.Payments.Where(p => p.PaidAt.Year == year && p.HostId == hostId && p.Amount > 0)
-                                                    .GroupBy(p => new { p.Currency, p.PaidAt.Month, p.PatientId, p.HostId, p.Patient.LastName,p.Patient.Name   })
+                                                    .GroupBy(p => new { p.Currency, p.PaidAt.Month, p.PatientId, p.HostId, p.Patient.LastName, p.Patient.Name })
                                                     .Select(g => new PaymentInformation(
                                                         g.Key.PatientId,
                                                         g.Key.HostId,
@@ -58,6 +58,12 @@ namespace Appointment.Infrastructure.Repositories
             .ToListAsync())
             .OrderBy(g => g.Month)
             .ThenBy(g => g.PatientFullName);
+
+
+        public async Task<int> ReassignPayments(int userFrom, int userTo)
+         => await _context.Payments
+                .Where(p => p.PatientId == userFrom)
+                .ExecuteUpdateAsync(p => p.SetProperty(payment => payment.PatientId, userTo));
 
         public async Task<Payment> Update(Payment payment)
         {
