@@ -24,7 +24,7 @@ namespace Appointment.Application.UsersUseCase.GetUserByRole
             var user = await _userRepository.GetUserByRole(request.Role);
             if (user is null || !user.Any())
                 return Result.Success<IEnumerable<User>, ResultError>(new List<User>());
-            return Result.Success<IEnumerable<User>, ResultError>(user);
+            return Result.Success<IEnumerable<User>, ResultError>(user.OrderBy(u => u.FullName));
         }
     }
 }

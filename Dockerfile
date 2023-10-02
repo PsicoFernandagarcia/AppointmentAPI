@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine3.14 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine3.18 AS base
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://+:5000

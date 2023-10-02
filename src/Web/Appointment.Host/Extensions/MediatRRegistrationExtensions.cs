@@ -8,7 +8,7 @@ namespace Appointment.Host.Extensions
     {
         public static IServiceCollection AddMediatRConfigurations(this IServiceCollection services)
         {
-            services.AddMediatR(typeof(Application.Application));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.Application).Assembly));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             return services;
         }

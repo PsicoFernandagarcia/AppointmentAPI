@@ -13,6 +13,7 @@ namespace Appointment.Domain.Interfaces
         Task<IEnumerable<Payment>> Get(int patientId, int hostId, int count);
         Task<Payment> Get(int paymentId);
         Task<IEnumerable<PaymentInformation>> GetYearInformation(int year, int hostId);
+        Task<int> ReassignPayments(int userFrom, int userTo);
 
     }
 }

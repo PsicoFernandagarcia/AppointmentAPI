@@ -3,7 +3,6 @@ using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
