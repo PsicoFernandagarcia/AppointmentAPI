@@ -1,7 +1,7 @@
 ﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AuthUseCases.CreateUser;
+using Appointment.Application.UsersUseCase.DeleteUser;
 using Appointment.Application.UsersUseCase.GetUserByRole;
-using Appointment.Application.UsersUseCase.Reassign;
 using Appointment.Domain;
 using Appointment.Domain.Entities;
 using MediatR;
@@ -45,7 +45,7 @@ namespace Appointment.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Delete(int id, int userTo)
-            => (await _mediator.Send(new ReassignUserCommand { UserFrom = id, UserTo = userTo })).ToHttpResponse();
+            => (await _mediator.Send(new DeleteUserCommand { UserFrom = id, UserTo = userTo })).ToHttpResponse();
 
     }
 }

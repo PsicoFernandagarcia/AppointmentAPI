@@ -50,5 +50,16 @@ namespace Appointment.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return u;
         }
+
+        public async Task<int> Delete(int id)
+        {
+            var userToDelete = await _context.Users.FindAsync(id);
+            if (userToDelete is not null)
+            {
+                _context.Users.Remove(userToDelete);
+                return await _context.SaveChangesAsync();
+            }
+            return 0;
+        }
     }
 }

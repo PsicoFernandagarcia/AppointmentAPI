@@ -39,14 +39,14 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
                 await _appointmentRepository.Create(appointmentResult.Value);
                 var result = await DisableAvailability(request.AvailabilityId, appointmentResult.Value.Id, appointmentResult.Value.Patient?.FullName ?? appointmentResult.Value.With, cancellationToken);
                 if (result.IsFailure) return Result.Failure<Entities.Appointment, ResultError>(new CreationError(result.Error.Message));
-                await scope.CommitAsync();
-                await SendConfirmationEmail(request, cancellationToken);
+                await scope.CommitAsync(cancellationToken);
             }
             catch (Exception)
             {
-                await scope.RollbackAsync();
+                await scope.RollbackAsync(cancellationToken);
                 throw;
             }
+            await SendConfirmationEmail(request, cancellationToken);
             return appointmentResult.Value;
         }
 

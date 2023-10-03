@@ -12,5 +12,6 @@ namespace Appointment.Domain.Interfaces
         Task<User> CreateUser(User u);
         Task<User> UpdateUser(User u);
         Task<IList<User>> GetUserByRole(RolesEnum role);
+        Task<int> Delete(int id);
     }
 }
