@@ -1,10 +1,12 @@
 ﻿using Appointment.Application.PaymentUseCases.AddPayment;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +21,7 @@ namespace Appointment.Application.UsersUseCase.DeleteUser
 
     public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Result<bool, ResultError>>
     {
+        private readonly IOutputCacheStore _cachingStore;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IUserRepository _userRepository;
@@ -27,12 +30,14 @@ namespace Appointment.Application.UsersUseCase.DeleteUser
         public DeleteUserHandler(IPaymentRepository paymentRepository,
                                  IAppointmentRepository appointmentRepository,
                                  AppDbContext context,
-                                 IUserRepository userRepository)
+                                 IUserRepository userRepository,
+                                 IOutputCacheStore cachingStore)
         {
             _paymentRepository = paymentRepository;
             _appointmentRepository = appointmentRepository;
             _context = context;
             _userRepository = userRepository;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<bool, ResultError>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
@@ -44,6 +49,7 @@ namespace Appointment.Application.UsersUseCase.DeleteUser
                 await _appointmentRepository.ReassignAppointments(request.UserFrom, request.UserTo);
                 await _userRepository.Delete(request.UserFrom);
                 await scope.CommitAsync(cancellationToken);
+                await _cachingStore.EvictByTagAsync(CacheKeys.Users, cancellationToken);
             }
             catch (Exception)
             {

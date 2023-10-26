@@ -2,12 +2,14 @@
 using Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus;
 using Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions;
 using Appointment.Application.SendEmailUseCase.AppointmentCancelation;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Configuration;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -24,10 +26,12 @@ namespace Appointment.Test.Application.Appointments
         private readonly Mock<IAppointmentRepository> _appointmentRepository = new();
         private readonly Mock<IMediator> _mediator = new();
         private readonly CancelAppointmentHandler _handler;
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
+
         public CancelAppointmentHandlerShould()
         {
             var app = MockAppDbContext.GetMock();
-            _handler = new(_userRepository.Object, _appointmentRepository.Object, _mediator.Object, app.Object);
+            _handler = new(_userRepository.Object, _appointmentRepository.Object, _mediator.Object, app.Object, _cacheStore.Object);
         }
 
         [Fact]
@@ -43,6 +47,8 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Never);
+
         }
 
         [Fact]
@@ -63,6 +69,7 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Never);
 
         }
 
@@ -84,6 +91,7 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Never);
 
         }
 
@@ -105,6 +113,7 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Never);
 
         }
 
@@ -125,6 +134,7 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Once);
 
         }
 
@@ -144,6 +154,8 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [Fact]
@@ -162,6 +174,8 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(mr => mr.Send(It.IsAny<ChangeAvailabilityStatusCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(mr => mr.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(mr => mr.Send(It.IsAny<SendAppointmentCancelationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
     }

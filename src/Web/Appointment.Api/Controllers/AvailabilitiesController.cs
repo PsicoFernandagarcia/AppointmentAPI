@@ -1,10 +1,12 @@
 ﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AvailabilityUseCases.CreateAvailability;
 using Appointment.Application.AvailabilityUseCases.GetAvailability;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Threading.Tasks;
 
 namespace Appointment.Api.Controllers
@@ -50,6 +52,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
+        [OutputCache(PolicyName = CacheKeys.AvailabilitiesPolicy)]
+
         public async Task<IActionResult> Get([FromQuery] GetAvailabilityQuery query)
             => (await _mediator.Send(query)).ToHttpResponse();
 
@@ -57,6 +61,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
+        [OutputCache(PolicyName = CacheKeys.AvailabilitiesPolicy)]
+
         public async Task<IActionResult> GetMine([FromQuery] GetMyAvailabilityQuery query)
         {
             var queryToSend = new GetAvailabilityQuery();

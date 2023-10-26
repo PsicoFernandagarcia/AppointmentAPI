@@ -3,6 +3,7 @@ using Appointment.Application.AuthUseCases.Authenticate;
 using Appointment.Application.AuthUseCases.AuthenticateExternal;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace Appointment.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IOutputCacheStore _cache;
 
         public AuthController(IMediator mediator)
         {

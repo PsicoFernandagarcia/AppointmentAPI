@@ -1,7 +1,9 @@
 ﻿using Appointment.Application.PaymentUseCases.UpdateLatestPaymentSessions;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using FluentAssertions;
+using Microsoft.AspNetCore.OutputCaching;
 using Moq;
 using Xunit;
 
@@ -11,10 +13,12 @@ namespace Appointment.Test.Application.Payments
     {
         private readonly Mock<IPaymentRepository> _paymentRepository = new();
         private readonly UpdateLastPaymentSessionsHandler _handler;
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
+
 
         public UpdateLastPaymentHandlerShould()
         {
-            _handler = new(_paymentRepository.Object);
+            _handler = new(_paymentRepository.Object, _cacheStore.Object);
         }
         [Fact]
         public async Task Update_Payment_Because_There_Is_One_In_Database()
@@ -27,6 +31,8 @@ namespace Appointment.Test.Application.Payments
             result.IsSuccess.Should().BeTrue();
             _paymentRepository.Verify(p => p.Insert(It.IsAny<Payment>()), Times.Never);
             _paymentRepository.Verify(p => p.Update(It.IsAny<Payment>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Payments, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [Fact]
@@ -40,6 +46,8 @@ namespace Appointment.Test.Application.Payments
             result.IsSuccess.Should().BeTrue();
             _paymentRepository.Verify(p => p.Insert(It.IsAny<Payment>()), Times.Once);
             _paymentRepository.Verify(p => p.Update(It.IsAny<Payment>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Payments, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
 

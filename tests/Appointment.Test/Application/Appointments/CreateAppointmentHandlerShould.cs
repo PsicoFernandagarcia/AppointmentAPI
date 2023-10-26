@@ -9,6 +9,7 @@ using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using Moq;
 using Xunit;
 using Entities = Appointment.Domain.Entities;
@@ -20,11 +21,13 @@ namespace Appointment.Test.Application.Appointments
         private readonly Mock<IAppointmentRepository> _appointmentRepository = new();
         private readonly Mock<IMediator> _mediator = new();
         private readonly CreateAppointmentHandler _handler;
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
+
 
         public CreateAppointmentHandlerShould()
         {
             var app = MockAppDbContext.GetMock();
-            _handler = new(_appointmentRepository.Object, _mediator.Object, app.Object);
+            _handler = new(_appointmentRepository.Object, _mediator.Object, app.Object,_cacheStore.Object);
         }
 
         [Fact]
@@ -44,6 +47,8 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(m => m.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediator.Verify(m => m.Send(It.IsAny<SendAppointmentConfirmationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _appointmentRepository.Verify(ar => ar.Create(It.IsAny<Entities.Appointment>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [Fact]
@@ -62,6 +67,8 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Verify(m => m.Send(It.IsAny<UpdateLastPaymentSessionsCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _mediator.Verify(m => m.Send(It.IsAny<SendAppointmentConfirmationEmailCommand>(), It.IsAny<CancellationToken>()), Times.Never);
             _appointmentRepository.Verify(ar => ar.Create(It.IsAny<Entities.Appointment>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Appointments, It.IsAny<CancellationToken>()), Times.Never);
+
         }
 
     }

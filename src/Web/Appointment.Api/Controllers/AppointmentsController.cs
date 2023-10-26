@@ -7,10 +7,12 @@ using Appointment.Application.AppointmentUseCases.GetLastAppointment;
 using Appointment.Application.AppointmentUseCases.GetMyAppointment;
 using Appointment.Application.AppointmentUseCases.GetYearInformation;
 using Appointment.Application.AppointmentUseCases.HasAnyAppointment;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -68,6 +70,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
+        [OutputCache(PolicyName = CacheKeys.AppointmentsPolicy)]
+
         public async Task<IActionResult> Get([FromQuery] GetAppointmentsByFilterQuery query)
         {
             query.UserId = int.Parse(User.Identity.Name);
@@ -78,6 +82,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
+        [OutputCache(PolicyName = CacheKeys.AppointmentsPolicy)]
+
         public async Task<IActionResult> GetLastAppointments([FromQuery] GetLastAppointmentsQuery query)
         {
             return (await _mediator.Send(query)).ToHttpResponse();
@@ -87,6 +93,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
+        [OutputCache(PolicyName = CacheKeys.AppointmentsPolicy)]
+
         public async Task<IActionResult> Get([FromQuery] HasAnyAppointmentQuery query)
         {
             if (query.PatientId <= 0)
@@ -98,6 +106,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(IEnumerable<AppointmentYearInformationDto>), 200)]
+        [OutputCache(PolicyName = CacheKeys.AppointmentsPolicy)]
+
         public async Task<IActionResult> GetYearInformation([FromQuery] GetYearInformationQuery query)
         {
             return (await _mediator.Send(query)).ToHttpResponse();

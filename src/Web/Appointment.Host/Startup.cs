@@ -26,7 +26,6 @@ namespace Appointment.Host
                 .AddVersioningConfigurations()
                 .AddHttpClientRegistration()
                 .AddHealthChecksConfigurations(Configuration)
-                .AddSwaggerConfigurations()
                 .AddMediatRConfigurations()
             ;
 
@@ -35,6 +34,6 @@ namespace Appointment.Host
                 .UseInfrastructure(env, context)
                 .UseSwaggerConfigurations(env)
                 .UseHealthCheckConfigurations()
-                .UseCorsConfigurations();
+            ;
     }
 }

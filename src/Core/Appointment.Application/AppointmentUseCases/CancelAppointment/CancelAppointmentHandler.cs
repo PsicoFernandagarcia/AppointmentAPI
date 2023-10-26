@@ -7,6 +7,7 @@ using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,13 +21,20 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IMediator _mediator;
         private readonly AppDbContext _context;
+        private readonly IOutputCacheStore _cachingStore;
 
-        public CancelAppointmentHandler(IUserRepository userRepository, IAppointmentRepository appointmentRepository, IMediator mediator, AppDbContext context)
+
+        public CancelAppointmentHandler(IUserRepository userRepository,
+                                        IAppointmentRepository appointmentRepository,
+                                        IMediator mediator,
+                                        AppDbContext context,
+                                        IOutputCacheStore cachingStore)
         {
             _userRepository = userRepository;
             _appointmentRepository = appointmentRepository;
             _mediator = mediator;
             _context = context;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<bool, ResultError>> Handle(CancelAppointmentsCommand request, CancellationToken cancellationToken)
@@ -40,7 +48,7 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                 return Result.Failure<bool, ResultError>("Appointment not valid or you don't have permissions to do this");
 
             appointment.ChangeStatus(AppointmentStatus.CANCELED);
-            await using var scope = await _context.Database.BeginTransactionAsync();
+            await using var scope = await _context.Database.BeginTransactionAsync(cancellationToken);
 
             try
             {
@@ -53,7 +61,7 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                     NewAppointmentAdded = false
                 });
 
-                await scope.CommitAsync();
+                await scope.CommitAsync(cancellationToken);
                 await _mediator.Send(new SendAppointmentCancelationEmailCommand
                 {
                     UserId = appointment.PatientId,
@@ -66,10 +74,11 @@ namespace Appointment.Application.AppointmentUseCases.CancelAppointment
                 await scope.RollbackAsync();
                 throw;
             }
+            await _cachingStore.EvictByTagAsync(CacheKeys.Appointments, cancellationToken);
             return Result.Success<bool, ResultError>(true);
         }
 
-        private bool isValidAppointmentToDelete(int userId, Domain.Entities.Appointment appointment)
+        private static bool isValidAppointmentToDelete(int userId, Domain.Entities.Appointment appointment)
             => !(appointment is null)
                 && appointment.HostId == userId
                 || (

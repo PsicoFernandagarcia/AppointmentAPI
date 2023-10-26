@@ -1,8 +1,10 @@
 ﻿using Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using FluentAssertions;
+using Microsoft.AspNetCore.OutputCaching;
 using Moq;
 using Xunit;
 
@@ -13,9 +15,11 @@ namespace Appointment.Test.Application.Availabilities
         private readonly Mock<IUserRepository> _userRepository = new();
         private readonly Mock<IAvailabilityRepository> _availabilityRepository = new();
         private readonly ChangeAvailabilityStatusHandler _handler;
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
+
         public ChangeAvailabilityStatusHandlerShould()
         {
-            _handler = new(_userRepository.Object, _availabilityRepository.Object);
+            _handler = new(_userRepository.Object, _availabilityRepository.Object, _cacheStore.Object);
         }
 
         [Fact]
@@ -31,6 +35,8 @@ namespace Appointment.Test.Application.Availabilities
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();
             _availabilityRepository.Verify(x => x.Update(It.IsAny<Availability>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [Fact]
@@ -49,6 +55,8 @@ namespace Appointment.Test.Application.Availabilities
             _availabilityRepository.Verify(x => x.Update(It.Is<Availability>(
                 av => av.AppointmentId == 0 && av.AppointmentWith == string.Empty
                 )), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [Fact]
@@ -62,6 +70,8 @@ namespace Appointment.Test.Application.Availabilities
             result.IsSuccess.Should().BeFalse();
             result.Error.Should().BeOfType<ResultError>();
             _availabilityRepository.Verify(x => x.Update(It.IsAny<Availability>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Never);
+
         }
     }
 }

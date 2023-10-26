@@ -8,6 +8,7 @@ using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Configuration;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,11 +21,17 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly AppDbContext _context;
         private readonly IMediator _mediator;
-        public CreateAppointmentHandler(IAppointmentRepository appointmentRepository, IMediator mediator, AppDbContext context)
+        private readonly IOutputCacheStore _cachingStore;
+
+        public CreateAppointmentHandler(IAppointmentRepository appointmentRepository,
+                                        IMediator mediator,
+                                        AppDbContext context,
+                                        IOutputCacheStore cachingStore)
         {
             _appointmentRepository = appointmentRepository;
             _mediator = mediator;
             _context = context;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<Entities.Appointment, ResultError>> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
@@ -46,11 +53,13 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
                 await scope.RollbackAsync(cancellationToken);
                 throw;
             }
+            await _cachingStore.EvictByTagAsync(CacheKeys.Appointments, cancellationToken);
+
             await SendConfirmationEmail(request, cancellationToken);
             return appointmentResult.Value;
         }
 
-        private Result<Entities.Appointment> MapToEntity(CreateAppointmentCommand request)
+        private static Result<Entities.Appointment> MapToEntity(CreateAppointmentCommand request)
             => Entities.Appointment.Create(0, request.Title, request.DateFrom, request.DateTo,
                 request.With, request.CreatedById, request.Color, false, request.HostId
                 , request.PatientId, AppointmentStatus.CREATED, DateTime.Now
