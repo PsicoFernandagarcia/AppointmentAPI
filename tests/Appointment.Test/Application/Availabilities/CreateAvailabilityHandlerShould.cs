@@ -1,8 +1,10 @@
 ﻿using Appointment.Application.AvailabilityUseCases.CreateAvailability;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using FluentAssertions;
+using Microsoft.AspNetCore.OutputCaching;
 using Moq;
 using Xunit;
 
@@ -13,10 +15,12 @@ namespace Appointment.Test.Application.Availabilities
         private readonly Mock<IUserRepository> _userRepository = new();
         private readonly Mock<IAvailabilityRepository> _availabilityRepository = new();
         private readonly CreateAvailabilityHandler _createAvailabilityHandler;
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
+
 
         public CreateAvailabilityHandlerShould()
         {
-            _createAvailabilityHandler = new(_userRepository.Object, _availabilityRepository.Object);
+            _createAvailabilityHandler = new(_userRepository.Object, _availabilityRepository.Object, _cacheStore.Object);
         }
 
         private List<Availability> GetAvailabilities()
@@ -58,6 +62,8 @@ namespace Appointment.Test.Application.Availabilities
             result.IsSuccess.Should().BeTrue();
             result.Value.Should().BeOfType<Availability>();
             _availabilityRepository.Verify(x => x.Insert(It.IsAny<Availability>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [InlineData(1, 60, "2022/10/5 11:00")]
@@ -89,6 +95,8 @@ namespace Appointment.Test.Application.Availabilities
             result.Error.Should().BeOfType<CreationError>();
             result.Error.Message.Should().Contain("there is already an appointment at this time");
             _availabilityRepository.Verify(x => x.Insert(It.IsAny<Availability>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Never);
+
         }
 
         [Fact]
@@ -104,6 +112,8 @@ namespace Appointment.Test.Application.Availabilities
             result.Error.Should().BeOfType<ResultError>();
             result.Error.Message.Should().Contain("host does not exists");
             _availabilityRepository.Verify(x => x.Insert(It.IsAny<Availability>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Never);
+
         }
 
         [Fact]
@@ -132,6 +142,8 @@ namespace Appointment.Test.Application.Availabilities
             result.Value.Should().HaveCount(GetAvailabilities().Count);
             _availabilityRepository.Verify(x => x.Insert(It.IsAny<IEnumerable<Availability>>()), Times.Once);
             _availabilityRepository.Verify(x => x.Delete(It.IsAny<IEnumerable<int>>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Once);
+
         }
 
         [Fact]
@@ -161,6 +173,8 @@ namespace Appointment.Test.Application.Availabilities
             result.Error.Message.Should().Contain("there is already an appointment at this time");
             _availabilityRepository.Verify(x => x.Insert(It.IsAny<Availability>()), Times.Never);
             _availabilityRepository.Verify(x => x.Delete(It.IsAny<IEnumerable<int>>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Never);
+
         }
 
         [Fact]
@@ -190,6 +204,8 @@ namespace Appointment.Test.Application.Availabilities
             result.Error.Message.Should().Contain("host does not exists");
             _availabilityRepository.Verify(x => x.Insert(It.IsAny<Availability>()), Times.Never);
             _availabilityRepository.Verify(x => x.Delete(It.IsAny<IEnumerable<int>>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Availabilities, It.IsAny<CancellationToken>()), Times.Never);
+
         }
     }
 }

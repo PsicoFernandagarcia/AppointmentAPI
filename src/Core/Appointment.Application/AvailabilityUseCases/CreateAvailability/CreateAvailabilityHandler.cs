@@ -1,8 +1,10 @@
-﻿using Appointment.Domain.Entities;
+﻿using Appointment.Domain;
+using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,11 +17,14 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
     {
         private readonly IUserRepository _userRepository;
         private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IOutputCacheStore _cachingStore;
 
-        public CreateAvailabilityHandler(IUserRepository userRepository, IAvailabilityRepository availabilityRepository)
+
+        public CreateAvailabilityHandler(IUserRepository userRepository, IAvailabilityRepository availabilityRepository, IOutputCacheStore cachingStore)
         {
             _userRepository = userRepository;
             _availabilityRepository = availabilityRepository;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<Availability, ResultError>> Handle(CreateAvailabilityCommand request,
@@ -32,6 +37,8 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
                                                                 request.DateOfAvailability.AddMinutes(request.AmountOfTime));
 
             if (availabilities.Any()) return Result.Failure<Availability, ResultError>(new CreationError("there is already an appointment at this time"));
+            
+            await _cachingStore.EvictByTagAsync(CacheKeys.Availabilities, cancellationToken);
             return await _availabilityRepository.Insert(Availability.Create(0, request.HostId, request.DateOfAvailability,
                 request.AmountOfTime, true).Value);
         }
@@ -47,6 +54,8 @@ namespace Appointment.Application.AvailabilityUseCases.CreateAvailability
 
             if (request.AvailabilitiesToRemove.Any())
                 await _availabilityRepository.Delete(request.AvailabilitiesToRemove);
+
+            await _cachingStore.EvictByTagAsync(CacheKeys.Availabilities, cancellationToken);
 
             return Result.Success<IEnumerable<Availability>, ResultError>(await _availabilityRepository.Insert(MapAvailabilitiesDto(request.Availabilities)));
         }

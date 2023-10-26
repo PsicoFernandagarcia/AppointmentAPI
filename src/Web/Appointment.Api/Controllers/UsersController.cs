@@ -7,6 +7,7 @@ using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,22 +31,27 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(User), 200)]
         [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
-            => (await _mediator.Send(command)).ToHttpResponse();
+        =>(await _mediator.Send(command)).ToHttpResponse();
+        
 
         [HttpGet("hosts")]
+        [OutputCache(PolicyName = CacheKeys.UsersPolicy)]
         [ProducesResponseType(typeof(IEnumerable<User>), 200)]
         public async Task<IActionResult> GetHosts()
-            => (await _mediator.Send(new GetUserByRoleQuery(RolesEnum.HOST))).ToHttpResponse();
+        => (await _mediator.Send(new GetUserByRoleQuery(RolesEnum.HOST))).ToHttpResponse();
+
 
         [HttpGet("patients")]
         [ProducesResponseType(typeof(IEnumerable<User>), 200)]
+        [OutputCache(PolicyName = CacheKeys.UsersPolicy)]
         public async Task<IActionResult> GetCommon()
             => (await _mediator.Send(new GetUserByRoleQuery(RolesEnum.COMMON))).ToHttpResponse();
 
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Delete(int id, int userTo)
-            => (await _mediator.Send(new DeleteUserCommand { UserFrom = id, UserTo = userTo })).ToHttpResponse();
+        => (await _mediator.Send(new DeleteUserCommand { UserFrom = id, UserTo = userTo })).ToHttpResponse();
+
 
     }
 }

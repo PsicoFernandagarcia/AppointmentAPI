@@ -1,11 +1,12 @@
 ﻿using Appointment.Application.AuthUseCases.CreateUser;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Domain.Infrastructure;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
-using Appointment.Infrastructure.Repositories;
 using Appointment.Infrastructure.Security;
 using FluentAssertions;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -16,6 +17,7 @@ namespace Appointment.Test.Application.Auth
     {
         private readonly Mock<IUserRepository> _userRepository = new();
         private readonly Mock<IRoleRepository> _roleRepository = new();
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
         private readonly CreateUserHandler _createUserHandler;
 
         public CreateUserHandlerShould()
@@ -26,7 +28,7 @@ namespace Appointment.Test.Application.Auth
                 Secret = "AADDFIKCJMLDOCJK"
             });
             Crypt _crypt = new(authOptions);
-            _createUserHandler = new(_userRepository.Object, _roleRepository.Object, _crypt);
+            _createUserHandler = new(_userRepository.Object, _roleRepository.Object, _crypt, _cacheStore.Object);
         }
 
         [Fact]
@@ -39,6 +41,7 @@ namespace Appointment.Test.Application.Auth
             newUserResult.IsSuccess.Should().BeTrue();
             newUserResult.Value.Should().BeOfType<User>();
             _userRepository.Verify(x => x.CreateUser(It.IsAny<User>()), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Users, It.IsAny<CancellationToken>()), Times.Once);
 
         }
 
@@ -56,6 +59,7 @@ namespace Appointment.Test.Application.Auth
             newUserResult.IsSuccess.Should().BeFalse();
             newUserResult.Error.Should().BeOfType<ResultError>();
             _userRepository.Verify(x => x.CreateUser(It.IsAny<User>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Users, It.IsAny<CancellationToken>()), Times.Never);
 
         }
 
@@ -70,6 +74,7 @@ namespace Appointment.Test.Application.Auth
             newUserResult.Error.Should().BeOfType<CreationError>();
             newUserResult.Error.Message.Should().Contain("User already exists");
             _userRepository.Verify(x => x.CreateUser(It.IsAny<User>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Users, It.IsAny<CancellationToken>()), Times.Never);
 
         }
 
@@ -83,6 +88,7 @@ namespace Appointment.Test.Application.Auth
             newUserResult.Error.Should().BeOfType<CreationError>();
             newUserResult.Error.Message.Should().Contain("Password empty");
             _userRepository.Verify(x => x.CreateUser(It.IsAny<User>()), Times.Never);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Users, It.IsAny<CancellationToken>()), Times.Never);
 
         }
 

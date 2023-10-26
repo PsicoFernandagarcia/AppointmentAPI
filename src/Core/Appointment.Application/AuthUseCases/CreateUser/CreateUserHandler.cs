@@ -1,9 +1,11 @@
-﻿using Appointment.Domain.Entities;
+﻿using Appointment.Domain;
+using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Security;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,12 +18,15 @@ namespace Appointment.Application.AuthUseCases.CreateUser
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ICrypt _crypt;
+        private readonly IOutputCacheStore _cachingStore;
 
-        public CreateUserHandler(IUserRepository userRepository, IRoleRepository roleRepository, ICrypt crypt)
+
+        public CreateUserHandler(IUserRepository userRepository, IRoleRepository roleRepository, ICrypt crypt, IOutputCacheStore cachingStore)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _crypt = crypt;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<User, ResultError>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -40,10 +45,11 @@ namespace Appointment.Application.AuthUseCases.CreateUser
             if (userEntityResult.IsFailure) return Result.Failure<User, ResultError>(userEntityResult.Error);
             var userEntity = userEntityResult.Value;
             await _userRepository.CreateUser(userEntity);
+            await _cachingStore.EvictByTagAsync(CacheKeys.Users, cancellationToken);
             return userEntity;
         }
 
-        private (byte[] passwordHash, byte[] passwordSalt) CreatePasswordHash(string password)
+        private static (byte[] passwordHash, byte[] passwordSalt) CreatePasswordHash(string password)
         {
             byte[] passwordHash;
             byte[] passwordSalt;

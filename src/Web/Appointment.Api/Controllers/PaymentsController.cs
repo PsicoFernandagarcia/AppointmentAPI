@@ -2,10 +2,12 @@
 using Appointment.Application.PaymentUseCases.AddPayment;
 using Appointment.Application.PaymentUseCases.GetLatestsPaymentsByHost;
 using Appointment.Application.PaymentUseCases.GetPaymentsFromPatientByHost;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Threading.Tasks;
 
 namespace Appointment.Api.Controllers
@@ -47,6 +49,7 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
+        [OutputCache(PolicyName = CacheKeys.PaymentsPolicy)]
         public async Task<IActionResult> GetLatests([FromQuery] GetLatestsPaymentsByHostQuery query)
         {
             if (query.HostId == 0)
@@ -58,6 +61,7 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
+        [OutputCache(PolicyName = CacheKeys.PaymentsPolicy)]
         public async Task<IActionResult> Get([FromQuery] GetPaymentsFromPatientByHostQuery query)
         {
             if (query.HostId == 0)
@@ -69,6 +73,8 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(User), 200)]
+        [OutputCache(PolicyName = CacheKeys.PaymentsPolicy, VaryByQueryKeys = new string[] { "Year" })]
+
         public async Task<IActionResult> YearReport([FromQuery] GetPaymentsInformationQuery query)
         {
             if (query.HostId == 0)

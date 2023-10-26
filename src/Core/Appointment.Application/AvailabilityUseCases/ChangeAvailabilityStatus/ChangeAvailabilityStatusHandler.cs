@@ -1,7 +1,9 @@
-﻿using Appointment.Domain.Interfaces;
+﻿using Appointment.Domain;
+using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,11 +14,14 @@ namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
     {
         private readonly IUserRepository _userRepository;
         private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IOutputCacheStore _cachingStore;
 
-        public ChangeAvailabilityStatusHandler(IUserRepository userRepository, IAvailabilityRepository availabilityRepository)
+
+        public ChangeAvailabilityStatusHandler(IUserRepository userRepository, IAvailabilityRepository availabilityRepository, IOutputCacheStore cachingStore)
         {
             _userRepository = userRepository;
             _availabilityRepository = availabilityRepository;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<bool, ResultError>> Handle(ChangeAvailabilityStatusCommand request,
@@ -36,6 +41,7 @@ namespace Appointment.Application.AvailabilityUseCases.ChangeAvailabilityStatus
                 availabilityEntity.AppointmentWith = string.Empty;
             }
             await _availabilityRepository.Update(availabilityEntity);
+            await _cachingStore.EvictByTagAsync(CacheKeys.Availabilities, cancellationToken);
             return true;
 
         }

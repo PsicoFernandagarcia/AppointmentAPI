@@ -1,8 +1,10 @@
-﻿using Appointment.Domain.Entities;
+﻿using Appointment.Domain;
+using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.AspNetCore.OutputCaching;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,9 +14,12 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
     public class UpdatePaymentHandler : IRequestHandler<UpdatePaymentCommand, Result<Payment, ResultError>>
     {
         private readonly IPaymentRepository _paymentRepository;
-        public UpdatePaymentHandler(IPaymentRepository paymentRepository)
+        private readonly IOutputCacheStore _cachingStore;
+
+        public UpdatePaymentHandler(IPaymentRepository paymentRepository, IOutputCacheStore cachingStore)
         {
             _paymentRepository = paymentRepository;
+            _cachingStore = cachingStore;
         }
 
         public async Task<Result<Payment, ResultError>> Handle(UpdatePaymentCommand request, CancellationToken cancellationToken)
@@ -32,6 +37,7 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
                 lastPayment.SessionsLeft += sessionLeft;
                 await _paymentRepository.Update(lastPayment);
             }
+            await _cachingStore.EvictByTagAsync(CacheKeys.Payments, cancellationToken);
             return await _paymentRepository.Update(paymentResult.Value);
         }
 

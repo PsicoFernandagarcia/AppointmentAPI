@@ -1,5 +1,7 @@
 ﻿using Appointment.Application.UsersUseCase.DeleteUser;
+using Appointment.Domain;
 using Appointment.Domain.Interfaces;
+using Microsoft.AspNetCore.OutputCaching;
 using Moq;
 using Xunit;
 
@@ -10,12 +12,13 @@ namespace Appointment.Test.Application.Users
         private readonly Mock<IPaymentRepository> _paymentRepository = new();
         private readonly Mock<IAppointmentRepository> _appointmentRepository=new();
         private readonly Mock<IUserRepository> _userRepository = new();
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
         private readonly DeleteUserHandler _handler;
 
         public DeleteUserShould()
         {
             var _context = MockAppDbContext.GetMock();
-            _handler = new(_paymentRepository.Object, _appointmentRepository.Object, _context.Object, _userRepository.Object);
+            _handler = new(_paymentRepository.Object, _appointmentRepository.Object, _context.Object, _userRepository.Object, _cacheStore.Object);
 
         }
 
@@ -34,6 +37,7 @@ namespace Appointment.Test.Application.Users
             _paymentRepository.Verify(pr => pr.ReassignPayments(userToDelete, userToReassign), Times.Once);
             _appointmentRepository.Verify(ap => ap.ReassignAppointments(userToDelete, userToReassign), Times.Once);
             _userRepository.Verify(u=> u.Delete(userToDelete), Times.Once);
+            _cacheStore.Verify(cs => cs.EvictByTagAsync(CacheKeys.Users, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

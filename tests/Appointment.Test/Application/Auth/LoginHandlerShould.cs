@@ -6,6 +6,7 @@ using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Security;
 using FluentAssertions;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
@@ -16,6 +17,7 @@ namespace Appointment.Test.Application.Auth
     {
         private readonly Mock<IUserRepository> _userRepository = new();
         private readonly Mock<IRoleRepository> _roleRepository = new();
+        private readonly Mock<IOutputCacheStore> _cacheStore = new();
         private readonly CreateUserHandler _createUserHandler;
 
         private readonly LoginHandler _loginHandler;
@@ -28,7 +30,7 @@ namespace Appointment.Test.Application.Auth
             });
             Crypt _crypt = new(authOptions);
             _loginHandler = new(authOptions, _userRepository.Object, _crypt);
-            _createUserHandler = new(_userRepository.Object, _roleRepository.Object, _crypt);
+            _createUserHandler = new(_userRepository.Object, _roleRepository.Object, _crypt, _cacheStore.Object);
         }
 
         [Fact]
