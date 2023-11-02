@@ -26,7 +26,7 @@ namespace Appointment.Infrastructure.Security
             var salt = cipherBytes.Take(16).ToArray();
             var iv = cipherBytes.Skip(16).Take(16).ToArray();
             var encrypted = cipherBytes.Skip(32).ToArray();
-            var pdb = new Rfc2898DeriveBytes(_authConfig.HashValue, salt, 100, HashAlgorithmName.SHA256);
+            var pdb = new Rfc2898DeriveBytes(_authConfig.HashValue, salt, 100, HashAlgorithmName.SHA1);
             encryptor.Key = pdb.GetBytes(32);
             encryptor.Padding = PaddingMode.PKCS7;
             encryptor.Mode = CipherMode.CBC;
