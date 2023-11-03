@@ -34,7 +34,7 @@ namespace Appointment.Test.Application.Auth
         [Fact]
         public async Task Create_User_Due_To_Valid_User_Information()
         {
-            var pass = "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim";
+            var pass = "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981";
             _userRepository.Setup(ur => ur.GetUserByName(It.IsAny<string>())).ReturnsAsync(null as User);
             var newUserResult = await _createUserHandler.Handle(new CreateUserCommand("UserName", "Name", "LastName", "email", pass, true, 0), CancellationToken.None);
 
@@ -46,10 +46,10 @@ namespace Appointment.Test.Application.Auth
         }
 
 
-        [InlineData("", "Name", "LastName", "email", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim", true)]
-        [InlineData("fsdfsda", "", "LastName", "email", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim", true)]
-        [InlineData("fsdfsda", "ffsdsafdsa", "", "email", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim", true)]
-        [InlineData("fsdfsda", "fdsafdsfdsa", "LastName", "", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim", true)]
+        [InlineData("", "Name", "LastName", "email", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981", true)]
+        [InlineData("fsdfsda", "", "LastName", "email", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981", true)]
+        [InlineData("fsdfsda", "ffsdsafdsa", "", "email", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981", true)]
+        [InlineData("fsdfsda", "fdsafdsfdsa", "LastName", "", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981", true)]
         [Theory]
         public async Task Not_Create_User_Due_To_Invalid_User_Information(string userName, string name, string lastName, string email, string pass, bool isExternal)
         {
@@ -66,7 +66,7 @@ namespace Appointment.Test.Application.Auth
         [Fact]
         public async Task Not_Create_User_Because_User_Already_Exists()
         {
-            var pass = "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim";
+            var pass = "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981";
             _userRepository.Setup(ur => ur.GetUserByName(It.IsAny<string>())).ReturnsAsync(
                  User.Create(1, "UserName", "email", null, null, null, true, "name", "lastName", 0).Value);
             var newUserResult = await _createUserHandler.Handle(new CreateUserCommand("UserName", "Name", "LastName", "email", pass, true, 0), CancellationToken.None);
