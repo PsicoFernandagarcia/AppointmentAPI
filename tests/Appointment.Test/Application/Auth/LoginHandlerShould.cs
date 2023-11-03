@@ -36,7 +36,7 @@ namespace Appointment.Test.Application.Auth
         [Fact]
         public async Task Allow_User_To_Login_Due_To_Valid_Credentials()
         {
-            var pass = "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim";
+            var pass = "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981";
             _userRepository.Setup(ur => ur.GetUserByName(It.IsAny<string>())).ReturnsAsync(null as User);
             var newUserResult = await _createUserHandler.Handle(new CreateUserCommand("UserName", "Name", "LastName", "email", pass, true, 0), CancellationToken.None);
             _userRepository.Setup(ur => ur.GetUserByName(It.IsAny<string>())).ReturnsAsync(newUserResult.Value);
@@ -49,8 +49,8 @@ namespace Appointment.Test.Application.Auth
 
         }
 
-        [InlineData("TestName", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim", "TestName", "L0IwV+ZsOqRUQfLI7scAlCfYwWtgfj8YYa74gg96MGhAqVJM/uTYLPtSU7c8lSzY")]
-        [InlineData("TestName", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim", "TestName2", "ynrgYZKi+RLVhwXwrY2yGUSEpuSVRuVlK64Jz4qESC1x9u+8CuI8lMtA6Aj9BQim")]
+        [InlineData("TestName", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981", "TestName", "vsJOzyooWpfWsb1jio0oBVrKckitK + fvKfPTu4Jd68LumzSEI2AWasB9y3oxtFyw")]
+        [InlineData("TestName", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981", "TestName2", "928YNOSAI7nGS/GpKAFFbOmvbtTK/unjj5pko2BEcw2sESReciWlKjT8a3hRy981")]
         [Theory]
         public async Task Dont_Allow_User_To_Login_Due_To_Invalid_Credentials(string userNameToCreate, string passToCreate, string userNameToLogin, string passToLogin)
         {
