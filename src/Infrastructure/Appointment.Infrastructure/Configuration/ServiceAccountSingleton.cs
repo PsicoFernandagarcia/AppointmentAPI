@@ -17,6 +17,8 @@ namespace Appointment.Infrastructure.Configuration
     public interface IServiceAccountSingleton
     {
         Task<IEnumerable<CalendarEvent>> GetEventsFromMonth(int year, int month);
+        Task<IEnumerable<Event>> GetNext30DaysEvents();
+        Task UpdateEvent(Event e);
     }
     public class ServiceAccountSingleton : IServiceAccountSingleton
     {
@@ -69,6 +71,22 @@ namespace Appointment.Infrastructure.Configuration
                                .AsEnumerable();
         }
 
+        public async Task<IEnumerable<Event>> GetNext30DaysEvents()
+        {
+            // await CreateEvent();
+            var listRequest = _calendarService.Events.List(_calendarConfig.CalendarId);
+            listRequest.TimeMin = DateTime.Now;
+            listRequest.TimeMax = DateTime.Now.AddDays(30);
+            listRequest.ShowDeleted = false;
+            listRequest.SingleEvents = true;
+            listRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+            Events events = await listRequest.ExecuteAsync();
+
+            return events.Items.Where(i => i.Start.DateTime.HasValue)
+                               .OrderBy(i => i.Start.DateTime)
+                               .AsEnumerable(); ;
+        }
+
         public async Task CreateEvent()
         {
             var @event = new Event
@@ -89,6 +107,12 @@ namespace Appointment.Infrastructure.Configuration
             var result = _calendarService.Events.Insert(@event, _calendarConfig.CalendarId);
             result.SendNotifications = true;
             await result.ExecuteAsync();
+        }
+
+        public async Task UpdateEvent(Event e)
+        {
+            var request = _calendarService.Events.Update(e, _calendarConfig.CalendarId, e.Id);
+            await request.ExecuteAsync();
         }
 
     }
