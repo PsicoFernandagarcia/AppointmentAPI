@@ -153,7 +153,7 @@ namespace Appointment.Host.Schedule
                     });
                     if (appointmentCreated.IsSuccess)
                     {
-                        e.Summary = $"{HttpUtility.UrlEncode(user.Name)} {HttpUtility.UrlEncode(user.LastName)} {user.Email}";
+                        e.Summary = $"{user.Name} {user.LastName} {user.Email}";
                         await _serviceAccountSingleton.UpdateEvent(e);
                     }
                 }
@@ -185,8 +185,8 @@ namespace Appointment.Host.Schedule
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 var users = await dbContext.Users.Where(u =>
-                            (u.Name.Contains(name) || u.Name.Contains(lastName))
-                            && (u.LastName.Contains(name) || u.LastName.Contains(lastName))
+                            (EF.Functions.Like(u.Name, $"%{name}%") || EF.Functions.Like(u.Name, $"%{lastName}%"))
+                            && (EF.Functions.Like(u.LastName, $"%{name}%") || EF.Functions.Like(u.LastName, $"%{lastName}%"))
                             )
                             .ToListAsync();
                 return users.Count() == 1 ? users.First() : null;
