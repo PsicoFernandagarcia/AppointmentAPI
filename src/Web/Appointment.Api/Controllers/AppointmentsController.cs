@@ -70,7 +70,7 @@ namespace Appointment.Api.Controllers
         [ProducesResponseType(typeof(string), 401)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(IEnumerable<Domain.Entities.AppointmentDto>), 200)]
-        [OutputCache(PolicyName = CacheKeys.AppointmentsPolicy)]
+        
 
         public async Task<IActionResult> Get([FromQuery] GetAppointmentsByFilterQuery query)
         {
