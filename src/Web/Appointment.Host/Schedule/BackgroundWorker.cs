@@ -84,8 +84,8 @@ namespace Appointment.Host.Schedule
 
         private async Task DoWork()
         {
-            await SendReminderEmail();
             await AssignAppointmentsFromCalendar();
+            await SendReminderEmail();
         }
 
         private async Task SendReminderEmail()
