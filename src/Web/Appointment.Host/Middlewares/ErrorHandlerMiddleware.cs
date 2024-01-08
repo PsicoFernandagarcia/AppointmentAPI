@@ -13,7 +13,7 @@ namespace Appointment.Host.Middlewares
         private readonly RequestDelegate _next;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<ErrorHandlerMiddleware> _logger;
-        private string _body;
+        private readonly string _body;
         public ErrorHandlerMiddleware(RequestDelegate next, IWebHostEnvironment webHostEnvironment,
             ILogger<ErrorHandlerMiddleware> logger)
         {

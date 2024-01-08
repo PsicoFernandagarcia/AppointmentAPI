@@ -35,11 +35,6 @@ namespace Appointment.Infrastructure.Configuration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<User>()
-            //    .HasMany(u => u.Roles);
-
-            //modelBuilder.Entity<Role>()
-            //    .HasMany(r=>)
         }
 
     }
