@@ -39,7 +39,8 @@ namespace Appointment.Infrastructure.Repositories
                                   .FirstOrDefaultAsync();
 
         public async Task<IEnumerable<Payment>> GetLatest(int hostId)
-            => await _context.Payments.Where(p => p.HostId == hostId)
+            => await _context.Payments.Include(p => p.Patient)
+                                      .Where(p => p.HostId == hostId)
                                       .GroupBy(p => new { p.HostId, p.PatientId })
                                       .Select(p => p.OrderByDescending(x => x.PaidAt).FirstOrDefault())
                                       .ToListAsync();

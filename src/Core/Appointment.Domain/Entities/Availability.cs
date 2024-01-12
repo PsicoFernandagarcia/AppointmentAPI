@@ -11,7 +11,7 @@ namespace Appointment.Domain.Entities
         public int Id { get; private set; }
         public int HostId { get; private set; }
         [IgnoreDataMember]
-        public virtual User Host { get; private set; }
+        public User Host { get; private set; }
         //in utc
         public DateTime DateOfAvailability { get; private set; }
         //in minutes

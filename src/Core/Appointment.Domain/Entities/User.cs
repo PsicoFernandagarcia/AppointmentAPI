@@ -15,7 +15,7 @@ namespace Appointment.Domain.Entities
         public string Name { get; private set; }
         public string LastName { get; private set; }
         public string Email { get; private set; }
-        public virtual ICollection<Role> Roles { get; private set; }
+        public ICollection<Role> Roles { get; private set; }
         public bool IsExternal { get; private set; }
         public int TimezoneOffset { get; set; }
         [IgnoreDataMember]
