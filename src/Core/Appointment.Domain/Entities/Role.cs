@@ -11,6 +11,6 @@ namespace Appointment.Domain.Entities
 
         public string Name { get; set; }
         [JsonIgnore]
-        public virtual ICollection<User> Users { get; private set; }
+        public ICollection<User> Users { get; private set; }
     }
 }

@@ -13,11 +13,11 @@ namespace Appointment.Domain.Entities
         public DateTime DateTo { get; private set; }
         public string With { get; private set; }
         public int CreatedById { get; private set; }
-        public virtual User CreatedBy { get; private set; }
+        public User CreatedBy { get; private set; }
         public int HostId { get; private set; }
-        public virtual User Host { get; private set; }
+        public User Host { get; private set; }
         public int PatientId { get; private set; }
-        public virtual User Patient { get; private set; }
+        public User Patient { get; private set; }
         public string Color { get; private set; }
         public bool IsDeleted { get; private set; }
         public AppointmentStatus Status { get; private set; }

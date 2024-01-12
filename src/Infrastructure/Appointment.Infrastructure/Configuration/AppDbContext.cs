@@ -18,23 +18,9 @@ namespace Appointment.Infrastructure.Configuration
         {
 
         }
-        public AppDbContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            // connect to mysql with connection string from app settings
-            var connectionString = Configuration.GetConnectionString("AppointmentConnection");
-            options.UseLazyLoadingProxies();
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host"));
-
-
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        { 
         }
 
     }

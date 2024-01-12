@@ -30,8 +30,7 @@ namespace Appointment.Host.Extensions
             services.AddDbContext<AppDbContext>(
                 options =>
                 {
-                    options.UseLazyLoadingProxies().UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host"))
-                    .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Debug);
+                    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Appointment.Host"));
 
                 });
 

@@ -77,6 +77,7 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId)
             => await _context.Appointments
+                .Include(a => a.Patient)
                 .Where(a => (
                                 a.HostId == userId
                                 || a.PatientId == userId

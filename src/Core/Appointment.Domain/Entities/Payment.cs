@@ -13,7 +13,7 @@ namespace Appointment.Domain.Entities
         public DateTime PaidAt { get; private set; }
         public int PatientId { get; private set; }
         [ForeignKey("PatientId")]
-        public virtual User Patient { get; private set; }
+        public User Patient { get; private set; }
         public int HostId { get; private set; }
         public decimal Amount { get; private set; }
         public string Currency { get; private set; }
