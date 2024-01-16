@@ -93,6 +93,8 @@ namespace Appointment.Host.Schedule
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var app = dbContext.Appointments
+                .Include(ap => ap.Patient)
+                .Include(ap => ap.Host)
                 .Where(ap =>
                             ap.DateFrom.Year == DateTime.Now.Year
                             && ap.DateFrom.Month == DateTime.Now.Month
@@ -100,7 +102,6 @@ namespace Appointment.Host.Schedule
                             && ap.Status != Domain.AppointmentStatus.CANCELED
                         )
                 .OrderBy(ap => ap.DateFrom)
-                .Include(ap => ap.Patient)
                 .ToList();
             _logger.LogInformation($"EMAIL: Hour - {DateTime.UtcNow.ToLongDateString()} - Sending email to {app.Count} users");
             if (app is null || !app.Any()) return;
