@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Appointment.Host
 {
@@ -26,6 +27,10 @@ namespace Appointment.Host
                 .AddVersioningConfigurations()
                 .AddHttpClientRegistration()
                 .AddHealthChecksConfigurations(Configuration)
+                .Configure<HostOptions>(hostOptions =>
+                {
+                    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+                })
                 .AddMediatRConfigurations()
             ;
 
