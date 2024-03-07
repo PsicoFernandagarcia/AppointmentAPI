@@ -104,5 +104,7 @@ jobs:
             echo "Remove agora service container"
             docker rm agora-service
             echo "Run Docker agora-service"
-            docker run -d --network="host" -p 3002:80 --restart=unless-stopped \
+            docker run -d -p 3002:80 --restart=unless-stopped \
             --name agora-service joacoferroni/agora-token-service:latest
+
+
