@@ -80,3 +80,27 @@ jobs:
             --mount type=bind,source=/opt/certs,target=/app/certs \
             --mount type=bind,source=/opt/configs,target=/app/configs \
             --name psicofer_api joacoferroni/${{ secrets.DOCKER_IMAGE }}:latest
+  agora:
+    needs: build-and-push
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: restart agora service
+        id: agora
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: IMAGE_NAME
+          script: |
+            echo "Pull agora image"
+            docker pull joacoferroni/agora-token-service:latest
+            echo "Stop agora service"
+            docker stop agora-service
+            echo "Remove agora service container"
+            docker rm agora-service
+            echo "Run Docker agora-service"
+            docker run -d --network="host" -p 3002:80 --restart=unless-stopped \
+            --name agora-service joacoferroni/agora-token-service:latest

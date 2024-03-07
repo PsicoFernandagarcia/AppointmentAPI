@@ -1,5 +1,6 @@
 using Appointment.Host.Extensions;
 using Appointment.Infrastructure.Configuration;
+using Appointment.Infrastructure.ExternalServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,7 @@ namespace Appointment.Host
                     hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
                 })
                 .AddMediatRConfigurations()
+                .AddExternalServices(Configuration)
             ;
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext context) =>
