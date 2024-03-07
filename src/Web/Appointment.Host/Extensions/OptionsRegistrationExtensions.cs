@@ -12,6 +12,7 @@ namespace Appointment.Host.Extensions
             services.AddOptions<AuthOptions>().Bind(Configuration.GetSection(AuthOptions.SECTION));
             services.AddOptions<EmailOptions>().Bind(Configuration.GetSection(EmailOptions.SECTION));
             services.AddOptions<CalendarConfigOptions>().Bind(Configuration.GetSection(CalendarConfigOptions.SECTION));
+            services.AddOptions<AgoraOptions>().Bind(Configuration.GetSection(AgoraOptions.SECTION));
             return services;
         }
     }
