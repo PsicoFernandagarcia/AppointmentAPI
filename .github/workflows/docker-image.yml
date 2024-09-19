@@ -28,7 +28,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test tests/Appointment.Test/Appointment.Test.csproj --no-restore --verbosity normal
 
   build-and-push:
     needs: build-and-test
