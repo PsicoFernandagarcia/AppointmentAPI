@@ -23,5 +23,8 @@
 
         public const string AppointmentsPolicy = "AppointmentsPolicy";
         public const string Appointments = "appointments";
+
+        public const string BlogPostPolicy = "BlogPostPolicy";
+        public const string BlogPost = "blogPost";
     }
 }
