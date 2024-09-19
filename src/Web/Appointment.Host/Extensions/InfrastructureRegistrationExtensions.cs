@@ -1,8 +1,8 @@
 using Appointment.Api.Controllers;
+using Appointment.Domain;
 using Appointment.Infrastructure.Configuration;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using MicroElements.Swashbuckle.FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Threading;
-using Appointment.Domain;
+using System.Threading.Tasks;
 
 namespace Appointment.Host.Extensions
 {
@@ -107,7 +106,7 @@ namespace Appointment.Host.Extensions
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app,
             IWebHostEnvironment env, AppDbContext context)
         {
-            app.UseHttpsRedirection()
+            app
                 .UseRouting()
                 .UseCors()
                 .UseAuthentication()

@@ -13,6 +13,7 @@ namespace Appointment.Infrastructure.Configuration
         public DbSet<Domain.Entities.Appointment> Appointments { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<BlogPost> BlogPost { get; set; }
 
         public AppDbContext()
         {
