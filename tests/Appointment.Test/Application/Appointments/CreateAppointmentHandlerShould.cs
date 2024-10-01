@@ -38,7 +38,7 @@ namespace Appointment.Test.Application.Appointments
             _mediator.Setup(m => m.Send(It.IsAny<AppointmentConfiguredCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Result.Success<Availability, ResultError>(Availability.Create(1, 1, DateTime.Now, 1, true).Value));
 
-            var appointmentResult = Entities.Appointment.Create(1, "test", DateTime.Now.AddHours(1), DateTime.Now.AddHours(2), "Joaquin", 1, "",false,1,2,AppointmentStatus.CREATED,DateTime.Now).Value;
+            var appointmentResult = Entities.Appointment.Create(1, "test", DateTime.Now.AddHours(1), DateTime.Now.AddHours(2), "Joaquin", 1, "",false,1,2,AppointmentStatus.CREATED,DateTime.Now,null).Value;
             _appointmentRepository.Setup(ar => ar.Create(It.IsAny<Entities.Appointment>())).ReturnsAsync(appointmentResult);
 
             var result = await _handler.Handle(request, CancellationToken.None);

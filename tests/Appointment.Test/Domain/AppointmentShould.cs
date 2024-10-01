@@ -16,7 +16,7 @@ namespace Appointment.Test.Domain
             int createdById, string color, bool isDeleted, int hostId, int patientId, AppointmentStatus status)
         {
             var appointmentResult = Entities.Appointment.Create(id, title, dateFrom, dateTo, with,
-                                                        createdById, color, isDeleted, hostId, patientId, status, DateTime.Now);
+                                                        createdById, color, isDeleted, hostId, patientId, status, DateTime.Now,null);
             appointmentResult.IsSuccess.Should().BeTrue();
             appointmentResult.Value.Should().BeOfType<Entities.Appointment>();
         }
@@ -38,7 +38,7 @@ namespace Appointment.Test.Domain
             int createdById, string color, bool isDeleted, int hostId, int patientId, AppointmentStatus status)
         {
             var appointmentResult = Entities.Appointment.Create(id, title, dateFrom, dateTo, with,
-                                                        createdById, color, isDeleted, hostId, patientId, status, DateTime.Now);
+                                                        createdById, color, isDeleted, hostId, patientId, status, DateTime.Now, null);
             appointmentResult.IsSuccess.Should().BeFalse();
             appointmentResult.Error.Should().NotBeNullOrWhiteSpace();
         }

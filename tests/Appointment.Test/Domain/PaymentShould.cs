@@ -16,7 +16,7 @@ namespace Appointment.Test.Domain
         [Theory]
         public void Be_Created_Because_Of_Valid_Properties(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
         {
-            var paymentResult = Payment.Create(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, string.Empty);
+            var paymentResult = Payment.Create(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, string.Empty, []);
             paymentResult.IsSuccess.Should().BeTrue();
             paymentResult.Value.Should().BeOfType<Payment>();
         }
@@ -28,7 +28,7 @@ namespace Appointment.Test.Domain
         [Theory]
         public void Not_Be_Created_Because_Of_Inalid_Properties(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft)
         {
-            var paymentResult = Payment.Create(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, string.Empty);
+            var paymentResult = Payment.Create(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, string.Empty, []);
             paymentResult.IsSuccess.Should().BeFalse();
             paymentResult.Error.Should().NotBeNullOrWhiteSpace();
         }

@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,13 +22,23 @@ namespace Appointment.Domain.Entities
         //If negative, the user needs to pay
         public int SessionsLeft { get; set; }
         public string? Observations { get; private set; }
+        public IEnumerable<Appointment> AppointmentsPaid { get; private set; }
 
         protected Payment()
         {
 
         }
 
-        private Payment(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft, string? observations)
+        private Payment(int id,
+                        DateTime paidAt,
+                        int patientId,
+                        int hostId,
+                        decimal amount,
+                        string currency,
+                        int sessionsPaid,
+                        int sessionsLeft,
+                        string? observations,
+                        IEnumerable<Appointment> appointmentsPaid)
         {
             Id = id;
             PaidAt = paidAt.ToUniversalTime();
@@ -38,16 +49,26 @@ namespace Appointment.Domain.Entities
             SessionsLeft = sessionsLeft;
             Currency = currency;
             Observations = observations;
+            AppointmentsPaid = appointmentsPaid;
         }
 
-        public static Result<Payment> Create(int id, DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft, string? observations)
+        public static Result<Payment> Create(int id,
+                                             DateTime paidAt,
+                                             int patientId,
+                                             int hostId,
+                                             decimal amount,
+                                             string currency,
+                                             int sessionsPaid,
+                                             int sessionsLeft,
+                                             string? observations,
+                                             IEnumerable<Appointment> appointmentsPaid)
         {
             var validation = Validate(id, paidAt, patientId, hostId, amount, sessionsPaid);
             if (validation.IsFailure) return Result.Failure<Payment>(validation.Error);
-            return new Payment(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, observations);
+            return new Payment(id, paidAt, patientId, hostId, amount, currency, sessionsPaid, sessionsLeft, observations, appointmentsPaid);
         }
 
-        public Result<Payment> Update(DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft,string observations)
+        public Result<Payment> Update(DateTime paidAt, int patientId, int hostId, decimal amount, string currency, int sessionsPaid, int sessionsLeft,string observations, IEnumerable<Appointment> appointmentsPaid)
         {
             var validation = Validate(this.Id, paidAt, patientId, hostId, amount, sessionsPaid);
             if (validation.IsFailure) return Result.Failure<Payment>(validation.Error);
@@ -59,6 +80,7 @@ namespace Appointment.Domain.Entities
             this.SessionsPaid = sessionsPaid;
             this.SessionsLeft = sessionsLeft;
             this.Observations = observations;
+            this.AppointmentsPaid = appointmentsPaid;
             return this;
         }
 

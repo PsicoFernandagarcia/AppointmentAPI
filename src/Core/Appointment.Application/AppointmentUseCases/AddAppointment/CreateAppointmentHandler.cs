@@ -62,7 +62,7 @@ namespace Appointment.Application.AppointmentUseCases.AddAppointment
         private static Result<Entities.Appointment> MapToEntity(CreateAppointmentCommand request)
             => Entities.Appointment.Create(0, request.Title, request.DateFrom, request.DateTo,
                 request.With, request.CreatedById, request.Color, false, request.HostId
-                , request.PatientId, AppointmentStatus.CREATED, DateTime.Now
+                , request.PatientId, AppointmentStatus.CREATED, DateTime.Now, null
                 );
 
         private async Task<Result<Availability, ResultError>> DisableAvailability(int availabilityId, int appointmentId,

@@ -11,7 +11,8 @@ namespace Appointment.Domain.Interfaces
         Task<Entities.Appointment> Update(Entities.Appointment appointment);
         Task<IEnumerable<AppointmentDto>> GetByUserId(int id, DateTime dateFrom);
         Task<Entities.Appointment> GetById(int id);
-        Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId);
+        Task<IList<Domain.Entities.Appointment>> GetByIds(IEnumerable<int> ids);
+        Task<IEnumerable<AppointmentDto>> GetByFilter(int? year, int userId, bool? isUnpaid);
         Task FinalizeAppointments();
         Task<bool> HasAnyAppointment(int patientId, int hostId);
         Task<IEnumerable<AppointmentYearInformationDto>> GetYearInformation(int year, int hostId, int? patientId);

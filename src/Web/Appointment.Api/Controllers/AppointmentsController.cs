@@ -74,7 +74,7 @@ namespace Appointment.Api.Controllers
 
         public async Task<IActionResult> Get([FromQuery] GetAppointmentsByFilterQuery query)
         {
-            query.UserId = int.Parse(User.Identity.Name);
+            query.UserId = query.UserId == 0 ? int.Parse(User.Identity.Name) : query.UserId;
             return (await _mediator.Send(query)).ToHttpResponse();
         }
 

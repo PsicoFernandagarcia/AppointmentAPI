@@ -33,6 +33,9 @@ namespace Appointment.Infrastructure.Repositories
         public async Task<Domain.Entities.Appointment> GetById(int id)
             => await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
 
+        public async Task<IList<Domain.Entities.Appointment>> GetByIds(IEnumerable<int> ids)
+           => await _context.Appointments.Where(x => ids.Contains(x.Id)).ToListAsync();
+
         public async Task<IEnumerable<AppointmentDto>> GetByUserId(int id, DateTime dateFrom)
             => await _context.Appointments
                 .Where(a => a.DateFrom >= dateFrom && (a.HostId == id || a.PatientId == id))
@@ -75,14 +78,18 @@ namespace Appointment.Infrastructure.Repositories
             return info;
         }
 
-        public async Task<IEnumerable<AppointmentDto>> GetByFilter(int year, int userId)
+        public async Task<IEnumerable<AppointmentDto>> GetByFilter(int? year, int userId, bool? isUnpaid)
             => await _context.Appointments
                 .Include(a => a.Patient)
                 .Where(a => (
                                 a.HostId == userId
                                 || a.PatientId == userId
                             )
-                            && a.DateTo.Year == year
+                            && ( year == null || a.DateTo.Year == year)
+                            && ( isUnpaid == null 
+                                || (isUnpaid.Value && a.PaymentId == null)
+                                || (!isUnpaid.Value && a.PaymentId != null)
+                            )
                 )
                 .OrderBy(a => a.Patient.LastName)
                 .ThenByDescending(a => a.DateFrom)

@@ -22,9 +22,9 @@ namespace Appointment.Test.Application.Payments
         {
             var request = new GetLatestsPaymentsByHostQuery(1);
             _paymentRepository.Setup(p => p.GetLatest(It.IsAny<int>()))
-                .ReturnsAsync(() => new List<Payment>
+                .ReturnsAsync(() => new List<LastPaymentDto>
                 {
-                    Payment.Create(1,DateTime.Now,1,1,1,"test",1,1, string.Empty).Value
+                    LastPaymentDto.FromPaymnet(Payment.Create(1,DateTime.Now,1,1,1,"test",1,1, string.Empty, []).Value)
                 });
 
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -36,7 +36,7 @@ namespace Appointment.Test.Application.Payments
         {
             var request = new GetLatestsPaymentsByHostQuery(1);
             _paymentRepository.Setup(p => p.GetLatest(It.IsAny<int>()))
-                .ReturnsAsync(() => new List<Payment>
+                .ReturnsAsync(() => new List<LastPaymentDto>
                 {
                 });
 

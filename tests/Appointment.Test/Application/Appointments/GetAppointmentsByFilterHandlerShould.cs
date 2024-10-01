@@ -20,7 +20,7 @@ namespace Appointment.Test.Application.Appointments
         public async Task Return_Empty_List_If_No_Data()
         {
             var request = new GetAppointmentsByFilterQuery();
-            _appointmentRepository.Setup(x => x.GetByFilter(It.IsAny<int>(), It.IsAny<int>()))
+            _appointmentRepository.Setup(x => x.GetByFilter(It.IsAny<int?>(), It.IsAny<int>(), It.IsAny<bool?>()))
                 .ReturnsAsync(new List<Entities.AppointmentDto>());
 
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -32,7 +32,7 @@ namespace Appointment.Test.Application.Appointments
         public async Task Return_List_With_Filtered_Items()
         {
             var request = new GetAppointmentsByFilterQuery();
-            _appointmentRepository.Setup(x => x.GetByFilter(It.IsAny<int>(), It.IsAny<int>()))
+            _appointmentRepository.Setup(x => x.GetByFilter(It.IsAny<int?>(), It.IsAny<int>(), It.IsAny<bool?>()))
                 .ReturnsAsync(new List<Entities.AppointmentDto>()
                 {
                     new(),

@@ -25,7 +25,7 @@ namespace Appointment.Test.Application.Payments
         {
             var request = new UpdateLastPaymentSessionsCommand(1, 12, true, "USD");
             _paymentRepository.Setup(p => p.GetLast(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1, string.Empty).Value);
+                .ReturnsAsync(Payment.Create(1, DateTime.Now, 1, 12, 1, "USD", 1, 1, string.Empty, []).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();
