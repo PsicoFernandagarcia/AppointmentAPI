@@ -59,7 +59,7 @@ namespace Appointment.Test.Application.Appointments
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
-                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(1), DateTime.Now.AddDays(1).AddHours(1), "Joaquin", 3, "", false, 2, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(1), DateTime.Now.AddDays(1).AddHours(1), "Joaquin", 3, "", false, 2, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now, null).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeFalse();
@@ -81,7 +81,7 @@ namespace Appointment.Test.Application.Appointments
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
-                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-1).AddHours(1), "Joaquin", 3, "", false, 2, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-1).AddHours(1), "Joaquin", 3, "", false, 2, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now,null).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeFalse();
@@ -103,7 +103,7 @@ namespace Appointment.Test.Application.Appointments
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
-                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddHours(24), DateTime.Now.AddHours(26), "Joaquin", 3, "", false, 2, 1, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddHours(24), DateTime.Now.AddHours(26), "Joaquin", 3, "", false, 2, 1, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now, null).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeFalse();
@@ -126,7 +126,7 @@ namespace Appointment.Test.Application.Appointments
                 .ReturnsAsync(User.Create(2, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
-                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-1).AddHours(1), "Joaquin", 3, "", false, hostId, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(-1), DateTime.Now.AddDays(-1).AddHours(1), "Joaquin", 3, "", false, hostId, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now, null).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();
@@ -146,7 +146,7 @@ namespace Appointment.Test.Application.Appointments
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
-                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(1), DateTime.Now.AddDays(1).AddHours(1), "Joaquin", 3, "", false, 1, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(1), DateTime.Now.AddDays(1).AddHours(1), "Joaquin", 3, "", false, 1, 3, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now, null).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();
@@ -166,7 +166,7 @@ namespace Appointment.Test.Application.Appointments
                 .ReturnsAsync(User.Create(1, "test", "email", null, null, null, true, "test", "test", 10).Value);
 
             _appointmentRepository.Setup(ar => ar.GetById(It.IsAny<int>()))
-                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(1), DateTime.Now.AddDays(1).AddHours(1), "Joaquin", 3, "", false, 2, 1, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now).Value);
+                .ReturnsAsync(Entities.Appointment.Create(1, "Test", DateTime.Now.AddDays(1), DateTime.Now.AddDays(1).AddHours(1), "Joaquin", 3, "", false, 2, 1, Appointment.Domain.AppointmentStatus.CREATED, DateTime.Now,null).Value);
 
             var result = await _handler.Handle(request, CancellationToken.None);
             result.IsSuccess.Should().BeTrue();

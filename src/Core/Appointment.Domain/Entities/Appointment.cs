@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Appointment.Domain.Entities
 {
@@ -22,13 +23,16 @@ namespace Appointment.Domain.Entities
         public bool IsDeleted { get; private set; }
         public AppointmentStatus Status { get; private set; }
         public DateTime UpdatedAt { get; private set; }
+        public int? PaymentId { get; private set; }
+        [ForeignKey("PaymentId")]
+        public Payment? Payment { get; private set; }
 
         protected Appointment()
         {
 
         }
         private Appointment(int id, string title, DateTime dateFrom, DateTime dateTo, string with, int createdById, string color
-            , bool isDeleted, int hostId, int patientId, AppointmentStatus status, DateTime updatedAt)
+            , bool isDeleted, int hostId, int patientId, AppointmentStatus status, DateTime updatedAt, int? paymentId)
         {
             Id = id;
             Title = title;
@@ -42,19 +46,38 @@ namespace Appointment.Domain.Entities
             PatientId = patientId;
             Status = status;
             UpdatedAt = updatedAt;
+            PaymentId = paymentId;
         }
 
 
-        public static Result<Appointment> Create(int id, string title, DateTime dateFrom, DateTime dateTo, string with, int createdBy
-            , string color, bool isDeleted, int hostId, int patientId, AppointmentStatus status, DateTime updatedAt)
+        public static Result<Appointment> Create(int id,
+                                                 string title,
+                                                 DateTime dateFrom,
+                                                 DateTime dateTo,
+                                                 string with,
+                                                 int createdBy,
+                                                 string color,
+                                                 bool isDeleted,
+                                                 int hostId,
+                                                 int patientId,
+                                                 AppointmentStatus status,
+                                                 DateTime updatedAt,
+                                                 int? paymnetId)
         {
             var validation = Validate(id, title, dateFrom, dateTo, with, createdBy, hostId, patientId, updatedAt);
             if (validation.IsFailure) return Result.Failure<Appointment>(validation.Error);
-            return new Appointment(id, title, dateFrom, dateTo, with, createdBy, color, isDeleted, hostId, patientId, status, updatedAt);
+            return new Appointment(id, title, dateFrom, dateTo, with, createdBy, color, isDeleted, hostId, patientId, status, updatedAt, paymnetId);
         }
 
-        private static Result<string> Validate(int id, string title, DateTime dateFrom, DateTime dateTo, string with, int createdBy
-            , int hostId, int patientId, DateTime updatedAt)
+        private static Result<string> Validate(int id,
+                                               string title,
+                                               DateTime dateFrom,
+                                               DateTime dateTo,
+                                               string with,
+                                               int createdBy,
+                                               int hostId,
+                                               int patientId,
+                                               DateTime updatedAt)
         {
             string errors = string.Empty;
             if (id < 0) errors += " id not valid ";

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Appointment.Application.PaymentUseCases.GetLatestsPaymentsByHost
 {
-    public class GetLatestsPaymentsByHostQuery : IRequest<Result<IEnumerable<Payment>, ResultError>>
+    public class GetLatestsPaymentsByHostQuery : IRequest<Result<IEnumerable<LastPaymentDto>, ResultError>>
     {
         public int HostId { get; set; }
 
