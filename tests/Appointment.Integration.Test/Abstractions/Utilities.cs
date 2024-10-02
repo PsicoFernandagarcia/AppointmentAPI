@@ -24,14 +24,28 @@ namespace Application.Integration.Test.Abstractions
         {
             using var scope = factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await context.AddRangeAsync(appointments);
+            await context.Appointments.AddRangeAsync(appointments);
             await context.SaveChangesAsync();
+        }
+
+        public static async Task<List<Availability>> InsertAvailabilities(TestWebApplicationFactory factory, List<Availability>? availabilities = null)
+        {
+            using var scope = factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            if (availabilities is null || !availabilities.Any())
+            {
+                var av = Availability.Create(0, UserHost.Id, DateTime.UtcNow, 60, true).Value;
+                availabilities = [av];
+            }
+            await context.Availabilities.AddRangeAsync(availabilities);
+            await context.SaveChangesAsync();
+            return availabilities;
         }
         public static async Task InsertPayments(TestWebApplicationFactory factory, List<Payment> payments)
         {
             using var scope = factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await context.AddRangeAsync(payments);
+            await context.Payments.AddRangeAsync(payments);
             await context.SaveChangesAsync();
         }
 

@@ -138,8 +138,12 @@ namespace Appointment.Host.Schedule
                         AmountOfTime = 60,
                         DateOfAvailability = appointmentDate
                     });
+                    _logger.LogInformation($"Trying to create availability at {appointmentDate}");
+
                     var availability = await GetAvailability(appointmentDate);
                     if (availability is null || !availability.IsEmpty) continue;
+                    
+                    _logger.LogInformation($"Trying to create appointment for user {user.Email}");
                     var appointmentCreated = await _mediator.Send(new CreateAppointmentByHostCommand
                     {
                         AvailabilityId = availability.Id,
@@ -156,6 +160,10 @@ namespace Appointment.Host.Schedule
                     {
                         e.Summary = $"{user.Name} {user.LastName} {user.Email}";
                         await _serviceAccountSingleton.UpdateEvent(e);
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"Could not create appointment. Error: {appointmentCreated.Error}");
                     }
                 }
                 catch (Exception ex)

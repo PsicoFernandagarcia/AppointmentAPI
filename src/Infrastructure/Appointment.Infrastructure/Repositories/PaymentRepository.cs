@@ -76,7 +76,8 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<Payment> Update(Payment payment)
         {
-            using var transaction = _context.Database.BeginTransaction();
+            var externalTransaction = _context.Database.CurrentTransaction != null;
+            using var transaction = _context.Database.CurrentTransaction ?? _context.Database.BeginTransaction();
             try
             {
                 if (payment.AppointmentsPaid != null) {
@@ -93,12 +94,18 @@ namespace Appointment.Infrastructure.Repositories
                 }
                 _context.Payments.Update(payment);
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                if (!externalTransaction)
+                {
+                    await transaction.CommitAsync();
+                }
                 return payment;
             }
             catch (Exception)
             {
-                await transaction.RollbackAsync();
+                if (!externalTransaction)
+                {
+                    await transaction.RollbackAsync();
+                }
                 throw;
             }
    
@@ -112,10 +119,11 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<Result<Payment, ResultError>> Insert(AddPaymentDto paymentDto)
         {
-            using var transaction = _context.Database.BeginTransaction();
+            var externalTransaction = _context.Database.CurrentTransaction != null;
+            using var transaction = _context.Database.CurrentTransaction ?? _context.Database.BeginTransaction();
             try
             {
-                var appointments = _context.Appointments.Where(a => paymentDto.Appointments.Contains(a.Id)).ToList();
+                var appointments = paymentDto.Appointments == null ? [] : _context.Appointments.Where(a => paymentDto.Appointments.Contains(a.Id)).ToList();
                 var paymentResult = Payment.Create(0,
                                                    paymentDto.PaidAt,
                                                    paymentDto.PatientId,
@@ -132,12 +140,18 @@ namespace Appointment.Infrastructure.Repositories
 
                 await _context.Payments.AddAsync(paymentResult.Value);
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                if (!externalTransaction)
+                {
+                    await transaction.CommitAsync();
+                }
                 return paymentResult.Value;
             }
             catch (Exception)
             {
-                await transaction.RollbackAsync();
+                if (!externalTransaction)
+                {
+                    await transaction.RollbackAsync();
+                }
                 throw;
             }
         }
