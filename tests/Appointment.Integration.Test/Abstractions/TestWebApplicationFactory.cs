@@ -1,6 +1,5 @@
 ﻿using Appointment.Host;
 using Appointment.Infrastructure.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Testcontainers.MySql;
@@ -29,6 +29,7 @@ namespace Application.Integration.Test.Abstractions
             builder.ConfigureTestServices(services =>
             {
                 services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
+                services.RemoveAll(typeof(IHostedService));
                 services.AddDbContext<AppDbContext>(options =>
                 {
                     options.UseMySql(_dbContainer.GetConnectionString(),

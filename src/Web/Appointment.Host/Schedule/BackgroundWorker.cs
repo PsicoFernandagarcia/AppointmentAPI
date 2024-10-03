@@ -158,6 +158,7 @@ namespace Appointment.Host.Schedule
                     });
                     if (appointmentCreated.IsSuccess)
                     {
+                        _logger.LogInformation($"Appointment created");
                         e.Summary = $"{user.Name} {user.LastName} {user.Email}";
                         await _serviceAccountSingleton.UpdateEvent(e);
                     }

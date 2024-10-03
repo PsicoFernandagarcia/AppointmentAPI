@@ -1,6 +1,5 @@
 ﻿using Appointment.Domain.Entities;
 using Appointment.Infrastructure.Configuration;
-using Docker.DotNet.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -50,20 +49,23 @@ namespace Application.Integration.Test.Abstractions
         }
 
 
-        public static async Task DeleteAllModels(TestWebApplicationFactory factory, List<int>? paymentIds = null, List<int>? appointmentIds = null)
+        //public static async Task DeleteAllModels(TestWebApplicationFactory factory, List<int>? paymentIds = null, List<int>? appointmentIds = null)
+        public static async Task DeleteAllModels(TestWebApplicationFactory factory)
         {
             using var scope = factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            if(appointmentIds != null)
-            {
-                await context.Appointments.Where(entity => appointmentIds.Contains(entity.Id)).ExecuteDeleteAsync();
-                await context.SaveChangesAsync();
-            }
-            if (paymentIds != null)
-            {
-                await context.Payments.Where(entity => paymentIds.Contains(entity.Id)).ExecuteDeleteAsync();
-                await context.SaveChangesAsync();
-            }
+            await context.Appointments.ExecuteDeleteAsync();
+            await context.Payments.ExecuteDeleteAsync();
+            //if (appointmentIds != null)
+            //{
+            //    await context.Appointments.Where(entity => appointmentIds.Contains(entity.Id)).ExecuteDeleteAsync();
+            //    await context.SaveChangesAsync();
+            //}
+            //if (paymentIds != null)
+            //{
+            //    await context.Payments.Where(entity => paymentIds.Contains(entity.Id)).ExecuteDeleteAsync();
+            //    await context.SaveChangesAsync();
+            //}
         }
 
     }
