@@ -66,7 +66,7 @@ namespace Appointment.Integration.Test.AppointmentsCase
                 UserId = patient.Id
             };
             var res = await HttpClient.GetAsync($"api/appointments?year={query.Year}&userId={query.UserId}");
-            await Utilities.DeleteAllModels(factory, appointmentIds: appList.Select(a => a.Id).ToList());
+            await Utilities.DeleteAllModels(factory);
             res.StatusCode.Should().Be(HttpStatusCode.OK);
             var resultObject = await res.ToObject<List<AppointmentDto>>();
             resultObject.Should().HaveCount(2);
@@ -132,7 +132,7 @@ namespace Appointment.Integration.Test.AppointmentsCase
             var resultObject = await res.ToObject<List<AppointmentDto>>();
             resultObject.Should().HaveCount(1);
             resultObject.First().Id.Should().Be(app1.Id);
-            await Utilities.DeleteAllModels(factory, paymentIds: [payment.Id], appointmentIds: appList.Select(a => a.Id).ToList());
+            await Utilities.DeleteAllModels(factory);
 
         }
 
