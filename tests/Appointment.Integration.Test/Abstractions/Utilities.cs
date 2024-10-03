@@ -1,7 +1,9 @@
-﻿using Appointment.Domain.Entities;
+﻿using Appointment.Domain;
+using Appointment.Domain.Entities;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Application.Integration.Test.Abstractions
 {
@@ -19,12 +21,30 @@ namespace Application.Integration.Test.Abstractions
             db.SaveChanges();
         }
 
-        public static async Task InsertAppointments(TestWebApplicationFactory factory, List<Appointment.Domain.Entities.Appointment> appointments)
+        public static async Task<List<Appointment.Domain.Entities.Appointment>> InsertAppointments(TestWebApplicationFactory factory, List<Appointment.Domain.Entities.Appointment>? appointments = null)
         {
             using var scope = factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            if(appointments is null || !appointments.Any())
+            {
+                var app1 = Appointment.Domain.Entities.Appointment.Create(0,
+                                                          "App1",
+                                                          DateTime.Now,
+                                                          DateTime.Now.AddMinutes(60),
+                                                          "me",
+                                                          UserHost.Id,
+                                                          "color",
+                                                          false,
+                                                          UserHost.Id,
+                                                          UserCommon.Id,
+                                                          AppointmentStatus.CREATED,
+                                                          DateTime.Now,
+                                                          null).Value;
+                appointments = [app1];
+            }
             await context.Appointments.AddRangeAsync(appointments);
             await context.SaveChangesAsync();
+            return appointments;
         }
 
         public static async Task<List<Availability>> InsertAvailabilities(TestWebApplicationFactory factory, List<Availability>? availabilities = null)

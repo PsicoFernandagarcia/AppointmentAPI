@@ -1,14 +1,9 @@
 ﻿using Application.Integration.Test.Abstractions;
 using Appointment.Application.AppointmentUseCases.GetAppointmentsByFilter;
-using Appointment.Application.PaymentUseCases.AddPayment;
 using Appointment.Domain;
 using Appointment.Domain.Entities;
-using Appointment.Infrastructure.Configuration;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using System.Net.Http.Json;
 
 namespace Appointment.Integration.Test.AppointmentsCase
 {

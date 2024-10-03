@@ -51,7 +51,7 @@ namespace Appointment.Infrastructure.Repositories
                                       .GroupBy(p => new { p.HostId, p.PatientId })
                                       .Select(p => p.OrderByDescending(x => x.PaidAt).FirstOrDefault())
                                       .ToListAsync())
-                                      .Select(payment => LastPaymentDto.FromPaymnet(payment))  ;
+                                      .Select(payment => LastPaymentDto.FromPaymnet(payment));
 
         public async Task<IEnumerable<PaymentInformation>> GetYearInformation(int year, int hostId)
         => (await _context.Payments.Where(p => p.PaidAt.Year == year && p.HostId == hostId && p.Amount > 0)
@@ -76,39 +76,23 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<Payment> Update(Payment payment)
         {
-            var externalTransaction = _context.Database.CurrentTransaction != null;
-            using var transaction = _context.Database.CurrentTransaction ?? _context.Database.BeginTransaction();
-            try
+            if (payment.AppointmentsPaid != null)
             {
-                if (payment.AppointmentsPaid != null) {
-                    await _context.Appointments.Where(a => a.PaymentId == payment.Id)
-                        .ExecuteUpdateAsync(setter => setter.SetProperty(a => a.PaymentId, a => null));
-                    await _context.SaveChangesAsync();
-
-                    await _context.Appointments
-                        .Where(a => a.PaymentId == null
-                                && payment.AppointmentsPaid.Select(ap => ap.Id).Contains(a.Id)
-                        )
-                        .ExecuteUpdateAsync(setter => setter.SetProperty(a => a.PaymentId, a => payment.Id));
-                    await _context.SaveChangesAsync();
-                }
-                _context.Payments.Update(payment);
+                await _context.Appointments.Where(a => a.PaymentId == payment.Id)
+                    .ExecuteUpdateAsync(setter => setter.SetProperty(a => a.PaymentId, a => null));
                 await _context.SaveChangesAsync();
-                if (!externalTransaction)
-                {
-                    await transaction.CommitAsync();
-                }
-                return payment;
+
+                await _context.Appointments
+                    .Where(a => a.PaymentId == null
+                            && payment.AppointmentsPaid.Select(ap => ap.Id).Contains(a.Id)
+                    )
+                    .ExecuteUpdateAsync(setter => setter.SetProperty(a => a.PaymentId, a => payment.Id));
+                await _context.SaveChangesAsync();
             }
-            catch (Exception)
-            {
-                if (!externalTransaction)
-                {
-                    await transaction.RollbackAsync();
-                }
-                throw;
-            }
-   
+            _context.Payments.Update(payment);
+            await _context.SaveChangesAsync();
+            return payment;
+
         }
         public async Task<Payment> Insert(Payment payment)
         {
@@ -119,41 +103,26 @@ namespace Appointment.Infrastructure.Repositories
 
         public async Task<Result<Payment, ResultError>> Insert(AddPaymentDto paymentDto)
         {
-            var externalTransaction = _context.Database.CurrentTransaction != null;
-            using var transaction = _context.Database.CurrentTransaction ?? _context.Database.BeginTransaction();
-            try
-            {
-                var appointments = paymentDto.Appointments == null ? [] : _context.Appointments.Where(a => paymentDto.Appointments.Contains(a.Id)).ToList();
-                var paymentResult = Payment.Create(0,
-                                                   paymentDto.PaidAt,
-                                                   paymentDto.PatientId,
-                                                   paymentDto.HostId,
-                                                   paymentDto.Amount,
-                                                   paymentDto.Currency,
-                                                   paymentDto.SessionsPaid,
-                                                   0,
-                                                   paymentDto.Observations,
-                                                   appointments);
 
-                if (!paymentResult.IsSuccess)
-                    return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));
+            var appointments = paymentDto.Appointments == null ? [] : _context.Appointments.Where(a => paymentDto.Appointments.Contains(a.Id)).ToList();
+            var paymentResult = Payment.Create(0,
+                                               paymentDto.PaidAt,
+                                               paymentDto.PatientId,
+                                               paymentDto.HostId,
+                                               paymentDto.Amount,
+                                               paymentDto.Currency,
+                                               paymentDto.SessionsPaid,
+                                               0,
+                                               paymentDto.Observations,
+                                               appointments);
 
-                await _context.Payments.AddAsync(paymentResult.Value);
-                await _context.SaveChangesAsync();
-                if (!externalTransaction)
-                {
-                    await transaction.CommitAsync();
-                }
-                return paymentResult.Value;
-            }
-            catch (Exception)
-            {
-                if (!externalTransaction)
-                {
-                    await transaction.RollbackAsync();
-                }
-                throw;
-            }
+            if (!paymentResult.IsSuccess)
+                return Result.Failure<Payment, ResultError>(new CreationError(paymentResult.Error));
+
+            await _context.Payments.AddAsync(paymentResult.Value);
+            await _context.SaveChangesAsync();
+
+            return paymentResult.Value;
         }
 
     }
