@@ -132,16 +132,20 @@ namespace Appointment.Host.Schedule
                     var user = (await GetUser(names[0], names[1])) ?? (await GetUser(names[1], names[0]));
                     if (user is null) continue;
                     var appointmentDate = e.Start.DateTime.Value.AddMinutes(e.Start.DateTime.Value.Minute * -1);
-                    await _mediator.Send(new CreateAvailabilityCommand
+                    var createAvailabilityResult = await _mediator.Send(new CreateAvailabilityCommand
                     {
                         HostId = host.Value.First().Id,
                         AmountOfTime = 60,
                         DateOfAvailability = appointmentDate
                     });
                     _logger.LogInformation($"Trying to create availability at {appointmentDate}");
+                    if (createAvailabilityResult.IsFailure)
+                    {
+                        _logger.LogInformation($"Error creating availability:  {createAvailabilityResult.Error}");
+                        continue;
+                    }
 
-                    var availability = await GetAvailability(appointmentDate);
-                    if (availability is null || !availability.IsEmpty) continue;
+                    var availability = createAvailabilityResult.Value;
                     
                     _logger.LogInformation($"Trying to create appointment for user {user.Email}");
                     var appointmentCreated = await _mediator.Send(new CreateAppointmentByHostCommand
