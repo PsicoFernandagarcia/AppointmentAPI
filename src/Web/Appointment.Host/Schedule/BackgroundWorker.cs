@@ -139,14 +139,23 @@ namespace Appointment.Host.Schedule
                         DateOfAvailability = appointmentDate
                     });
                     _logger.LogInformation($"Trying to create availability at {appointmentDate}");
+                    Availability availability;
                     if (createAvailabilityResult.IsFailure)
                     {
-                        _logger.LogInformation($"Error creating availability:  {createAvailabilityResult.Error}");
-                        continue;
+                        _logger.LogInformation($"Error creating availability:  {createAvailabilityResult.Error}. Trying to get existing");
+                        availability = await GetAvailability(appointmentDate);
+                        if (availability is null || !availability.IsEmpty)
+                        {
+                            _logger.LogInformation("There is no availability present...");
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        availability = createAvailabilityResult.Value;
                     }
 
-                    var availability = createAvailabilityResult.Value;
-                    
+
                     _logger.LogInformation($"Trying to create appointment for user {user.Email}");
                     var appointmentCreated = await _mediator.Send(new CreateAppointmentByHostCommand
                     {
