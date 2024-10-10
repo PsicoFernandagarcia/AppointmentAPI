@@ -13,7 +13,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Appointment.Host.Schedule
 {
@@ -131,7 +130,8 @@ namespace Appointment.Host.Schedule
                     var names = e.Summary.Split(' ');
                     var user = (await GetUser(names[0], names[1])) ?? (await GetUser(names[1], names[0]));
                     if (user is null) continue;
-                    var appointmentDate = e.Start.DateTime.Value.AddMinutes(e.Start.DateTime.Value.Minute * -1);
+                    var date = DateTime.Parse(e.Start.DateTimeRaw);
+                    var appointmentDate = date.AddMinutes(date.Minute * -1);
                     var createAvailabilityResult = await _mediator.Send(new CreateAvailabilityCommand
                     {
                         HostId = host.Value.First().Id,
@@ -142,11 +142,12 @@ namespace Appointment.Host.Schedule
                     Availability availability;
                     if (createAvailabilityResult.IsFailure)
                     {
-                        _logger.LogInformation($"Error creating availability:  {createAvailabilityResult.Error}. Trying to get existing");
+                        _logger.LogInformation($"Error creating availability:  {createAvailabilityResult.Error.Message}. Trying to get existing");
                         availability = await GetAvailability(appointmentDate);
                         if (availability is null || !availability.IsEmpty)
                         {
-                            _logger.LogInformation("There is no availability present...");
+                            var message = availability is null ? "There is no availability present..." : "Availability empty status: " + availability.IsEmpty;
+                            _logger.LogInformation(message);
                             continue;
                         }
                     }
@@ -177,7 +178,7 @@ namespace Appointment.Host.Schedule
                     }
                     else
                     {
-                        _logger.LogInformation($"Could not create appointment. Error: {appointmentCreated.Error}");
+                        _logger.LogInformation($"Could not create appointment. Error: {appointmentCreated.Error.Message}");
                     }
                 }
                 catch (Exception ex)
