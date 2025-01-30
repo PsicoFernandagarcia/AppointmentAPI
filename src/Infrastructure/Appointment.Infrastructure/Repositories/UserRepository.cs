@@ -3,6 +3,7 @@ using Appointment.Domain.Entities;
 using Appointment.Domain.Interfaces;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Appointment.Infrastructure.Repositories
             => await _context.Users
                 .Include(r => r.Roles)
                 .FirstOrDefaultAsync(x => x.UserName == userName);
+
         public async Task<User> GetUserByEmail(string email)
            => await _context.Users
                .FirstOrDefaultAsync(x => x.Email == email);
@@ -60,6 +62,22 @@ namespace Appointment.Infrastructure.Repositories
                 return await _context.SaveChangesAsync();
             }
             return 0;
+        }
+
+        public async Task<ResetPasswordCode> AddCode(ResetPasswordCode code)
+        {
+            await _context.ResetPasswordCodes.AddAsync(code);
+            await _context.SaveChangesAsync();
+            return code;
+        }
+        public async Task<ResetPasswordCode> GetValidCode(string email, int code)
+        {
+            var codeEntity = await _context.ResetPasswordCodes.Where(c => 
+                    c.UserEmail == email
+                    && c.Code == code
+                    && c.EndDate >= DateTime.Now)
+                .FirstOrDefaultAsync();
+            return codeEntity;
         }
     }
 }

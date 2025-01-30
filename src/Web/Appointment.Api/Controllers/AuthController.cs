@@ -1,6 +1,8 @@
 ﻿using Appointment.Api.Infrastructure.HttpResponses;
 using Appointment.Application.AuthUseCases.Authenticate;
 using Appointment.Application.AuthUseCases.AuthenticateExternal;
+using Appointment.Application.AuthUseCases.ResetPassword;
+using Appointment.Application.AuthUseCases.SendResetPassCode;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -36,30 +38,20 @@ namespace Appointment.Api.Controllers
             => (await _mediator.Send(login)).ToHttpResponse();
 
 
-        [HttpPost("TZ")]
-        [ProducesResponseType(typeof(string), 401)]
+        [HttpPost("ResetPasswordCode")]
+        [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(typeof(string), 404)]
-        [ProducesResponseType(typeof(LoginResult), 200)]
-        public async Task<IActionResult> MyTz(test myTz)
-        {
-            CultureInfo culture = new CultureInfo("ES-es");
+        [ProducesResponseType(typeof(bool), 200)]
+        public async Task<IActionResult> GenerateResetPassCode([FromBody] SendResetPassCodeCommand resetPassCode)
+           => (await _mediator.Send(resetPassCode)).ToHttpResponse();
 
-            return Ok(new
-            {
-                utc = myTz.myTz.ToUniversalTime(),
-                received = myTz.myTz,
-                shortLd = myTz.myTz.ToShortTimeString(),
-                local = myTz.myTz.ToLocalTime(),
-                diff = myTz.myTz.ToUniversalTime() - myTz.myTz.ToLocalTime(),
-                a = myTz.myTz.ToString("dddd, dd MMMM yyyy HH:mm", culture),
-            }
-            );
-        }
 
-    }
+        [HttpPut("Password")]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(bool), 200)]
+        public async Task<IActionResult> ResetPass([FromBody] ResetPasswordCommand resetPass)
+           => (await _mediator.Send(resetPass)).ToHttpResponse();
 
-    public class test
-    {
-        public DateTime myTz { get; set; }
     }
 }
