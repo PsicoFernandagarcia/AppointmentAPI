@@ -3,14 +3,14 @@ using Appointment.Domain.Entities;
 using Appointment.Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Application.Integration.Test.Abstractions
 {
     public static class Utilities
     {
-        public static readonly User UserHost = User.Create(1, "test", "test@gmail.com", [], [], [new Role { Id = 1, Name = "HOST" }], true, "test", "LN", 60).Value;
-        public static readonly User UserCommon = User.Create(2, "common", "common@gmail.com", [], [], [new Role { Id = 2, Name = "COMMON" }], true, "common", "LN", 60).Value;
+        public static (byte[] passHash, byte[] passSalt) pass = PassUtilities.CreatePasswordHash("7bjTQhZ0nIxIiu1w28OZL/+1r4BVQFKhWWvL9kHdLxf5Xkw+M9QWGcLKx1CLnrL8");
+        public static readonly User UserHost = User.Create(1, "test@gmail.com", "test@gmail.com", [], [], [new Role { Id = 1, Name = "HOST" }], true, "test", "LN", 60).Value;
+        public static readonly User UserCommon = User.Create(2, "common@gmail.com", "common@gmail.com", pass.passHash, pass.passSalt, [new Role { Id = 2, Name = "COMMON" }], true, "common", "LN", 60).Value;
         public static void InitializeDbForTests(AppDbContext db)
         {
             if (db.Users.Any(u => u.Id == UserHost.Id))
@@ -68,24 +68,22 @@ namespace Application.Integration.Test.Abstractions
             await context.SaveChangesAsync();
         }
 
+        public static async Task<ResetPasswordCode> InsertResetPassCode(TestWebApplicationFactory factory, ResetPasswordCode code)
+        {
+            using var scope = factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            await context.ResetPasswordCodes.AddAsync(code);
+            await context.SaveChangesAsync();
+            return code;
 
-        //public static async Task DeleteAllModels(TestWebApplicationFactory factory, List<int>? paymentIds = null, List<int>? appointmentIds = null)
+        }
         public static async Task DeleteAllModels(TestWebApplicationFactory factory)
         {
             using var scope = factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             await context.Appointments.ExecuteDeleteAsync();
             await context.Payments.ExecuteDeleteAsync();
-            //if (appointmentIds != null)
-            //{
-            //    await context.Appointments.Where(entity => appointmentIds.Contains(entity.Id)).ExecuteDeleteAsync();
-            //    await context.SaveChangesAsync();
-            //}
-            //if (paymentIds != null)
-            //{
-            //    await context.Payments.Where(entity => paymentIds.Contains(entity.Id)).ExecuteDeleteAsync();
-            //    await context.SaveChangesAsync();
-            //}
+            await context.ResetPasswordCodes.ExecuteDeleteAsync();
         }
 
     }

@@ -57,7 +57,7 @@ namespace Appointment.Integration.Test.AppointmentsCase
             await Utilities.InsertAppointments(factory, appList);
             var query = new GetAppointmentsByFilterQuery
             {
-                Year = 2024,
+                Year = DateTime.Now.Year,
                 UserId = patient.Id
             };
             var res = await HttpClient.GetAsync($"api/appointments?year={query.Year}&userId={query.UserId}");
@@ -118,7 +118,7 @@ namespace Appointment.Integration.Test.AppointmentsCase
             await Utilities.InsertPayments(factory, [payment]);
             var query = new GetAppointmentsByFilterQuery
             {
-                Year = 2024,
+                Year = DateTime.Now.Year,
                 UserId = patient.Id,
                 IsUnpaid = true
             };

@@ -14,6 +14,7 @@ namespace Appointment.Infrastructure.Configuration
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<BlogPost> BlogPost { get; set; }
+        public DbSet<ResetPasswordCode> ResetPasswordCodes { get; set; }
 
         public AppDbContext()
         {

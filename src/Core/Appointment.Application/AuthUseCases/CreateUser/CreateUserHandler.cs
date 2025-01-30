@@ -36,7 +36,7 @@ namespace Appointment.Application.AuthUseCases.CreateUser
             if (string.IsNullOrWhiteSpace(request.Password)) return Result.Failure<User, ResultError>(new CreationError("Password empty"));
 
             var password = _crypt.DecryptStringFromBytes_Aes(request.Password);
-            var (passwordHash, passwordSalt) = CreatePasswordHash(password);
+            var (passwordHash, passwordSalt) = PassUtilities.CreatePasswordHash(password);
             var role = (await _roleRepository.GetRoles()).Where(x => x.Name == "COMMON");
             var userEntityResult = User.Create(0, request.UserName, request.Email, passwordHash, passwordSalt,
                 role.ToList(), request.IsExternal, request.Name, request.LastName, request.TimezoneOffset
@@ -47,19 +47,6 @@ namespace Appointment.Application.AuthUseCases.CreateUser
             await _userRepository.CreateUser(userEntity);
             await _cachingStore.EvictByTagAsync(CacheKeys.Users, cancellationToken);
             return userEntity;
-        }
-
-        private static (byte[] passwordHash, byte[] passwordSalt) CreatePasswordHash(string password)
-        {
-            byte[] passwordHash;
-            byte[] passwordSalt;
-
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
-            return (passwordHash, passwordSalt);
         }
     }
 }

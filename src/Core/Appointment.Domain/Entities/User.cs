@@ -64,5 +64,16 @@ namespace Appointment.Domain.Entities
             if (!string.IsNullOrWhiteSpace(errors)) return Result.Failure<string>(errors);
             return Result.Success(string.Empty);
         }
+
+        public Result UpdatePassword(byte[] passwordHash, byte[] passwordSalt)
+        {
+            if (passwordHash != null && passwordHash.Length != 0 && passwordSalt != null && passwordSalt.Length != 0)
+            {
+                PasswordSalt = passwordSalt;
+                PasswordHash = passwordHash;
+                return Result.Success();
+            }
+            return Result.Failure("password not valid");
+        }
     }
 }

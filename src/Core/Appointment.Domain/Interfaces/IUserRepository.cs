@@ -13,5 +13,7 @@ namespace Appointment.Domain.Interfaces
         Task<User> UpdateUser(User u);
         Task<IList<User>> GetUserByRole(RolesEnum role);
         Task<int> Delete(int id);
+        Task<ResetPasswordCode> AddCode(ResetPasswordCode code);
+        Task<ResetPasswordCode> GetValidCode(string email, int code);
     }
 }
