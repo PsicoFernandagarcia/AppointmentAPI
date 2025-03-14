@@ -1,7 +1,9 @@
 ﻿using Appointment.Application.AppointmentUseCases.AddAppointmentByHost;
 using Appointment.Application.AvailabilityUseCases.CreateAvailability;
+using Appointment.Application.SendEmailUseCase.EndOfMonthMissingPayments;
 using Appointment.Application.SendEmailUseCase.Reminder;
 using Appointment.Application.UsersUseCase.GetUserByRole;
+using Appointment.Domain;
 using Appointment.Domain.Entities;
 using Appointment.Infrastructure.Configuration;
 using MediatR;
@@ -85,6 +87,10 @@ namespace Appointment.Host.Schedule
         {
             await AssignAppointmentsFromCalendar();
             await SendReminderEmail();
+            if(DateTime.UtcNow.Day == DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month))
+            {
+                await SendPaymentEndOfMonthEmail();
+            }
         }
 
         private async Task SendReminderEmail()
@@ -110,6 +116,37 @@ namespace Appointment.Host.Schedule
                 HostName = app[0].Host.Name,
                 Appointments = app
             });
+            _logger.LogInformation($"Reminder email sent");
+
+        }
+
+        private async Task SendPaymentEndOfMonthEmail()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var missingPayments = dbContext.Appointments
+                .Include(ap => ap.Patient)
+                .Where(ap =>
+                             ap.DateFrom.Year == DateTime.Now.Year
+                             && ap.DateFrom.Month == DateTime.Now.Month
+                             && ap.Status != Domain.AppointmentStatus.CANCELED
+                            && ap.PaymentId == null
+                        )
+                .Select(ap => new
+                MissingPayment(
+                    $"{ap.Patient.Name} {ap.Patient.LastName}",
+                    ap.DateFrom
+                ))
+                .ToList();
+            _logger.LogInformation($"LAST MONTH EMAIL: Hour - {DateTime.UtcNow.ToLongDateString()} - Sending email with {missingPayments.Count} missing payments");
+            if (missingPayments is null || !missingPayments.Any()) return;
+            var host = dbContext.Users.Where(u => u.Roles.Any(r => r.Name == RolesEnum.HOST.ToString())).First();
+            await _mediator.Send(new SendMissingPaymentsEmailCommand
+            {
+                Host = host,
+                MissingPayments = missingPayments,
+            });
+            _logger.LogInformation($"Missing Payments Email sent");
         }
 
         private async Task AssignAppointmentsFromCalendar()
@@ -217,21 +254,6 @@ namespace Appointment.Host.Schedule
             }
         }
 
-        private async Task AppointmentStatusTask()
-        {
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                var sqlCommand = @" UPDATE AppointmentDb.Appointments 
-                                SET Status = 3,
-                                UpdatedAt = NOW()
-                                WHERE   DateTo < NOW() 
-                                        AND Status = 0
-                            ";
-                await dbContext.Database.ExecuteSqlRawAsync(sqlCommand);
-
-            }
-        }
 
 
         override

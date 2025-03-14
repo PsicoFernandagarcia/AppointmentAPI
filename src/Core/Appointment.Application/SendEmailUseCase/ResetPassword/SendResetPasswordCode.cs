@@ -33,7 +33,7 @@ namespace Appointment.Application.SendEmailUseCase.ResetPassword
                         .Replace("#_code_#", request.Code.Code.ToString());
 
 
-            return _emailSender.Send(request.Code.UserEmail, $"Reestablecer contraseña", reminderBody, true, true);
+            return _emailSender.Send(request.Code.UserEmail, $"Reestablecer contraseña", reminderBody, true, false);
         }
     }
 }
