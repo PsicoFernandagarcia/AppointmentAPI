@@ -3,6 +3,7 @@ using Appointment.Domain.Entities;
 using Appointment.Domain.Infrastructure;
 using Appointment.Domain.Interfaces;
 using Appointment.Domain.ResultMessages;
+using Appointment.Infrastructure.Security;
 using CSharpFunctionalExtensions;
 using Google.Apis.Auth;
 using MediatR;
@@ -23,10 +24,11 @@ namespace Appointment.Application.AuthUseCases.AuthenticateExternal
         private readonly AuthOptions _authConfig;
         private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
+        private readonly ICrypt _crypt;
 
-        public LoginExternalHandler(IOptions<AuthOptions> authOptions, IUserRepository userRepository, IMediator mediator)
-            => (_authConfig, _userRepository, _mediator)
-                = (authOptions.Value, userRepository, mediator);
+        public LoginExternalHandler(IOptions<AuthOptions> authOptions, IUserRepository userRepository, IMediator mediator, ICrypt crypt)
+            => (_authConfig, _userRepository, _mediator, _crypt)
+                = (authOptions.Value, userRepository, mediator, crypt);
 
         public async Task<Result<LoginExternalResult, UnauthorizedError>> Handle(LoginExternalCommand request, CancellationToken cancellationToken)
         {
@@ -34,7 +36,6 @@ namespace Appointment.Application.AuthUseCases.AuthenticateExternal
             {
                 Audience = new string[] { "278365989343-jml9q2b7b146ubc5f71r2f1rrfib1p5e.apps.googleusercontent.com" }
             };
-
             var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, validationSettings);
             var user = await _userRepository.GetUserByName(request.Email);
             if (user is null)
@@ -45,7 +46,7 @@ namespace Appointment.Application.AuthUseCases.AuthenticateExternal
                     Name = request.FirstName,
                     IsExternal = true,
                     LastName = request.LastName,
-                    Password = "05u8uBfxgqAwGftSnVUdzC3b3CuA0m8+tfoH9eEzAQoVjOH7ZHUopTwfm+D1jyy6",
+                    Password = _crypt.EncryptStringToBytes_Aes(_authConfig.ExternalAuthDefault),
                     UserName = request.Email,
                     TimezoneOffset = request.TimezoneOffset
                 };

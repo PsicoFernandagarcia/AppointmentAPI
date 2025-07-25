@@ -5,5 +5,6 @@
         public static readonly string SECTION = "Auth";
         public string Secret { get; set; }
         public string HashValue { get; set; }
+        public string ExternalAuthDefault { get; set; }
     }
 }
