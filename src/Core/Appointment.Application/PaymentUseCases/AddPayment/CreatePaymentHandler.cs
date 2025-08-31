@@ -88,7 +88,7 @@ namespace Appointment.Application.PaymentUseCases.AddPayment
 
             var unpaidAppointments = await _appointmentRepository.GetByFilter(null, request.PatientId, true);
             var lastPaymentResult = await _paymentRepository.GetLast(request.PatientId, request.HostId);
-            lastPaymentResult.SessionsLeft = unpaidAppointments.Count() * -1;
+            lastPaymentResult.SessionsLeft = unpaidAppointments.Where(a => a.Status != AppointmentStatus.CANCELED.ToString()).Count() * -1;
 
             await _paymentRepository.Update(lastPaymentResult);
             return insertResult;
