@@ -25,7 +25,7 @@ namespace Appointment.Domain.Entities
         {
             var validation = Validate(id, userEmail, code);
             if (validation.IsFailure) return Result.Failure<ResetPasswordCode>(validation.Error);
-            return new ResetPasswordCode(id, userEmail, code, DateTime.Now.AddMinutes(30));
+            return new ResetPasswordCode(id, userEmail, code, DateTime.UtcNow.AddMinutes(30));
         }
 
         private static Result<string> Validate(int id, string userEmail, int code)

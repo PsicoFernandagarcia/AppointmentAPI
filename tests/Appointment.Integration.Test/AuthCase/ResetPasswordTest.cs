@@ -6,6 +6,10 @@ using System.Net.Http.Json;
 using System.Net;
 using FluentAssertions;
 using Appointment.Application.AuthUseCases.ResetPassword;
+using Appointment.Infrastructure.Security;
+using Microsoft.Extensions.Options;
+using Appointment.Domain.Infrastructure;
+using Appointment.Application.AuthUseCases.SendResetPassCode;
 
 namespace Appointment.Integration.Test.AuthCase
 {
@@ -15,13 +19,16 @@ namespace Appointment.Integration.Test.AuthCase
         public async Task Should_Reset_Password()
         {
             var user = Utilities.UserCommon;
-            var resetPassCode = ResetPasswordCode.Create(0, user.Email, 1234).Value;
-            var code = await Utilities.InsertResetPassCode(factory, resetPassCode);
+            var sendResetPassCommand = new SendResetPassCodeCommand { Email = user.Email };
+            await HttpClient.PostAsJsonAsync("api/auth/ResetPasswordCode", sendResetPassCommand);
 
+            var code = await Utilities.GetResetPassCode(factory, user.Email);
+
+            var cripto = new Crypt(Options.Create(new AuthOptions { HashValue = "psicoe84ad660c4721ae0e84ad660c4721ae0fer" }));
             var loginCommand = new LoginCommand
             {
                 UserName = user.Email,
-                Password = "C0ij4bYrnop592iCKLDrp2YIeJujgP83oid9xt6IWtw4huOwLCBNHSnSKL3ovTms",
+                Password = cripto.EncryptStringToBytes_Aes("test"),
                 TimezoneOffset = 60,
             };
             var res = await HttpClient.PostAsJsonAsync("api/auth", loginCommand);
@@ -30,8 +37,8 @@ namespace Appointment.Integration.Test.AuthCase
             var resetPassCommand = new ResetPasswordCommand
             {
                 Email = user.Email,
-                Code = code.Code,
-                NewPassword = "C0ij4bYrnop592iCKLDrp2YIeJujgP83oid9xt6IWtw4huOwLCBNHSnSKL3ovTms",
+                Code = code,
+                NewPassword =cripto.EncryptStringToBytes_Aes("test"),
 
             };
             res = await HttpClient.PutAsJsonAsync("api/auth/Password", resetPassCommand);

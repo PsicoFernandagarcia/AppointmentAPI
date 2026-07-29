@@ -72,10 +72,11 @@ namespace Appointment.Infrastructure.Repositories
         }
         public async Task<ResetPasswordCode> GetValidCode(string email, int code)
         {
+            var now = DateTime.UtcNow;
             var codeEntity = await _context.ResetPasswordCodes.Where(c => 
                     c.UserEmail == email
                     && c.Code == code
-                    && c.EndDate >= DateTime.Now)
+                    && c.EndDate >= now)
                 .FirstOrDefaultAsync();
             return codeEntity;
         }

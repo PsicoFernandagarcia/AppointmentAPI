@@ -77,6 +77,15 @@ namespace Application.Integration.Test.Abstractions
             return code;
 
         }
+
+        public static async Task<int> GetResetPassCode(TestWebApplicationFactory factory, string email)
+        {
+            using var scope = factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var now = DateTime.UtcNow;
+            var resetPassCode = await context.ResetPasswordCodes.Where(r => r.UserEmail == email && r.EndDate >= now).FirstOrDefaultAsync();
+            return resetPassCode?.Code ?? 0;
+        }
         public static async Task DeleteAllModels(TestWebApplicationFactory factory)
         {
             using var scope = factory.Services.CreateScope();
