@@ -101,6 +101,12 @@ namespace Appointment.Host.Extensions
                                              .Tag(CacheKeys.Appointments)
                                              .AddPolicy<OutputCachePolicy>()
                                       );
+
+                options.AddPolicy(CacheKeys.MessagesPolicy, builder =>
+                                      builder.Expire(TimeSpan.FromMinutes(15))
+                                             .Tag(CacheKeys.Messages)
+                                             .AddPolicy<OutputCachePolicy>()
+                                      );
             });
 
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app,

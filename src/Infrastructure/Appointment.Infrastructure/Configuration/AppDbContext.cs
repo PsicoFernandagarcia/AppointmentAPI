@@ -1,4 +1,4 @@
-﻿
+
 using Appointment.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +15,7 @@ namespace Appointment.Infrastructure.Configuration
         public DbSet<Payment> Payments { get; set; }
         public DbSet<BlogPost> BlogPost { get; set; }
         public DbSet<ResetPasswordCode> ResetPasswordCodes { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public AppDbContext()
         {

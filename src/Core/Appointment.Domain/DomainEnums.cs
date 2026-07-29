@@ -1,4 +1,4 @@
-﻿namespace Appointment.Domain
+namespace Appointment.Domain
 {
     public enum AppointmentStatus
     {
@@ -26,5 +26,8 @@
 
         public const string BlogPostPolicy = "BlogPostPolicy";
         public const string BlogPost = "blogPost";
+
+        public const string MessagesPolicy = "MessagesPolicy";
+        public const string Messages = "messages";
     }
 }

@@ -4,7 +4,6 @@ using Appointment.Domain.ResultMessages;
 using Appointment.Infrastructure.Security;
 using CSharpFunctionalExtensions;
 using MediatR;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
