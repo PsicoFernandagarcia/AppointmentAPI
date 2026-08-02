@@ -19,9 +19,9 @@ namespace Appointment.Api.Controllers
             _mediator = mediator;
         }
 
-        
+
         [HttpGet("Events")]
-        public async Task<IActionResult> GetEvents([FromQuery]GetEventsQuery query)
+        public async Task<IActionResult> GetEvents([FromQuery] GetEventsQuery query)
             => (await _mediator.Send(query)).ToHttpResponse();
 
     }

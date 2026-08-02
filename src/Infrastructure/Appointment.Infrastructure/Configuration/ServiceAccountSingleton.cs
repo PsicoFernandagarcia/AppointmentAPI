@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Appointment.Infrastructure.Configuration
@@ -32,7 +30,9 @@ namespace Appointment.Infrastructure.Configuration
 
             string[] Scopes = {
                 CalendarService.Scope.Calendar,
-                CalendarService.Scope.CalendarEvents
+                CalendarService.Scope.CalendarEvents,
+                CalendarService.Scope.CalendarReadonly,
+                CalendarService.Scope.CalendarSettingsReadonly,
             };
 
             using (var stream =
@@ -56,16 +56,20 @@ namespace Appointment.Infrastructure.Configuration
 
         public async Task<IEnumerable<CalendarEvent>> GetEventsFromMonth(int year, int month)
         {
-           // await CreateEvent();
-            var listRequest = _calendarService.Events.List(_calendarConfig.CalendarId);
-            listRequest.TimeMin = new DateTime(year, month, 1);
-            listRequest.TimeMax = new DateTime(year, month, DateTime.DaysInMonth(year: year, month: month));
-            listRequest.ShowDeleted = false;
-            listRequest.SingleEvents = true;
-            listRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
-            Events events = await listRequest.ExecuteAsync();
+            List<Event> events = [];
+            foreach (var calendarId in _calendarConfig.CalendarIds)
+            {
+                var listRequest = _calendarService.Events.List(calendarId);
+                listRequest.TimeMin = new DateTime(year, month, 1);
+                listRequest.TimeMax = new DateTime(year, month, DateTime.DaysInMonth(year: year, month: month));
+                listRequest.ShowDeleted = false;
+                listRequest.SingleEvents = true;
+                listRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+                Events e = await listRequest.ExecuteAsync();
+                events.AddRange(e.Items);
+            }
 
-            return events.Items.Where(i => i.Start.DateTime.HasValue)
+            return events.Where(i => i.Start.DateTime.HasValue)
                                .Select(i => new CalendarEvent(i.Summary, i.Start.DateTime.Value.ToUniversalTime(), i.ColorId))
                                .OrderBy(i => i.date)
                                .AsEnumerable();
@@ -73,16 +77,20 @@ namespace Appointment.Infrastructure.Configuration
 
         public async Task<IEnumerable<Event>> GetNext30DaysEvents()
         {
-            // await CreateEvent();
-            var listRequest = _calendarService.Events.List(_calendarConfig.CalendarId);
-            listRequest.TimeMin = DateTime.Now;
-            listRequest.TimeMax = DateTime.Now.AddDays(30);
-            listRequest.ShowDeleted = false;
-            listRequest.SingleEvents = true;
-            listRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
-            Events events = await listRequest.ExecuteAsync();
+            List<Event> events = [];
+            foreach (var calendarId in _calendarConfig.CalendarIds)
+            {
+                var listRequest = _calendarService.Events.List(calendarId);
+                listRequest.TimeMin = DateTime.Now;
+                listRequest.TimeMax = DateTime.Now.AddDays(30);
+                listRequest.ShowDeleted = false;
+                listRequest.SingleEvents = true;
+                listRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+                Events e = await listRequest.ExecuteAsync();
+                events.AddRange(e.Items);
+            }
 
-            return events.Items.Where(i => i.Start.DateTime.HasValue)
+            return events.Where(i => i.Start.DateTime.HasValue)
                                .OrderBy(i => i.Start.DateTime)
                                .AsEnumerable(); ;
         }
@@ -104,14 +112,14 @@ namespace Appointment.Infrastructure.Configuration
                 },
                 //ETag = "PsicoFer",
             };
-            var result = _calendarService.Events.Insert(@event, _calendarConfig.CalendarId);
+            var result = _calendarService.Events.Insert(@event, _calendarConfig.CalendarIds.Where(id => !id.Contains("family")).FirstOrDefault());
             result.SendNotifications = true;
             await result.ExecuteAsync();
         }
 
         public async Task UpdateEvent(Event e)
         {
-            var request = _calendarService.Events.Update(e, _calendarConfig.CalendarId, e.Id);
+            var request = _calendarService.Events.Update(e, _calendarConfig.CalendarIds.Where(id => !id.Contains("family")).FirstOrDefault(), e.Id);
             await request.ExecuteAsync();
         }
 
