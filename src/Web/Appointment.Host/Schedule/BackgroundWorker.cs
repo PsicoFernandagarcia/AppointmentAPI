@@ -87,10 +87,21 @@ namespace Appointment.Host.Schedule
         {
             await AssignAppointmentsFromCalendar();
             await SendReminderEmail();
-            if(DateTime.UtcNow.Day == DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month))
+            await DeleteOldLogs();
+            if (DateTime.UtcNow.Day == DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month))
             {
                 await SendPaymentEndOfMonthEmail();
             }
+        }
+
+        private async Task DeleteOldLogs()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var cutoffDate = DateTime.UtcNow.AddDays(-15);
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "DELETE FROM Logs WHERE Timestamp < {0}", cutoffDate);
+            _logger.LogInformation($"Old logs deleted (older than {cutoffDate:yyyy-MM-dd})");
         }
 
         private async Task SendReminderEmail()
