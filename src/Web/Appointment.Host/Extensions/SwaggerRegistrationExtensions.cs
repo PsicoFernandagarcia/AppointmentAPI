@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using System;
 
 namespace Appointment.Host.Extensions
@@ -47,18 +47,11 @@ namespace Appointment.Host.Extensions
                         Type = SecuritySchemeType.Http,
                         Scheme = "Bearer"
                     });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                c.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
                 {
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] {}
+                        new OpenApiSecuritySchemeReference("Bearer"),
+                        new System.Collections.Generic.List<string>()
                     }
                 });
             });
