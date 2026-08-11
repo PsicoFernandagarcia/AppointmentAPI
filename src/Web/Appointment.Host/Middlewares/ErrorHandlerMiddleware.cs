@@ -13,7 +13,6 @@ namespace Appointment.Host.Middlewares
         private readonly RequestDelegate _next;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<ErrorHandlerMiddleware> _logger;
-        private readonly string _body;
         public ErrorHandlerMiddleware(RequestDelegate next, IWebHostEnvironment webHostEnvironment,
             ILogger<ErrorHandlerMiddleware> logger)
         {
@@ -45,14 +44,20 @@ namespace Appointment.Host.Middlewares
                 }));
             }
         }
-        private void LogRequest(HttpContext context, Exception ex) =>
-            _logger.LogError($"Http Request Global Exception{Environment.NewLine}" +
-                                   $"Schema:{context.Request.Scheme} " +
-                                   $"Host: {context.Request.Host} " +
-                                   $"Path: {context.Request.Path} " +
-                                   $"QueryString: {context.Request.QueryString} " +
-                                   $"Request_Body: {_body} " +
-                                   $"Exception: {FlattenException(ex)}");
+        private void LogRequest(HttpContext context, Exception ex)
+        {
+            _logger.LogError(@"Http Request Global Exception
+                                   Schema:{RequestScheme}
+                                   Host: {RequestHost}
+                                   Path: {RequestPath}
+                                   QueryString: {RequestQueryString} 
+                                   Exception: {@ExceptionDetail}",
+                                   context.Request.Scheme,
+                                   context.Request.Host,
+                                   context.Request.Path,
+                                   context.Request.QueryString,
+                                   FlattenException(ex));
+        }
 
         private string FlattenException(Exception exception)
         {
