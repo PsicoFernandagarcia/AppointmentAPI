@@ -17,12 +17,10 @@ namespace Appointment.Host.Behaviors
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Handling {typeof(TRequest).Name}");
+            _logger.LogInformation("Handling {RequestType}. Object: {@Request}", typeof(TRequest).Name, request);
             var response = await next();
             if (response is Result result && result.IsFailed)
-                _logger.LogError($"Handling {typeof(TRequest).Name} Error!", result);
-
-            _logger.LogInformation($"Handled {typeof(TResponse).Name}");
+                _logger.LogError("Handling {RequestType} Error {@Error}! ", typeof(TRequest).Name, result);
 
             return response;
         }

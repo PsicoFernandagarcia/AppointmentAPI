@@ -18,6 +18,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.MySQL" Version="6.1.0" />
+    <PackageReference Include="Serilog.UI" Version="3.2.0" />
+    <PackageReference Include="Serilog.UI.MySqlProvider" Version="3.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <PackageReference Include="FluentResults" Version="4.0.0" />

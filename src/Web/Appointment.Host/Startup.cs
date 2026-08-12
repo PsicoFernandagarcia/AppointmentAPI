@@ -34,6 +34,7 @@ namespace Appointment.Host
                 })
                 .AddMediatRConfigurations()
                 .AddExternalServices(Configuration)
+                .AddSerilogUiServices(Configuration)
             ;
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext context) =>
@@ -41,6 +42,7 @@ namespace Appointment.Host
                 .UseInfrastructure(env, context)
                 .UseSwaggerConfigurations(env)
                 .UseHealthCheckConfigurations()
+                .UseSerilogUiDashboard()
             ;
     }
 }
